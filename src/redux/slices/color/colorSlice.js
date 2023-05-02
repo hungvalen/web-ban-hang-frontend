@@ -27,7 +27,7 @@ export const createColorAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`
                 }
             }
-            const { data } = await axios.post(`${baseURL}/api/color`, {
+            const { data } = await axios.post(`${baseURL}/api/colors`, {
                 name,
             }, config)
             Swal.fire({
@@ -51,7 +51,7 @@ export const createColorAction = createAsyncThunk(
 export const fetchColorAction = createAsyncThunk(
     "color/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axios.get(`${baseURL}/color`)
+            const { data } = await axios.get(`${baseURL}/colors`)
             return data;
         } catch (error) {
             Swal.fire({

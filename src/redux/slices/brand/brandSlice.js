@@ -27,7 +27,7 @@ export const createBrandAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`
                 }
             }
-            const { data } = await axios.post(`${baseURL}/api/brand`, {
+            const { data } = await axios.post(`${baseURL}/api/brands`, {
                 name,
             }, config)
             Swal.fire({
@@ -51,7 +51,7 @@ export const createBrandAction = createAsyncThunk(
 export const fetchBrandAction = createAsyncThunk(
     "brand/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axios.get(`${baseURL}/brand`)
+            const { data } = await axios.get(`${baseURL}/brands`)
             return data;
         } catch (error) {
             Swal.fire({

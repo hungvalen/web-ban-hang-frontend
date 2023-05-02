@@ -187,7 +187,7 @@ export default function Example() {
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="relative z-40 lg:hidden"
+            className="relative z-10 lg:hidden"
             onClose={setSidebarOpen}>
             <Transition.Child
               as={Fragment}
@@ -480,7 +480,7 @@ export default function Example() {
           <main className="flex-1 pb-8">
             {/* Page header */}
             <div className="bg-white shadow">
-              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
+              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-8xl lg:px-8">
                 <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
                   <div className="min-w-0 flex-1">
                     {/* Profile */}

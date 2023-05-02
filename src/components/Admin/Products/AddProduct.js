@@ -8,27 +8,69 @@ import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
 import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
 import { fetchBrandAction } from "../../../redux/slices/brand/brandSlice";
+import { fetchColorAction } from "../../../redux/slices/color/colorSlice";
+import { createProductAction } from "../../../redux/slices/products/productSlices";
+import Swal from "sweetalert2";
+import SweetAlert from "../../Playground/SweetAlert";
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
-  let categories,
-    sizeOptionsCoverted,
-    // handleSizeChange,
-    colorOptionsCoverted,
-    handleColorChangeOption,
-    // brands,
-    loading,
-    error,
-    isAdded;
+  // let
+  // categories,
+  // sizeOptionsCoverted,
+  // handleSizeChange,
+  // colorOptionsCoverted,
+  // handleColorChangeOption,
+  // brands,
+  // loading,
+  // error,
+  // isAdded;
 
   const dispatch = useDispatch();
+  // files
+  const [files, setFiles] = useState([]);
+  const [fileErrs, setFileErrs] = useState([]);
+  const fileHandleChange = (event) => {
+    const newFiles = Array.from(event.target.files);
+    console.log(newFiles)
+    // validation
+    const newErrs = [];
+    newFiles.forEach((file) => {
+      if (file.size > 1000000) {
+        newErrs.push(`${file.name} is too large`);
+      }
+      if (!file.type.startsWith("image/")) {
+        newErrs.push(`${file.name} is not an image`);
+      }
+    })
+    setFiles(newFiles);
+    setFileErrs(newErrs);
+    // setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  }
+
+
   // Sizes
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
   const [sizeOption, setSizeOption] = useState([]);
-  const handleSizeChange = () => {
+  const [colorOption, setColorOption] = useState([]);
+  useEffect(() => {
+    dispatch(fetchCategoriesAction());
+    dispatch(fetchBrandAction());
+    dispatch(fetchColorAction());
+
+  }, [dispatch])
+  
+  const { colors } = useSelector(state => state.color)
+  const { categories } = useSelector(state => state.category.categories)
+  const { product, isAdded, error, loading } = useSelector(state => state.product)
+  const handleSizeChange = (sizes) => {
     setSizeOption(sizes);
+  }
+
+  const handleColorChangeOption = (colors) => {
+    setColorOption(colors);
   }
 
   // converted sizes
@@ -38,23 +80,23 @@ export default function AddProduct() {
       label: size
     }
   })
+
+  console.log(categories)
+  // converted color
+  const colorOptionsCoverted = colors?.colors?.map((color) => {
+    return {
+      value: color?.name,
+      label: color?.name
+    }
+  });
   const { brands } = useSelector(state => state.brand.brands)
-  console.log(brands)
-  useEffect(() => {
-    dispatch(fetchCategoriesAction());
-    dispatch(fetchBrandAction());
-  }, [dispatch])
+
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    category: "",
-    sizes: "",
-    brand: "",
-    colors: "",
-    images: "",
-    price: "",
-    totalQty: "",
+    address: "",
+    district: "",
+    phone: ""
   });
 
   //onChange
@@ -62,10 +104,17 @@ export default function AddProduct() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log(sizeOption)
+    dispatch(createProductAction({
+      ...formData,
+      files,
+      colors: colorOption?.map((color) => color?.value),
+      sizes: sizeOption?.map((size) => size?.value)
+    }))
+    console.log(fileErrs)
     // reset form data
     setFormData({
       name: "",
@@ -78,14 +127,18 @@ export default function AddProduct() {
       price: "",
       totalQty: "",
     });
+    setFileErrs([]);
   };
 
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
+      {fileErrs?.length > 0 && (
+        <SweetAlert icon="error" title="Error" message={fileErrs} />
+      )}
       {isAdded && <SuccessMsg message="Product Added Successfully" />}
-      <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 w-full">
+        <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Create New Product
           </h2>
@@ -94,9 +147,10 @@ export default function AddProduct() {
               Manage Products
             </p>
           </p>
+          {error ? <ErrorMsg message={error?.message} /> : null}
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <form className="space-y-6" onSubmit={handleOnSubmit}>
               <div>
@@ -190,7 +244,7 @@ export default function AddProduct() {
                   isLoading={false}
                   isSearchable={true}
                   closeMenuOnSelect={false}
-                  onChange={(e) => handleColorChangeOption(e)}
+                  onChange={(item) => handleColorChangeOption(item)}
                 />
               </div>
 
@@ -223,9 +277,8 @@ export default function AddProduct() {
                           className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
                           <span>Upload files</span>
                           <input
-                            name="images"
-                            value={formData.images}
-                            onChange={handleOnChange}
+                            multiple
+                            onChange={fileHandleChange}
                             type="file"
                           />
                         </label>
@@ -278,11 +331,11 @@ export default function AddProduct() {
                 </label>
                 <div className="mt-1">
                   <textarea
-                    rows={4}
+                    rows={7}
                     name="description"
                     value={formData.description}
                     onChange={handleOnChange}
-                    className="block w-full rounded-md border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full rounded-md border-gray-300 border px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>

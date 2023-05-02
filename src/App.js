@@ -32,8 +32,11 @@ import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import AdminRoute from "./components/AuthRoute/AdminRoute";
 const App = () => {
+  const user = JSON.parse(localStorage.getItem('userInfo'));
+  const isAdmin = user?.userFound?.isAdmin;
   return (
     <BrowserRouter>
+      {/* {isAdmin ? null : <Navbar />} */}
       <Navbar />
       {/* hide navbar if admin */}
       <Routes>

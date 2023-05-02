@@ -22,7 +22,7 @@ export const loginUserAction = createAsyncThunk(
     async ({ email, password }, { rejectWithValue, getState, dispatch }) => {
         try {
             // make the http request
-            const { data } = await axios.post(`${baseURL}users/login`, { email, password });
+            const { data } = await axios.post(`${baseURL}/users/login`, { email, password });
             // save the user info to local storage
             localStorage.setItem("userInfo", JSON.stringify(data));
             return data;
@@ -38,7 +38,7 @@ export const registerUserAction = createAsyncThunk(
     async ({ fullName,email,password }, { rejectWithValue, getState, dispatch }) => {
         try {
             // make the http request
-            const { data } = await axios.post(`${baseURL}users/register`, { fullName,email,password });
+            const { data } = await axios.post(`${baseURL}/users/register`, { fullName,email,password });
             return data;
         } catch (error) {
             return rejectWithValue(error?.response?.data);
