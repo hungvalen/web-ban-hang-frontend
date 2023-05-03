@@ -94,6 +94,7 @@ export default function Product() {
   useEffect(() => {
     dispatch(fetchSingleProductAction(id
     ))
+    
   }, [id])
 
   const { product } = useSelector(state => state.product.product)

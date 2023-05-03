@@ -1,19 +1,31 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { Link } from "react-router-dom";
+import { createBrandAction } from "../../../redux/slices/brand/brandSlice";
 
 export default function AddBrand() {
   //form data
   const [formData, setFormData] = useState({
     name: "",
   });
+  const dispatch = useDispatch()
   //onChange
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
   //onSubmit
-  const handleOnSubmit = (e) => { };
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createBrandAction({
+      name: formData?.name,
+    }))
+    setFormData({
+      name: "",
+    })
+  };
   return (
     <>
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">

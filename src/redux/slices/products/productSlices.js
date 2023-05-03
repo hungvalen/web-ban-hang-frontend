@@ -82,8 +82,7 @@ export const fetchAllProductAction = createAsyncThunk("product/list", async ({ u
 })
 
 // fetch single product action
-export const fetchSingleProductAction = createAsyncThunk("product/details", async ( productId , { rejectWithValue, getState, dispatch }) => {
-    console.log(productId)
+export const fetchSingleProductAction = createAsyncThunk("product/details", async (productId, { rejectWithValue, getState, dispatch }) => {
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;

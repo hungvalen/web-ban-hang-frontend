@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import baseURL from "../../../utils/baseURL";
 import axios from "axios";
-import { Swal } from "sweetalert2"
+import SweetAlert from "../../../components/Playground/SweetAlert";
+import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 // initialState
 const initialState = {
     brands: [],
@@ -27,22 +28,15 @@ export const createBrandAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`
                 }
             }
-            const { data } = await axios.post(`${baseURL}/api/brands`, {
+            const { data } = await axios.post(`${baseURL}/brands`, {
                 name,
             }, config)
-            Swal.fire({
-                icon: "success",
-                title: "Brand created successfully",
-                showConfirmButton: false,
-                timer: 3500,
-            });
+            SweetAlert({ icon: "success", title: "Success", message: "Brand created successfully" });
+
             return data;
         } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: `${error.response.data.message}`,
-            })
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+
             return rejectWithValue(error.response.data);
         }
     })
@@ -54,11 +48,8 @@ export const fetchBrandAction = createAsyncThunk(
             const { data } = await axios.get(`${baseURL}/brands`)
             return data;
         } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: `${error.response.data.message}`,
-            })
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+
             return rejectWithValue(error.response.data);
         }
     })
@@ -75,7 +66,6 @@ const brandSlice = createSlice({
             state.loading = false;
             state.isAdded = true;
             state.brand = action.payload;
-            // state.products.push(action.payload);
         })
         builder.addCase(createBrandAction.rejected, (state, action) => {
             state.loading = false;
@@ -83,19 +73,24 @@ const brandSlice = createSlice({
             state.error = action.payload;
             state.isAdded = false;
         })
-        // fetch all category
+        // fetch all brand
         builder.addCase(fetchBrandAction.pending, (state, action) => {
             state.loading = true;
         })
         builder.addCase(fetchBrandAction.fulfilled, (state, action) => {
             state.loading = false;
             state.brands = action.payload;
-            // state.products.push(action.payload);
         })
         builder.addCase(fetchBrandAction.rejected, (state, action) => {
             state.loading = false;
             state.brands = null;
             state.error = action.payload;
+        })
+        builder.addCase(resetSuccessAction.pending, (state, action) => {
+            state.isAdded = false;
+        })
+        builder.addCase(resetErrorAction.pending, (state, action) => {
+            state.error = null;
         })
     }
 })
