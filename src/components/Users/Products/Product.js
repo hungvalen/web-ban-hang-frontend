@@ -8,6 +8,8 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSingleProductAction } from "../../../redux/slices/products/productSlices";
+import { addOrderToCartAction, cartItemsFromLocalStorageAction } from "../../../redux/slices/cart/cartSlices";
+import SweetAlert from "../../Playground/SweetAlert";
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -87,21 +89,72 @@ function classNames(...classes) {
 export default function Product() {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-
   const { id } = useParams();
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchSingleProductAction(id
     ))
-    
+
   }, [id])
 
+  useEffect(() => {
+    dispatch(cartItemsFromLocalStorageAction())
+  }, [])
+  const { cartItems } = useSelector(state => state?.carts)
+
   const { product } = useSelector(state => state.product.product)
+
+  const productExists = cartItems?.find((item) => item?._id?.toString() === product?._id.toString());
+
   //Add to cart handler
-  const addToCartHandler = (item) => { };
+  const addToCartHandler = () => {
+    // check if product is in cart
+    if (productExists) {
+      return SweetAlert({ icon: "error", title: "Error", message: 'Product already in cart' });
+    }
+    // check if color/size selected
+    if (selectedColor === "") {
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product size' });
+
+    }
+    if (selectedSize === "") {
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product size' });
+
+    }
+    dispatch(addOrderToCartAction({
+      _id: product?._id,
+      name: product?.name,
+      qty: 1,
+      price: product?.price,
+      description: product?.description,
+      color: selectedColor,
+      size: selectedSize,
+      image: product?.images[0],
+      totalPrice: product?.price,
+      qtyLeft: product?.qtyLeft
+    }))
+    SweetAlert({ icon: "success", title: "Success", message: 'Product added to cart successfully' });
+    return dispatch(cartItemsFromLocalStorageAction())
+
+  };
+
+  //Add product to cart
+  // const addToCartHandler = () => {
+  //   dispatch(addOrderToCartAction({
+  //     _id: product?._id,
+  //     name: product?.name,
+  //     qty: product?.qty,
+  //     price: product?.price,
+  //     description: product?.description,
+  //     color: selectedColor,
+  //     size: selectedSize,
+  //   }))
+  // };
+  // Get cart items
+
   let productDetails = {};
-  let cartItems = [];
+  // let cartItems = [];
 
   return (
     <div className="bg-white">
@@ -255,7 +308,7 @@ export default function Product() {
               </button>
               {/* proceed to check */}
 
-              {cartItems.length > 0 && (
+              {cartItems?.length > 0 && (
                 <Link
                   to="/shopping-cart"
                   className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-green-800 py-3 px-8 text-base font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -311,7 +364,7 @@ export default function Product() {
           </h2>
 
           <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
-          
+
           </div>
         </section>
       </main>

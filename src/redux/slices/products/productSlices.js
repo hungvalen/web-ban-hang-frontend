@@ -130,12 +130,14 @@ const productSlice = createSlice({
         builder.addCase(fetchAllProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload;
+            state.isAdded = true;
         }
         )
         builder.addCase(fetchAllProductAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.products = null;
+            state.isAdded = false;
         }
         )
         // fetch single product
@@ -146,12 +148,14 @@ const productSlice = createSlice({
         builder.addCase(fetchSingleProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.product = action.payload;
+            state.isAdded = true;
         }
         )
         builder.addCase(fetchSingleProductAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.product = null;
+            state.isAdded = false;
         }
         )
         builder.addCase(resetSuccessAction.pending, (state, action) => {

@@ -91,9 +91,11 @@ const ProductsFilters = () => {
   if (price) {
     productUrl = `${productUrl}&price=${price}`;
   }
+
   useEffect(() => {
     dispatch(fetchAllProductAction({ url: productUrl }))
   }, [dispatch, brand, size, category, price, color, productUrl])
+  let { products: { products }, loading, error } = useSelector((state) => state.product);
 
   // fetch brands
   useEffect(() => {
@@ -110,7 +112,6 @@ const ProductsFilters = () => {
   let colorsError;
   let { colors } = useSelector((state) => state.color.colors);
   let { brands } = useSelector((state) => state.brand.brands);
-  let { products, loading, error } = useSelector((state) => state.product.products);
   return (
     <div className="bg-white">
       <div>
