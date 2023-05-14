@@ -9,11 +9,15 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { cartItemsFromLocalStorageAction, changeOrderItemQty, removeOrderItemQty } from "../../../redux/slices/cart/cartSlices";
 import { formatPrice } from "../../../utils/formatCurrency";
+import { fetchCouponsAction, fetchSingleCouponAction } from "../../../redux/slices/coupons/couponSlice";
+import SweetAlert from "../../Playground/SweetAlert";
 
 const ShoppingCart = () => {
+  const [couponCode, setCouponCode] = useState();
   const dispatch = useDispatch();
   const { cartItems } = useSelector(state => state.carts);
-
+  const { coupon, loading, error, isAdded } = useSelector(state => state.coupons);
+  console.log(coupon);
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction())
   }, [dispatch])
@@ -32,18 +36,24 @@ const ShoppingCart = () => {
     dispatch(cartItemsFromLocalStorageAction())
   }
 
+  const applyCouponSubmit = (e) => {
+    e.preventDefault();
+    dispatch(fetchSingleCouponAction(couponCode))
+    setCouponCode('')
+  }
   // calculate total price
-  const sumTotalPrice = cartItems?.reduce((acc, item) => acc + item?.totalPrice, 0);
+  let sumTotalPrice = 0;
+  sumTotalPrice = cartItems?.reduce((acc, item) => acc + item?.totalPrice, 0);
+
+  // check if coupon is applied
+  if (coupon) {
+    sumTotalPrice = sumTotalPrice - (sumTotalPrice * coupon?.coupon?.discount) / 100
+  }
   // let cartItems;
   // let changeOrderItemQtyHandler;
   // let removeOrderItemFromLocalStorageHandler;
   //let calculateTotalDiscountedPrice;
-  let error;
   let couponFound;
-  let applyCouponSubmit;
-  let setCoupon;
-  let loading;
-  let coupon;
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -151,20 +161,14 @@ const ShoppingCart = () => {
               <dt className="flex items-center text-sm text-gray-600">
                 <span>Have coupon code? </span>
               </dt>
-              {/* errr */}
-              {error && <span className="text-red-500">{error?.message}</span>}
+
               {/* success */}
-              {couponFound?.status === "success" && !error && (
-                <span className="text-green-800">
-                  Congrats! You have got{" "}
-                  {couponFound?.coupon?.discountInPercentage} % discount
-                </span>
-              )}
+              {isAdded && (SweetAlert({ icon: "success", title: "Success", message: `Congratulation you got ${coupon?.discount}` }))}
               <form onSubmit={applyCouponSubmit}>
                 <div className="mt-1">
                   <input
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value)}
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
                     type="text"
                     className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="you@example.com"
@@ -196,9 +200,12 @@ const ShoppingCart = () => {
             <div className="mt-6">
               <Link
                 //  pass data to checkout page
-                to={{
-                  pathname: "/order-payment",
-                }}
+                to="/order-payment"
+                state={
+                  {
+                    sumTotalPrice
+                  }
+                }
                 className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                 Proceed to Checkout
               </Link>

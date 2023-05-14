@@ -7,7 +7,7 @@ const initialState = {
     loading: false,
     error: null,
     users: [],
-    user:null,
+    user: null,
     profile: {},
     userAuth: {
         loading: false,
@@ -35,12 +35,57 @@ export const loginUserAction = createAsyncThunk(
 // register action
 export const registerUserAction = createAsyncThunk(
     "users/register",
-    async ({ fullName,email,password }, { rejectWithValue, getState, dispatch }) => {
+    async ({ fullName, email, password }, { rejectWithValue, getState, dispatch }) => {
         try {
             // make the http request
-            const { data } = await axios.post(`${baseURL}/users/register`, { fullName,email,password });
+            const { data } = await axios.post(`${baseURL}/users/register`, { fullName, email, password });
             return data;
         } catch (error) {
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
+// update user shipping address action
+export const updateUserShippingAddressAction = createAsyncThunk(
+    "users/update-shipping-address",
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        const { firstName, lastName, address, disctrict, ward, postalCode, province, phone, country } = payload;
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axios.put(`${baseURL}/users/update/shipping`, { firstName, lastName, address, disctrict, ward, postalCode, province, phone, country }, config);
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
+// user profile action
+export const getUserProfileAction = createAsyncThunk(
+    "users/profile-fetched",
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axios.get(`${baseURL}/users/profile`, config);
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
             return rejectWithValue(error?.response?.data);
         }
     }
@@ -76,6 +121,33 @@ const usersSlice = createSlice({
             SweetAlert({ icon: "success", title: "Success", message: "Register successful" });
         });
         builder.addCase(registerUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            SweetAlert({ icon: "error", title: "Error", message: action?.payload?.message });
+        })
+        // shipping address
+        builder.addCase(updateUserShippingAddressAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(updateUserShippingAddressAction.fulfilled, (state, action) => {
+            state.user = action.payload;
+            state.loading = false;
+            SweetAlert({ icon: "success", title: "Success", message: "Add shipping successfully" });
+        });
+        builder.addCase(updateUserShippingAddressAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            SweetAlert({ icon: "error", title: "Error", message: action?.payload?.message });
+        })
+        // get user profile
+        builder.addCase(getUserProfileAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
+            state.profile = action.payload;
+            state.loading = false;
+        });
+        builder.addCase(getUserProfileAction.rejected, (state, action) => {
             state.error = action.payload;
             state.loading = false;
             SweetAlert({ icon: "error", title: "Error", message: action?.payload?.message });
