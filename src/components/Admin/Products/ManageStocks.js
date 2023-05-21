@@ -1,20 +1,41 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchAllProductAction } from "../../../redux/slices/products/productSlices";
+import baseURL from "../../../utils/baseURL";
+import Pagination from "../../pagination/Pagination";
+import Skeleton from "react-loading-skeleton";
 
 export default function ManageStocks() {
-  //Selector
-  let products, loading, error;
+  const [params] = useSearchParams();
+  console.log(params)
 
+  //Selector
+  let { products: { products }, loading, error } = useSelector(state => state.product);
+  let productUrl = `${baseURL}/products`
+  const dispatch = useDispatch();
+  const page = params.get("page") || 1;
+  const limit = params.get("limit") || 5;
+  useEffect(() => {
+    dispatch(fetchAllProductAction({
+      url: productUrl,
+      page,
+      limit
+    }));
+  }, [dispatch, page, limit])
   //delete product handler
   const deleteProductHandler = (id) => { };
+
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">
-            Product List- [{products?.length}]{" "}
+            Product List- {products?.length} items
           </h1>
           <p className="mt-2 text-sm text-gray-700">
             List of all the products in your account including their name,
@@ -22,11 +43,12 @@ export default function ManageStocks() {
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
+          <Link
+            to="/admin/add-product"
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
             Add New Product
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -82,13 +104,18 @@ export default function ManageStocks() {
                       </th>
                       <th
                         scope="col"
-                        className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                        <span className="sr-only">Edit</span>
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        Edit
                       </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        Delete
+                      </th>
+
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {/* loop here */}
                     {products?.map((product) => (
                       <tr key={product._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
@@ -96,13 +123,14 @@ export default function ManageStocks() {
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={product?.image}
+                                src={product?.images}
                                 alt={product?.name}
                               />
                             </div>
                             <div className="ml-4">
                               <div className="font-medium text-gray-900">
-                                {product.name}
+                                {loading ? <Skeleton className="ml-3" width={200} height={30} /> : product.name}
+
                               </div>
                               <div className="text-gray-500">
                                 {product?.brand}
@@ -119,7 +147,7 @@ export default function ManageStocks() {
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.isOutOfStock ? (
+                          {product?.qtyLeft < 0 ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                               Out of Stock
                             </span>
@@ -190,6 +218,7 @@ export default function ManageStocks() {
                     ))}
                   </tbody>
                 </table>
+                <Pagination />
               </div>
             </div>
           </div>

@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cartItemsFromLocalStorageAction } from '../../../redux/slices/cart/cartSlices';
 import { formatPrice } from '../../../utils/formatCurrency';
 import { useLocation } from 'react-router-dom';
+import { getUserProfileAction } from '../../../redux/slices/users/usersSlice';
+import { placeOrderAction } from '../../../redux/slices/orders/ordersSlice';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -24,7 +26,6 @@ const paymentMethods = [
 const OrderPayment = () => {
   const location = useLocation();
   const { sumTotalPrice } = location.state;
-  console.log(sumTotalPrice)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0])
 
   const dispatch = useDispatch();
@@ -35,10 +36,31 @@ const OrderPayment = () => {
 
   const calculateTotalDiscountedPrice = () => { };
 
+  // get profile user
+  useEffect(() => {
+    dispatch(getUserProfileAction());
+  }, [dispatch])
+
+  const { loading, error, profile } = useSelector(state => state.users);
+  const user = profile?.user;
+
+  // place order action
+  // get shipping address
+  const shippingAddress = user?.shippingAddress;
+  console.log(shippingAddress)
   //create order submit handler
   const createOrderSubmitHandler = (e) => {
     e.preventDefault();
+    dispatch(placeOrderAction({
+      shippingAddress,
+      orderItems: cartItems,
+      totalPrice: sumTotalPrice
+    }))
+    localStorage.removeItem('cartItems');
   };
+
+
+
 
   return (
     <div className="bg-gray-50">

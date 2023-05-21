@@ -38,7 +38,17 @@ const AddShippingAddress = () => {
   //onsubmit
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUserShippingAddressAction(formData));
+    dispatch(updateUserShippingAddressAction({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      address: formData.address,
+      district: formData.district,
+      ward: formData.ward,
+      postalCode: formData.postalCode,
+      province: formData.province,
+      phone: formData.phone,
+      country: formData.country
+    }));
   };
 
   useEffect(() => {
@@ -79,7 +89,7 @@ const AddShippingAddress = () => {
       });
     }
 
-  }, [formData, formData.provinceId, formData.districtId, formData.wardId, provinces, districts, wards])
+  }, [formData.provinceId, formData.districtId, formData.wardId, provinces, districts, wards])
 
   return (
     <>
@@ -101,7 +111,7 @@ const AddShippingAddress = () => {
               Last Name : {user?.shippingAddress?.lastName}
             </p>
             <p className="mt-1 text-sm text-gray-500">
-              Address : {user?.shippingAddress?.address} {user?.shippingAddress?.ward} {user?.shippingAddress?.disctrict} {user?.shippingAddress?.province}
+              Address : {user?.shippingAddress?.address} {user?.shippingAddress?.ward} {user?.shippingAddress?.district} {user?.shippingAddress?.province}
             </p>
             <p className="mt-1 text-sm text-gray-500">
               Country : {user?.shippingAddress?.country}
@@ -213,7 +223,7 @@ const AddShippingAddress = () => {
             </div>
             <div>
               <label
-                htmlFor="disctrictId"
+                htmlFor="districtId"
                 className="block text-sm font-medium text-gray-700">
                 Quận/Huyện
               </label>
@@ -226,7 +236,7 @@ const AddShippingAddress = () => {
                 >
                   <option>-- Vui lòng chọn huyện/ thị xã --</option>
                   {districts?.results?.map((district) => (
-                    <option key={district?.disctrict_id} value={district?.district_id}>
+                    <option key={district?.district_id} value={district?.district_id}>
                       {district?.district_name}
                     </option>
                   )

@@ -8,8 +8,10 @@ const LoadingComponent = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        height: '50vh',
+        width: '0 auto'
       }}>
-      <ReactLoading type="spin" color="red" />
+      <ReactLoading type="spin" color="blue" />
     </div>
   );
 };

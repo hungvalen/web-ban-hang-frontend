@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import baseURL from "../../../utils/baseURL";
 import SweetAlert from "../../../components/Playground/SweetAlert";
 import { resetErrorAction } from "../globalActions/globalAction";
+import axiosClient from "../../../utils/axiosClient";
 const initialState = {
     loading: false,
     error: null,
@@ -50,7 +51,8 @@ export const registerUserAction = createAsyncThunk(
 export const updateUserShippingAddressAction = createAsyncThunk(
     "users/update-shipping-address",
     async (payload, { rejectWithValue, getState, dispatch }) => {
-        const { firstName, lastName, address, disctrict, ward, postalCode, province, phone, country } = payload;
+        const { firstName, lastName, address, district, ward, postalCode, province, phone, country } = payload;
+        console.log(payload)
         try {
             const token = getState()?.users?.userAuth?.userInfo?.token;
             const config = {
@@ -59,7 +61,7 @@ export const updateUserShippingAddressAction = createAsyncThunk(
                 }
             }
             // make the http request
-            const { data } = await axios.put(`${baseURL}/users/update/shipping`, { firstName, lastName, address, disctrict, ward, postalCode, province, phone, country }, config);
+            const { data } = await axios.put(`${baseURL}/users/update/shipping`, { firstName, lastName, address, district, ward, postalCode, province, phone, country }, config);
 
             return data;
         } catch (error) {
@@ -81,7 +83,7 @@ export const getUserProfileAction = createAsyncThunk(
                 }
             }
             // make the http request
-            const { data } = await axios.get(`${baseURL}/users/profile`, config);
+            const { data } = await axiosClient.get(`/users/profile`, config);
 
             return data;
         } catch (error) {

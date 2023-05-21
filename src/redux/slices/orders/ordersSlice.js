@@ -24,10 +24,8 @@ export const placeOrderAction = createAsyncThunk(
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
                 }
             }
-
 
             const { data } = await axios.post(`${baseURL}/orders`,
                 {
@@ -38,7 +36,7 @@ export const placeOrderAction = createAsyncThunk(
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
 
-            return data;
+            return window.open(data.url);
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
             return rejectWithValue(error.response.data);

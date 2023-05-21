@@ -31,19 +31,20 @@ import Customers from "./components/Admin/Orders/Customers";
 import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import AdminRoute from "./components/AuthRoute/AdminRoute";
+import Navigation from "./components/Navbar/Navigation";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
-  const isAdmin = user?.userFound?.isAdmin;
+  const isAdmin = user?.userFound;
   return (
     <BrowserRouter>
       {/* {isAdmin ? null : <Navbar />} */}
-      <Navbar />
+      <Navigation />
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
         <Route path="admin" element={
           <AdminRoute>
-            <AdminDashboard />
+            <AdminDashboard admin={isAdmin}/>
           </AdminRoute>
         }>
           {/* products */} <Route path="" element={<OrdersList />} />

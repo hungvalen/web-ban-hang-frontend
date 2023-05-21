@@ -63,7 +63,7 @@ export const createProductAction = createAsyncThunk(
     })
 
 // fetch all product action
-export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url }, { rejectWithValue, getState, dispatch }) => {
+export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url,page,limit }, { rejectWithValue, getState, dispatch }) => {
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -72,7 +72,7 @@ export const fetchAllProductAction = createAsyncThunk("product/list", async ({ u
                 Authorization: `Bearer ${token}`,
             }
         }
-        const { data } = await axios.get(`${url}`, config);
+        const { data } = await axios.get(`${url}?page=${page}&limit=${limit}`, config);
         return data;
     } catch (error) {
         console.log(error);
@@ -130,7 +130,7 @@ const productSlice = createSlice({
         builder.addCase(fetchAllProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload;
-            state.isAdded = true;
+            state.isAdded = false;
         }
         )
         builder.addCase(fetchAllProductAction.rejected, (state, action) => {
@@ -148,7 +148,7 @@ const productSlice = createSlice({
         builder.addCase(fetchSingleProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.product = action.payload;
-            state.isAdded = true;
+            state.isAdded = false;
         }
         )
         builder.addCase(fetchSingleProductAction.rejected, (state, action) => {

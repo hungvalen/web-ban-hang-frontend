@@ -104,7 +104,7 @@ export default function Product() {
   const { cartItems } = useSelector(state => state?.carts)
 
   const { product } = useSelector(state => state.product.product)
-
+  console.log(product);
   const productExists = cartItems?.find((item) => item?._id?.toString() === product?._id.toString());
 
   //Add to cart handler
@@ -153,7 +153,6 @@ export default function Product() {
   // };
   // Get cart items
 
-  let productDetails = {};
   // let cartItems = [];
 
   return (
@@ -174,14 +173,14 @@ export default function Product() {
               <h2 className="sr-only">Reviews</h2>
               <div className="flex items-center">
                 <p className="text-sm text-gray-700">
-                  <span className="sr-only"> out of 5 stars</span>
+                  {product?.reviews?.length > 0 ? product?.averageRating : 0}
                 </p>
                 <div className="ml-1 flex items-center">
                   {[0, 1, 2, 3, 4].map((rating) => (
                     <StarIcon
                       key={rating}
                       className={classNames(
-                        productDetails?.product?.averageRating > rating
+                        +product?.averageRating > rating
                           ? "text-yellow-400"
                           : "text-gray-200",
                         "h-5 w-5 flex-shrink-0"
@@ -205,7 +204,7 @@ export default function Product() {
               {/* leave a review */}
 
               <div className="mt-4">
-                <Link to={`/add-review/${productDetails?.product?._id}`}>
+                <Link to={`/add-review/${product?._id}`}>
                   <h3 className="text-sm font-medium text-blue-600">
                     Leave a review
                   </h3>
@@ -301,11 +300,23 @@ export default function Product() {
                 </RadioGroup>
               </div>
               {/* add to cart */}
-              <button
-                onClick={() => addToCartHandler()}
-                className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                Add to cart
-              </button>
+              {
+                product?.qtyLeft <= 0 ? (
+                  <button
+                    style={{ cursor: "not-allowed" }}
+                    disabled
+                    className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-600 py-3 px-8 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Out of stock
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => addToCartHandler()}
+                    className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Add to cart
+                  </button>
+                )
+              }
+
               {/* proceed to check */}
 
               {cartItems?.length > 0 && (
@@ -353,7 +364,7 @@ export default function Product() {
               </dl>
             </section>
           </div>
-        </div>
+        </div >
 
         {/* Reviews */}
         <section aria-labelledby="reviews-heading" className="mt-16 sm:mt-24">
@@ -364,10 +375,57 @@ export default function Product() {
           </h2>
 
           <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
+            {product?.reviews.map((review) => (
+              <div
+                key={review._id}
+                className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8">
+                <div className="lg:col-span-8 lg:col-start-5 xl:col-span-9 xl:col-start-4 xl:grid xl:grid-cols-3 xl:items-start xl:gap-x-8">
+                  <div className="flex items-center xl:col-span-1">
+                    <div className="flex items-center">
+                      {[0, 1, 2, 3, 4].map((rating) => (
+                        <StarIcon
+                          key={rating}
+                          className={classNames(
+                            review.rating > rating
+                              ? "text-yellow-400"
+                              : "text-gray-200",
+                            "h-5 w-5 flex-shrink-0"
+                          )}
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                    <p className="ml-3 text-sm text-gray-700">
+                      {review.rating}
+                      <span className="sr-only"> out of 5 stars</span>
+                    </p>
+                  </div>
 
+                  <div className="mt-4 lg:mt-6 xl:col-span-2 xl:mt-0">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {review?.message}
+                    </h3>
+
+                    <div
+                      className="mt-3 space-y-6 text-sm text-gray-500"
+                      dangerouslySetInnerHTML={{ __html: review.content }}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center text-sm lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex-col lg:items-start xl:col-span-3">
+                  <p className="font-medium text-gray-900">{review?.user?.fullName}</p>
+                  <time
+                    dateTime={review.createdAt}
+                    className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </time>
+                </div>
+              </div>
+            ))}
           </div>
-        </section>
-      </main>
-    </div>
+        </section >
+      </main >
+    </div >
   );
 }

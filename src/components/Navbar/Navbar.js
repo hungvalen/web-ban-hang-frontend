@@ -11,13 +11,20 @@ import baseURL from "../../utils/baseURL";
 import logo from "./logo3.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
+import { cartItemsFromLocalStorageAction } from "../../redux/slices/cart/cartSlices";
 
+const userNavigation = [
+  { name: 'Your Profile', href: '#' },
+  { name: 'Settings', href: '#' },
+  { name: 'Sign out', href: '#' },
+]
 export default function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   //get cart items from local storage
-  let cartItemsFromLocalStorage;
+  let { cartItems } = useSelector(state => state.carts);
+  console.log(cartItems)
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCategoriesAction())
@@ -29,6 +36,10 @@ export default function Navbar() {
 
   const { categories } = useSelector(state => state.category.categories)
   const categoriesToDisplay = categories?.slice(0, 4);
+
+  useEffect(() => {
+    dispatch(cartItemsFromLocalStorageAction())
+  }, [dispatch])
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -275,8 +286,8 @@ export default function Navbar() {
                             aria-hidden="true"
                           />
                           <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                            {cartItemsFromLocalStorage?.length > 0
-                              ? cartItemsFromLocalStorage.length
+                            {cartItems?.length > 0
+                              ? cartItems.length
                               : 0}
                           </span>
                         </Link>
