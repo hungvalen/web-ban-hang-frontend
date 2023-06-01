@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { GrNext, GrStar, GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
 
-const Pagination = () => {
+const Pagination = ({count}) => {
     const { products } = useSelector(state => state.product)
-    console.log(products)
-    const count = products?.count;
+    // console.log(products)
+    // const count = products?.count;
     const [arrPage, setArrPage] = useState([]);
     const [currentPage, setCurrentPage] = useState(1); // page undefined => 1
     const [isHideEnd, setIsHideEnd] = useState(false);
@@ -47,7 +47,7 @@ const Pagination = () => {
         }
         currentPage >= (maxPage - 1) ? setIsHideEnd(true) : setIsHideEnd(false)
         currentPage <= 3 ? setIsHideStart(true) : setIsHideStart(false)
-    }, [count, currentPage, products]) // count thay đổi thì cập nhật lại maxPage
+    }, [count, currentPage]) // count thay đổi thì cập nhật lại maxPage
     // console.log(arrPage)
     return (
         <>

@@ -3,33 +3,56 @@ import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchAllProductAction } from "../../../redux/slices/products/productSlices";
 import baseURL from "../../../utils/baseURL";
 import Pagination from "../../pagination/Pagination";
 import Skeleton from "react-loading-skeleton";
+import EditProduct from "./modal/EditProduct";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import DeleteProduct from "./modal/DeleteProduct";
 
 export default function ManageStocks() {
   const [params] = useSearchParams();
-  console.log(params)
-
+  const [isShowEditProductModal, setIsShowEditProductModal] = useState(false);
+  const [isShowDeleteProductModal, setIsShowDeleteProductModal] = useState(false);
+  const [product, setProduct] = useState('');
   //Selector
-  let { products: { products }, loading, error } = useSelector(state => state.product);
+  let { products, loading, error, isUpdated, isDeleted } = useSelector(state => state.product);
+  let count = products?.count;
   let productUrl = `${baseURL}/products`
   const dispatch = useDispatch();
   const page = params.get("page") || 1;
   const limit = params.get("limit") || 5;
   useEffect(() => {
-    dispatch(fetchAllProductAction({
-      url: productUrl,
-      page,
-      limit
-    }));
-  }, [dispatch, page, limit])
-  //delete product handler
-  const deleteProductHandler = (id) => { };
+    dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
+  }, [dispatch, page, limit, productUrl])
 
+  console.log(products);
 
+  useEffect(() => {
+    if (isUpdated) {
+      dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
+      dispatch(resetSuccessAction());
+    }
+  }, [isUpdated, productUrl, page, limit, dispatch])
+
+  useEffect(() => {
+    if (isDeleted) {
+      dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
+      dispatch(resetSuccessAction());
+    }
+  }, [isDeleted, productUrl, page, limit, dispatch])
+
+  const handleShowEditProductModal = (product) => {
+    setIsShowEditProductModal(!isShowEditProductModal)
+    setProduct(product)
+  };
+
+  const handleShowDeleteProductModal = (product) => {
+    setIsShowDeleteProductModal(!isShowDeleteProductModal)
+    setProduct(product)
+  };
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -116,7 +139,7 @@ export default function ManageStocks() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {products?.map((product) => (
+                    {products?.products?.map((product) => (
                       <tr key={product._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                           <div className="flex items-center">
@@ -165,15 +188,16 @@ export default function ManageStocks() {
                           {product?.totalSold}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.qtyLeft}
+                          {product?.qtyLeft <= 0 ? 0 : product?.qtyLeft}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {product?.price}
                         </td>
                         {/* edit */}
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          <Link
-                            to={`/admin/products/edit/${product._id}`}
+                        <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
+                          <button
+                            onClick={() => handleShowEditProductModal(product)}
+                            // to={`/admin/products/edit/${product._id}`}
                             className="text-indigo-600 hover:text-indigo-900">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -190,12 +214,12 @@ export default function ManageStocks() {
                             </svg>
 
                             <span className="sr-only">, {product.name}</span>
-                          </Link>
+                          </button>
                         </td>
                         {/* delete */}
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
                           <button
-                            onClick={() => deleteProductHandler(product._id)}
+                            onClick={() => handleShowDeleteProductModal(product._id)}
                             className="text-indigo-600 hover:text-indigo-900">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -218,12 +242,28 @@ export default function ManageStocks() {
                     ))}
                   </tbody>
                 </table>
-                <Pagination />
+                <Pagination count={count} />
               </div>
             </div>
           </div>
+
+          {
+            isShowEditProductModal === true && (
+              <EditProduct isShowEditProductModal={isShowEditProductModal} product={product} setIsShowEditProductModal={setIsShowEditProductModal} />
+            )
+          }
+          {
+            isShowDeleteProductModal === true && (
+              <DeleteProduct isShowDeleteProductModal={isShowDeleteProductModal} product={product} setIsShowDeleteProductModal={setIsShowDeleteProductModal} />
+            )
+          }
+          {/* <EditProduct isShowEditProductModal={isShowEditProductModal} productId={productId} /> */}
+
         </div>
+
       )}
+
+
     </div>
   );
 }

@@ -32,6 +32,8 @@ import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import AdminRoute from "./components/AuthRoute/AdminRoute";
 import Navigation from "./components/Navbar/Navigation";
+import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
+import ManageCustomers from "./components/Admin/Customers/Customers";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -42,9 +44,11 @@ const App = () => {
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
+        <Route path="success" element={<ThanksForOrdering />} />
+
         <Route path="admin" element={
           <AdminRoute>
-            <AdminDashboard admin={isAdmin}/>
+            <AdminDashboard admin={isAdmin} />
           </AdminRoute>
         }>
           {/* products */} <Route path="" element={<OrdersList />} />
@@ -69,7 +73,7 @@ const App = () => {
           {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
           <Route path="order-payment" element={<OrderPayment />} />
-          <Route path="customers" element={<Customers />} />
+          <Route path="customers" element={<ManageCustomers />} />
         </Route>
         {/* public links */}
         {/* Products */}

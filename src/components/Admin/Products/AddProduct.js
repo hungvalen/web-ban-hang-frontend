@@ -17,16 +17,7 @@ import SweetAlert from "../../Playground/SweetAlert";
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
-  // let
-  // categories,
-  // sizeOptionsCoverted,
-  // handleSizeChange,
-  // colorOptionsCoverted,
-  // handleColorChangeOption,
-  // brands,
-  // loading,
-  // error,
-  // isAdded;
+  
 
   const dispatch = useDispatch();
   // files

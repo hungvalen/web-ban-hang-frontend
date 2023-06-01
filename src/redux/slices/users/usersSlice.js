@@ -2,7 +2,7 @@ import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import baseURL from "../../../utils/baseURL";
 import SweetAlert from "../../../components/Playground/SweetAlert";
-import { resetErrorAction } from "../globalActions/globalAction";
+import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import axiosClient from "../../../utils/axiosClient";
 const initialState = {
     loading: false,
@@ -14,7 +14,9 @@ const initialState = {
         loading: false,
         error: null,
         userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
-    }
+    },
+    isUpdated: false,
+    isDeleted: false,
 }
 
 // login action
@@ -92,6 +94,82 @@ export const getUserProfileAction = createAsyncThunk(
         }
     }
 );
+
+// user profile action
+export const getListUsersAction = createAsyncThunk(
+    "users/list-users",
+    async ({ page, limit }, { rejectWithValue, getState, dispatch }) => {
+
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.get(`/users/user-list?page=${page}&limit=${limit}`, config);
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
+// delete profile action
+export const deleteUserAction = createAsyncThunk(
+    "users/delete-user",
+    async (id, { rejectWithValue, getState, dispatch }) => {
+
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.delete(`/users/${id}/delete`, config);
+            SweetAlert({ icon: "success", title: "Success", message: "User deleted successfully" });
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
+// update user  profile action
+export const updateUserAction = createAsyncThunk(
+    "users/update-user",
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        const { id, fullName, email, role } = payload;
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.put(`/users/${id}/update`, {
+                fullName,
+                email,
+                role
+            }, config);
+            SweetAlert({ icon: "success", title: "Success", message: "User updated successfully" });
+
+            return data;
+        } catch (error) {
+            console.log(error);
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 // users slice
 const usersSlice = createSlice({
     name: "users",
@@ -153,6 +231,55 @@ const usersSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
             SweetAlert({ icon: "error", title: "Error", message: action?.payload?.message });
+        })
+
+        // get user list
+        builder.addCase(getListUsersAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(getListUsersAction.fulfilled, (state, action) => {
+            state.users = action.payload;
+            state.loading = false;
+        });
+        builder.addCase(getListUsersAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            state.users = null;
+        })
+
+        // delete user
+        builder.addCase(deleteUserAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(deleteUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isDeleted = true;
+        });
+        builder.addCase(deleteUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            state.isDeleted = false;
+        })
+
+        // update user
+        builder.addCase(updateUserAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(updateUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isUpdated = true;
+            state.user = action.payload;
+        });
+        builder.addCase(updateUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            state.isUpdated = false;
+        })
+
+        // reset success action
+        builder.addCase(resetSuccessAction.pending, (state, action) => {
+            state.isDeleted = false;
+            state.isUpdated = false;
         })
         // reset error action
         builder.addCase(resetErrorAction.pending, (state, action) => {

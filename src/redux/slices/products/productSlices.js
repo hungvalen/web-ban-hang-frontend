@@ -61,9 +61,36 @@ export const createProductAction = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
+// update product action
+export const updateProductAction = createAsyncThunk(
+    "product/update", async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const { name, description, category, sizes, brand, colors, price, totalQty, id } = payload;
+            console.log(payload)
+
+            // make request
+
+            // token
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+
+            const { data } = await axios.put(`${baseURL}/products/${id}`,
+                { name, description, category, sizes, brand, colors, price, totalQty }, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Product Update successfully" });
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
+            return rejectWithValue(error.response.data);
+        }
+    })
 
 // fetch all product action
-export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url,page,limit }, { rejectWithValue, getState, dispatch }) => {
+export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url, page, limit }, { rejectWithValue, getState, dispatch }) => {
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -83,6 +110,7 @@ export const fetchAllProductAction = createAsyncThunk("product/list", async ({ u
 
 // fetch single product action
 export const fetchSingleProductAction = createAsyncThunk("product/details", async (productId, { rejectWithValue, getState, dispatch }) => {
+    console.log(productId)
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -92,6 +120,27 @@ export const fetchSingleProductAction = createAsyncThunk("product/details", asyn
             }
         }
         const { data } = await axios.get(`${baseURL}/products/${productId}`, config);
+
+        return data;
+    } catch (error) {
+        console.log(error);
+        SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+        return rejectWithValue(error?.response?.data);
+    }
+})
+
+// fetch single product action
+export const deleteProductAction = createAsyncThunk("product/delete", async (id, { rejectWithValue, getState, dispatch }) => {
+    try {
+        // make request
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        const { data } = await axios.delete(`${baseURL}/products/${id}/delete`, config);
+        SweetAlert({ icon: "success", title: "Success", message: "Product deleted successfully" });
         return data;
     } catch (error) {
         console.log(error);
@@ -121,6 +170,38 @@ const productSlice = createSlice({
             state.isAdded = false;
         })
 
+        // update product
+        builder.addCase(updateProductAction.pending, (state, action) => {
+            state.loading = true;
+        })
+        builder.addCase(updateProductAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isUpdated = true;
+            state.product = action.payload;
+        })
+
+        builder.addCase(updateProductAction.rejected, (state, action) => {
+            state.loading = false;
+            state.product = null;
+            state.error = action.payload;
+            state.isUpdated = false;
+        })
+
+        // delete product
+        builder.addCase(deleteProductAction.pending, (state, action) => {
+            state.loading = true;
+        })
+        builder.addCase(deleteProductAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isDeleted = true;
+        })
+
+        builder.addCase(deleteProductAction.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.isDeleted = false;
+        })
+
 
         // fetch all product
         builder.addCase(fetchAllProductAction.pending, (state, action) => {
@@ -130,14 +211,12 @@ const productSlice = createSlice({
         builder.addCase(fetchAllProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload;
-            state.isAdded = false;
         }
         )
         builder.addCase(fetchAllProductAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.products = null;
-            state.isAdded = false;
         }
         )
         // fetch single product
@@ -148,18 +227,18 @@ const productSlice = createSlice({
         builder.addCase(fetchSingleProductAction.fulfilled, (state, action) => {
             state.loading = false;
             state.product = action.payload;
-            state.isAdded = false;
         }
         )
         builder.addCase(fetchSingleProductAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.product = null;
-            state.isAdded = false;
         }
         )
         builder.addCase(resetSuccessAction.pending, (state, action) => {
             state.isAdded = false;
+            state.isUpdated = false;
+            state.isDeleted = false;
         })
         builder.addCase(resetErrorAction.pending, (state, action) => {
             state.error = null;

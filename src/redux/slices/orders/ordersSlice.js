@@ -10,7 +10,8 @@ const initialState = {
     isUpdated: false,
     isDeleted: false,
     orders: [],
-    order: null
+    order: null,
+    stats: null
 }
 
 // create product order action
@@ -43,8 +44,8 @@ export const placeOrderAction = createAsyncThunk(
         }
     })
 
-// fetch all product action
-export const fetchOrdersAction = createAsyncThunk("orders/list", async ({ url }, { rejectWithValue, getState, dispatch }) => {
+// fetch all order action
+export const fetchOrdersAction = createAsyncThunk("orders/list", async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -58,7 +59,7 @@ export const fetchOrdersAction = createAsyncThunk("orders/list", async ({ url },
     } catch (error) {
         console.log(error);
         SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
-        return rejectWithValue(error?.response?.data);
+        // return rejectWithValue(error?.response?.data);
     }
 })
 
@@ -73,6 +74,49 @@ export const fetchOrderAction = createAsyncThunk("orders/details", async (produc
             }
         }
         const { data } = await axios.get(`${baseURL}/orders/${productId}`, config);
+        return data;
+    } catch (error) {
+        console.log(error);
+        SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+        return rejectWithValue(error?.response?.data);
+    }
+})
+
+// fetch order stats action
+export const orderStaticsAction = createAsyncThunk("orders/statics", async (payload, { rejectWithValue, getState, dispatch }) => {
+    try {
+        // make request
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        const { data } = await axios.get(`${baseURL}/orders/sales/stats`, config);
+        return data;
+    } catch (error) {
+        console.log(error);
+        SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+        return rejectWithValue(error?.response?.data);
+    }
+})
+
+
+// update order action
+export const updateOrderAction = createAsyncThunk("orders/update-order", async (payload, { rejectWithValue, getState, dispatch }) => {
+    try {
+        const { status, id } = payload;
+        // make request
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        const { data } = await axios.put(`${baseURL}/orders/update/${id}`, {
+            status
+        }, config);
+        SweetAlert({ icon: "success", title: "Success", message: "Order updated successfully" });
         return data;
     } catch (error) {
         console.log(error);
@@ -112,14 +156,12 @@ const ordersSlice = createSlice({
         builder.addCase(fetchOrdersAction.fulfilled, (state, action) => {
             state.loading = false;
             state.orders = action.payload;
-            state.isAdded = true;
         }
         )
         builder.addCase(fetchOrdersAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.orders = null;
-            state.isAdded = false;
         }
         )
 
@@ -131,20 +173,55 @@ const ordersSlice = createSlice({
         builder.addCase(fetchOrderAction.fulfilled, (state, action) => {
             state.loading = false;
             state.order = action.payload;
-            state.isAdded = true;
         }
         )
         builder.addCase(fetchOrderAction.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.order = null;
-            state.isAdded = false;
+        }
+        )
+
+        // stats order
+        builder.addCase(orderStaticsAction.pending, (state, action) => {
+            state.loading = true;
+        }
+        )
+        builder.addCase(orderStaticsAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.stats = action.payload;
+        }
+        )
+        builder.addCase(orderStaticsAction.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.stats = null;
+        }
+        )
+
+        // update order status
+        builder.addCase(updateOrderAction.pending, (state, action) => {
+            state.loading = true;
+        }
+        )
+        builder.addCase(updateOrderAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.order = action.payload;
+            state.isUpdated = true;
+        }
+        )
+        builder.addCase(updateOrderAction.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.order = null;
+            state.isUpdated = false;
         }
         )
 
         // reset success and error
         builder.addCase(resetSuccessAction.pending, (state, action) => {
             state.isAdded = false;
+            state.isUpdated = false;
         })
         builder.addCase(resetErrorAction.pending, (state, action) => {
             state.error = null;

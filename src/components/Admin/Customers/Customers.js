@@ -1,14 +1,60 @@
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getListUsersAction } from "../../../redux/slices/users/usersSlice";
+import Pagination from "../../pagination/Pagination";
+import { useSearchParams } from "react-router-dom";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import NoDataFound from "../../NoDataFound/NoDataFound";
+import EditCustomer from "./modal/EditCustomer";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import DeleteCustomer from "./modal/deleteCustomer";
 
-export default function Customers() {
+export default function ManageCustomers() {
+  const [isShowEditUserModal, setIsShowEditUserModal] = useState(false);
+  const [isShowDeleteUserModal, setIsShowDeleteUserModal] = useState(false);
+  const [params] = useSearchParams();
+  const page = params.get("page") || 1;
+  const limit = params.get("limit") || 5;
+  const dispatch = useDispatch();
+  const { users, loading, error, isUpdated, isDeleted } = useSelector(state => state.users);
+  const count = users?.count;
+  const [user, setUser] = useState(" ");
+  useEffect(() => {
+    dispatch(getListUsersAction({
+      page,
+      limit
+    }))
+  }, [page, limit, dispatch])
+  useEffect(() => {
+    if (isUpdated) {
+      dispatch(getListUsersAction({
+        page,
+        limit
+      }))
+      dispatch(resetSuccessAction());
+    }
+  }, [isUpdated, dispatch, page, limit])
+
+  useEffect(() => {
+    if (isDeleted) {
+      dispatch(getListUsersAction({
+        page,
+        limit
+      }))
+      dispatch(resetSuccessAction());
+    }
+  }, [isDeleted, dispatch, page, limit])
+
+  const handleShowEditUserModal = (person) => {
+    setIsShowEditUserModal(true);
+    setUser(person);
+  }
+
+  const handleShowDeleteUserModal = (person) => {
+    setIsShowDeleteUserModal(true);
+    setUser(person);
+  }
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -27,9 +73,9 @@ export default function Customers() {
           </button>
         </div>
       </div>
-      <div className="mt-8 flex flex-col">
+      {loading ? <LoadingComponent /> : error ? <ErrorMsg /> : users.length <= 0 ? <NoDataFound /> : <div className="mt-8 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle">
+          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
@@ -37,12 +83,12 @@ export default function Customers() {
                     <th
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8">
-                      Name
+                      ID
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Title
+                      Name
                     </th>
                     <th
                       scope="col"
@@ -56,19 +102,25 @@ export default function Customers() {
                     </th>
                     <th
                       scope="col"
-                      className="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
-                      <span className="sr-only">Edit</span>
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Edit
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Delete
+                    </th>
+
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {people.map((person) => (
-                    <tr key={person.email}>
+                  {users?.users?.map((person) => (
+                    <tr key={person._id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {person.name}
+                        {person._id}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.title}
+                        {person.fullName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {person.email}
@@ -76,21 +128,40 @@ export default function Customers() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {person.role}
                       </td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
-                        <a
-                          href="#"
+                      <td className="relative whitespace-nowrap px-3 py-4 text-sm font-medium sm:pr-6 lg:pr-8">
+                        <button
+                          type="button"
+                          onClick={() => handleShowEditUserModal(person)}
                           className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {person.name}</span>
-                        </a>
+                          Edit
+                        </button>
+                      </td>
+                      <td className="relative whitespace-nowrap px-3 py-4 text-sm font-medium sm:pr-6 lg:pr-8">
+                        <button
+                          type="button"
+                          onClick={() => handleShowDeleteUserModal(person)}
+                          className="text-indigo-600 hover:text-indigo-900">
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              <Pagination count={count} />
+
             </div>
           </div>
         </div>
       </div>
+      }
+      {
+        isShowEditUserModal === true && <EditCustomer user={user} isShowEditUserModal={isShowEditUserModal} setIsShowEditUserModal={setIsShowEditUserModal} />
+      }
+      {
+        isShowDeleteUserModal === true && <DeleteCustomer user={user} isShowDeleteUserModal={isShowDeleteUserModal} setIsShowDeleteUserModal={setIsShowDeleteUserModal} />
+
+      }
     </div>
   );
 }

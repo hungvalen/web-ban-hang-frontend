@@ -47,7 +47,6 @@ const OrderPayment = () => {
   // place order action
   // get shipping address
   const shippingAddress = user?.shippingAddress;
-  console.log(shippingAddress)
   //create order submit handler
   const createOrderSubmitHandler = (e) => {
     e.preventDefault();
@@ -59,9 +58,7 @@ const OrderPayment = () => {
     localStorage.removeItem('cartItems');
   };
 
-
-
-
+  const { loading: loadingOrder, error: errorOrder, order } = useSelector(state => state.orders);
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
@@ -302,11 +299,15 @@ const OrderPayment = () => {
                 </dl>
 
                 <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
-                  <button
+                  {loadingOrder ? <button
+                    className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                    Loading ...
+                  </button> : <button
                     onClick={createOrderSubmitHandler}
                     className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                     Confirm Payment - ${calculateTotalDiscountedPrice()}
-                  </button>
+                  </button>}
+
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-const notActive = "px-4 py-2 text-sm font-semibold flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 text-white rounded-md ";
+const notActive = "inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900  ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 hover:bg-indigo-500rounded-md ";
 const active = "px-4 py-2 text-sm font-semibold flex justify-center items-center bg-indigo-600 text-white hover:opacity-90 rounded-md ";
 const PageNumber = ({ text, setCurrentPage, currentPage, icon }) => {
     const navigate = useNavigate();
