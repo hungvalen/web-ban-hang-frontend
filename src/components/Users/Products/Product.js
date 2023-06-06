@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchSingleProductAction } from "../../../redux/slices/products/productSlices";
 import { addOrderToCartAction, cartItemsFromLocalStorageAction } from "../../../redux/slices/cart/cartSlices";
 import SweetAlert from "../../Playground/SweetAlert";
+import Skeleton from "react-loading-skeleton";
+import { formatPrice } from "../../../utils/formatCurrency";
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -101,11 +103,7 @@ export default function Product() {
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction())
   }, [])
-  const { cartItems } = useSelector(state => state?.carts)
 
-  const { product } = useSelector(state => state.product.product)
-  console.log(product);
-  const productExists = cartItems?.find((item) => item?._id?.toString() === product?._id.toString());
 
   //Add to cart handler
   const addToCartHandler = () => {
@@ -115,7 +113,7 @@ export default function Product() {
     }
     // check if color/size selected
     if (selectedColor === "") {
-      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product size' });
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product color' });
 
     }
     if (selectedSize === "") {
@@ -130,7 +128,7 @@ export default function Product() {
       description: product?.description,
       color: selectedColor,
       size: selectedSize,
-      image: product?.images[0],
+      image: product?.images?.length > 0 ? product?.images[0] : '',
       totalPrice: product?.price,
       qtyLeft: product?.qtyLeft
     }))
@@ -138,7 +136,12 @@ export default function Product() {
     return dispatch(cartItemsFromLocalStorageAction())
 
   };
+  const { cartItems } = useSelector(state => state?.carts)
 
+  const { product: { product }, loading, error } = useSelector(state => state.product)
+  console.log(cartItems);
+  const productExists = cartItems?.find((item) => item?._id === product?._id);
+  const productPrice = formatPrice.format(+product?.product?.price)
   //Add product to cart
   // const addToCartHandler = () => {
   //   dispatch(addOrderToCartAction({
@@ -162,45 +165,56 @@ export default function Product() {
           <div className="lg:col-span-5 lg:col-start-8">
             <div className="flex justify-between">
               <h1 className="text-xl font-medium text-gray-900">
-                {product?.name}
+                {
+                  loading ? <Skeleton className="" width={200} height={30} /> : product?.name
+                }
               </h1>
               <p className="text-xl font-medium text-gray-900">
-                $ {product?.price}.00
+                {
+                  loading ? <Skeleton className="" width={200} height={30} /> : product?.price
+                }
+
               </p>
             </div>
             {/* Reviews */}
             <div className="mt-4">
               <h2 className="sr-only">Reviews</h2>
-              <div className="flex items-center">
-                <p className="text-sm text-gray-700">
-                  {product?.reviews?.length > 0 ? product?.averageRating : 0}
-                </p>
-                <div className="ml-1 flex items-center">
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        +product?.averageRating > rating
-                          ? "text-yellow-400"
-                          : "text-gray-200",
-                        "h-5 w-5 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
+              {
+                loading ? <Skeleton className="" width={200} height={30} /> : <div className="flex items-center">
+                  <p className="text-sm text-gray-700">
+                    {
+                      product?.reviews?.length > 0 ? product?.averageRating : 0
+                    }
+
+                  </p>
+                  <div className="ml-1 flex items-center">
+                    {[0, 1, 2, 3, 4].map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        className={classNames(
+                          +product?.averageRating > rating
+                            ? "text-yellow-400"
+                            : "text-gray-200",
+                          "h-5 w-5 flex-shrink-0"
+                        )}
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    className="ml-4 text-sm text-gray-300"></div>
+                  <div className="ml-4 flex">
+                    <a
+                      href="#"
+                      className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                      {/* {productDetails?.product?.totalReviews}  */}
+                      total reviews
+                    </a>
+                  </div>
                 </div>
-                <div
-                  aria-hidden="true"
-                  className="ml-4 text-sm text-gray-300"></div>
-                <div className="ml-4 flex">
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                    {/* {productDetails?.product?.totalReviews}  */}
-                    total reviews
-                  </a>
-                </div>
-              </div>
+              }
+
               {/* leave a review */}
 
               <div className="mt-4">
@@ -218,6 +232,7 @@ export default function Product() {
             <h2 className="sr-only">Images</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-8">
+
               {product?.images?.map((image) => (
                 <img
                   // key={image.id}
@@ -375,7 +390,7 @@ export default function Product() {
           </h2>
 
           <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
-            {product?.reviews.map((review) => (
+            {product?.product?.reviews.map((review) => (
               <div
                 key={review._id}
                 className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8">

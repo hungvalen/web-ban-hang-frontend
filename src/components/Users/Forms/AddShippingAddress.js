@@ -33,7 +33,7 @@ const AddShippingAddress = () => {
   useEffect(() => {
     dispatch(getUserProfileAction())
   }, [dispatch])
-  const { loading, error, profile } = useSelector(state => state.users);
+  const { loading, error, profile, } = useSelector(state => state.users);
   const user = profile?.user;
   //onsubmit
   const onSubmit = (e) => {
@@ -95,32 +95,88 @@ const AddShippingAddress = () => {
     <>
       {/* shipping details */}
       {user?.hasShippingAddress ? (
-        <div className="mt-6">
-          <h3 className="text-lg font-medium text-gray-900">
-            Shipping details
-          </h3>
-
-          <p className="mt-1 text-sm text-gray-500">
-            Double check your information.
-          </p>
-          <div>
-            <p className="mt-1 text-sm text-gray-500">
-              First Name : {user?.shippingAddress?.firstName}
-            </p>
-            <p className="mt-1 text-sm text-gray-500">
-              Last Name : {user?.shippingAddress?.lastName}
-            </p>
-            <p className="mt-1 text-sm text-gray-500">
-              Address : {user?.shippingAddress?.address} {user?.shippingAddress?.ward} {user?.shippingAddress?.district} {user?.shippingAddress?.province}
-            </p>
-            <p className="mt-1 text-sm text-gray-500">
-              Country : {user?.shippingAddress?.country}
-            </p>
-            <p className="mt-1 text-sm text-gray-500">
-              Phone number : {user?.shippingAddress?.phone}
-            </p>
+        <>
+          <div className="mt-3">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">Shipping details</h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
           </div>
-        </div>
+          <div className="mt-5 border-t border-gray-200">
+            <dl className="divide-y divide-gray-200">
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">First Name : </dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">{user?.shippingAddress?.firstName}</span>
+
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">Last name</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">{user?.shippingAddress?.lastName}</span>
+
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">Address</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">MB Bank</span>
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">Branch</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">{user?.shippingAddress?.address} {user?.shippingAddress?.ward} {user?.shippingAddress?.district} {user?.shippingAddress?.province}</span>
+
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">Country</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">
+                    {user?.shippingAddress?.country}
+                  </span>
+
+                </dd>
+              </div>
+              <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                <dt className="text-sm font-medium text-gray-500">Phone number:</dt>
+                <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                  <span className="flex-grow">
+                    {user?.shippingAddress?.phone}
+                  </span>
+
+                </dd>
+              </div>
+
+            </dl>
+          </div>
+        </>
+        // <div className="mt-6">
+        //   <h3 className="text-lg font-medium text-gray-900">
+        //     Shipping details
+        //   </h3>
+
+        //   <p className="mt-1 text-sm text-gray-500">
+        //     Double check your information.
+        //   </p>
+        //   <div>
+        //     <p className="mt-1 text-sm text-gray-500">
+        //       First Name : {user?.shippingAddress?.firstName}
+        //     </p>
+        //     <p className="mt-1 text-sm text-gray-500">
+        //       Last Name : {user?.shippingAddress?.lastName}
+        //     </p>
+        //     <p className="mt-1 text-sm text-gray-500">
+        //       Address : {user?.shippingAddress?.address} {user?.shippingAddress?.ward} {user?.shippingAddress?.district} {user?.shippingAddress?.province}
+        //     </p>
+        //     <p className="mt-1 text-sm text-gray-500">
+        //       Country : {user?.shippingAddress?.country}
+        //     </p>
+        //     <p className="mt-1 text-sm text-gray-500">
+        //       Phone number : {user?.shippingAddress?.phone}
+        //     </p>
+        //   </div>
+        // </div>
       ) : (
         <>
           <h2 className="text-lg font-medium text-gray-900">Shipping information</h2>

@@ -4,13 +4,21 @@ import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchCouponsAction } from "../../../redux/slices/coupons/couponSlice";
 import Skeleton from "react-loading-skeleton";
+import AddCouponModal from "./modal/AddCouponModal";
+import EditCouponModal from "./modal/EditCouponModal";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import DeleteCouponModal from "./modal/DeleteCouponModal";
 
 export default function ManageCoupons() {
   //get coupons
-  const { coupons, loading, error } = useSelector(state => state.coupons)
+  const { coupons, loading, error, isAdded, isUpdated, isDeleted } = useSelector(state => state.coupons);
+  const [showAddCouponModal, setShowAddCouponModal] = useState(false);
+  const [showEditCouponModal, setShowEditCouponModal] = useState(false);
+  const [showDeleteCouponModal, setShowDeleteCouponModal] = useState(false);
+  const [coupon, setCoupon] = useState('');
   //---deleteHandler---
 
   const dispatch = useDispatch();
@@ -19,6 +27,39 @@ export default function ManageCoupons() {
   }, [dispatch])
   const deleteCouponHandler = (id) => { };
 
+  useEffect(() => {
+    if (isAdded) {
+      dispatch(fetchCouponsAction());
+      dispatch(resetSuccessAction())
+    }
+  }, [isAdded, dispatch])
+
+  useEffect(() => {
+    if (isUpdated) {
+      dispatch(fetchCouponsAction());
+      dispatch(resetSuccessAction())
+    }
+  }, [isUpdated, dispatch])
+
+  useEffect(() => {
+    if (isDeleted) {
+      dispatch(fetchCouponsAction());
+      dispatch(resetSuccessAction())
+    }
+  }, [isDeleted, dispatch])
+
+
+  const handleShowCouponModal = () => {
+    setShowAddCouponModal(!showAddCouponModal)
+  }
+  const handleEditCoupon = (coupon) => {
+    setShowEditCouponModal(!showEditCouponModal);
+    setCoupon(coupon)
+  }
+  const handleDeleteCoupon = (coupon) => {
+    setShowDeleteCouponModal(!showDeleteCouponModal);
+    setCoupon(coupon)
+  }
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -34,6 +75,7 @@ export default function ManageCoupons() {
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
             type="button"
+            onClick={() => handleShowCouponModal()}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
             Add New Coupon
           </button>
@@ -41,10 +83,6 @@ export default function ManageCoupons() {
       </div>
       {loading ? (
         <LoadingComponent />
-      ) : error ? (
-        <ErrorMsg
-          message={error?.message || "Something went wrong, please try again"}
-        />
       ) : coupons?.coupons?.length <= 0 ? (
         <NoDataFound />
       ) : (
@@ -115,8 +153,10 @@ export default function ManageCoupons() {
                             </td>
                             {/* edit icon */}
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              <Link
-                                to={`/admin/manage-coupon/edit/${coupon.code}`}>
+                              <button
+                                type="button"
+                                onClick={() => handleEditCoupon(coupon)}
+                              >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -130,12 +170,12 @@ export default function ManageCoupons() {
                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                                   />
                                 </svg>
-                              </Link>
+                              </button>
                             </td>
                             {/* delete */}
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               <button
-                                onClick={() => deleteCouponHandler(coupon?._id)}>
+                                onClick={() => handleDeleteCoupon(coupon)}>
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -162,6 +202,21 @@ export default function ManageCoupons() {
           </div>
         </>
       )}
+      {
+        showAddCouponModal === true && (
+          <AddCouponModal showAddCouponModal={showAddCouponModal} setShowAddCouponModal={setShowAddCouponModal} />
+        )
+      }
+      {
+        showEditCouponModal === true && (
+          <EditCouponModal showEditCouponModal={showEditCouponModal} setShowEditCouponModal={setShowEditCouponModal} coupon={coupon} />
+        )
+      }
+      {
+        showDeleteCouponModal === true && (
+          <DeleteCouponModal showDeleteCouponModal={showDeleteCouponModal} setShowDeleteCouponModal={setShowDeleteCouponModal} coupon={coupon} />
+        )
+      }
     </div>
   );
 }

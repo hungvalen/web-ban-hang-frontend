@@ -8,10 +8,10 @@ import { updateOrderAction } from '../../../redux/slices/orders/ordersSlice';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateModel, orderDetails }) {
-  console.log(orderDetails)
+  // console.log(orderDetails)
   const cancelButtonRef = useRef(null)
   const [order, setOrder] = useState({
-    status: "pending"
+    status: orderDetails?.status
   });
   const onChange = (e) => {
     setOrder({ ...order, [e.target.name]: e.target.value });
@@ -79,7 +79,7 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                           id="status"
                           name="status"
                           onChange={onChange}
-                          value={orderDetails.status}
+                          value={order.status}
                           className="mt-1 block w-full rounded-md border-2 border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           defaultValue="">
                           <option value="pending">Pending</option>

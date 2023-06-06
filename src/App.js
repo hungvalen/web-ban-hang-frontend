@@ -28,12 +28,13 @@ import UpdateCategory from "./components/Admin/Categories/UpdateCategory";
 import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";
-import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
+import BrandsColorsList from "./components/Admin/Categories/brand/BrandsCategoryList";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import AdminRoute from "./components/AuthRoute/AdminRoute";
 import Navigation from "./components/Navbar/Navigation";
 import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
 import ManageCustomers from "./components/Admin/Customers/Customers";
+import MyOrder from "./components/Users/Profile/MyOrder";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -91,6 +92,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/customer-profile" element={<CustomerProfile />} />
+        <Route path="/my-order" element={<MyOrder />} />
       </Routes>
     </BrowserRouter>
   );

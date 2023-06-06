@@ -177,7 +177,7 @@ export default function Navigation() {
                                                     <Menu.Item>
                                                         {({ active }) => (
                                                             <Link
-                                                                to="/customer-profile"
+                                                                to="/my-order"
                                                                 className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'px-4 py-2 text-sm text-gray-700  group flex w-full items-center rounded-md'

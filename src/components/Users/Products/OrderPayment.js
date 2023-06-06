@@ -19,14 +19,16 @@ const deliveryMethods = [
 ]
 
 const paymentMethods = [
-  { id: 'credit-card', title: 'Credit card' },
+  { id: 'cod', title: 'Thanh toán khi nhận hàng' },
+  { id: 'credit card', title: 'Credit card' },
   { id: 'paypal', title: 'PayPal' },
-  { id: 'etransfer', title: 'eTransfer' },
+  { id: 'banking', title: 'Banking' },
 ]
 const OrderPayment = () => {
   const location = useLocation();
   const { sumTotalPrice } = location.state;
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0])
+  const [paymentMethod, setPaymentMethod] = useState();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -53,11 +55,14 @@ const OrderPayment = () => {
     dispatch(placeOrderAction({
       shippingAddress,
       orderItems: cartItems,
-      totalPrice: sumTotalPrice
+      totalPrice: sumTotalPrice,
+      paymentMethod: paymentMethod
     }))
     localStorage.removeItem('cartItems');
   };
-
+  const handleOnChange = (e) => {
+    setPaymentMethod(e.target.value)
+  }
   const { loading: loadingOrder, error: errorOrder, order } = useSelector(state => state.orders);
   return (
     <div className="bg-gray-50">
@@ -89,59 +94,7 @@ const OrderPayment = () => {
               <div className="mt-10 border-t border-gray-200 pt-10">
                 {/* shipping Address */}
                 <AddShippingAddress />
-                <div className="mt-10 border-t border-gray-200 pt-10">
-                  <RadioGroup value={selectedDeliveryMethod} onChange={setSelectedDeliveryMethod}>
-                    <RadioGroup.Label className="text-lg font-medium text-gray-900">Delivery method</RadioGroup.Label>
 
-                    <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                      {deliveryMethods.map((deliveryMethod) => (
-                        <RadioGroup.Option
-                          key={deliveryMethod.id}
-                          value={deliveryMethod}
-                          className={({ checked, active }) =>
-                            classNames(
-                              checked ? 'border-transparent' : 'border-gray-300',
-                              active ? 'ring-2 ring-indigo-500' : '',
-                              'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none'
-                            )
-                          }
-                        >
-                          {({ checked, active }) => (
-                            <>
-                              <span className="flex flex-1">
-                                <span className="flex flex-col">
-                                  <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
-                                    {deliveryMethod.title}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as="span"
-                                    className="mt-1 flex items-center text-sm text-gray-500"
-                                  >
-                                    {deliveryMethod.turnaround}
-                                  </RadioGroup.Description>
-                                  <RadioGroup.Description as="span" className="mt-6 text-sm font-medium text-gray-900">
-                                    {formatPrice.format(deliveryMethod.price)}
-                                  </RadioGroup.Description>
-                                </span>
-                              </span>
-                              {checked ? (
-                                <CheckCircleIcon className="h-5 w-5 text-indigo-600" aria-hidden="true" />
-                              ) : null}
-                              <span
-                                className={classNames(
-                                  active ? 'border' : 'border-2',
-                                  checked ? 'border-indigo-500' : 'border-transparent',
-                                  'pointer-events-none absolute -inset-px rounded-lg'
-                                )}
-                                aria-hidden="true"
-                              />
-                            </>
-                          )}
-                        </RadioGroup.Option>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                </div>
 
                 {/* Payment */}
                 <div className="mt-10 border-t border-gray-200 pt-10">
@@ -152,12 +105,15 @@ const OrderPayment = () => {
                     <div className="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
                       {paymentMethods.map((paymentMethod, paymentMethodIdx) => (
                         <div key={paymentMethod.id} className="flex items-center">
-                          {paymentMethodIdx === 0 ? (
+                          {/* {paymentMethodIdx === 0 ? (
                             <input
                               id={paymentMethod.id}
                               name="payment-type"
                               type="radio"
                               defaultChecked
+                              value={paymentMethod.id}
+                              onChange={handleOnChange}
+
                               className="p-2 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
                           ) : (
@@ -165,19 +121,138 @@ const OrderPayment = () => {
                               id={paymentMethod.id}
                               name="payment-type"
                               type="radio"
+                              onChange={handleOnChange}
+
                               className="p-2 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
-                          )}
+                          )} */}
+                          <input
+                            id={paymentMethod.id}
+                            name="payment-type"
+                            type="radio"
+                            defaultCheck
+                            value={paymentMethod.id}
+                            onChange={handleOnChange}
+                            className="p-2 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
 
                           <label htmlFor={paymentMethod.id} className="ml-3 block text-sm font-medium text-gray-700">
                             {paymentMethod.title}
                           </label>
                         </div>
                       ))}
+
                     </div>
                   </fieldset>
+                  {
+                    paymentMethod === 'banking' ? (
+                      <>
+                        <div className="mt-10 border-t border-gray-200 pt-10">
+                          <h3 className="text-base font-semibold leading-6 text-gray-900">Internet Banking</h3>
+                          <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+                        </div>
+                        <div className="mt-5 border-t border-gray-200">
+                          <dl className="divide-y divide-gray-200">
+                            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                              <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <span className="flex-grow">PHAM THANH HUNG</span>
 
-                  <div className="mt-6 grid grid-cols-4 gap-x-4 gap-y-6">
+                              </dd>
+                            </div>
+                            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                              <dt className="text-sm font-medium text-gray-500">Account number</dt>
+                              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <span className="flex-grow">4102901441042460</span>
+
+                              </dd>
+                            </div>
+                            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                              <dt className="text-sm font-medium text-gray-500">Bank</dt>
+                              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <span className="flex-grow">MB Bank</span>
+                              </dd>
+                            </div>
+                            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                              <dt className="text-sm font-medium text-gray-500">Branch</dt>
+                              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <span className="flex-grow">Số 98, Ngụy Như Kon Tum, PhườngNhân Chính, Quận Thanh Xuân,Thành phố Hà Nội</span>
+
+                              </dd>
+                            </div>
+                            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                              <dt className="text-sm font-medium text-gray-500">Transfer Contents</dt>
+                              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <span className="flex-grow">
+                                  SDT + Họ tên + Mã đơn hàng
+                                </span>
+
+                              </dd>
+                            </div>
+
+                          </dl>
+                        </div>
+                      </>
+                    ) : ''
+                  }
+                  {
+                    paymentMethod === 'cod' ? (
+                      <div className="mt-10 border-t border-gray-200 pt-10">
+                        <RadioGroup value={selectedDeliveryMethod} onChange={setSelectedDeliveryMethod}>
+                          <RadioGroup.Label className="text-lg font-medium text-gray-900">Delivery method</RadioGroup.Label>
+
+                          <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                            {deliveryMethods.map((deliveryMethod) => (
+                              <RadioGroup.Option
+                                key={deliveryMethod.id}
+                                value={deliveryMethod}
+                                className={({ checked, active }) =>
+                                  classNames(
+                                    checked ? 'border-transparent' : 'border-gray-300',
+                                    active ? 'ring-2 ring-indigo-500' : '',
+                                    'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none'
+                                  )
+                                }
+                              >
+                                {({ checked, active }) => (
+                                  <>
+                                    <span className="flex flex-1">
+                                      <span className="flex flex-col">
+                                        <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                                          {deliveryMethod.title}
+                                        </RadioGroup.Label>
+                                        <RadioGroup.Description
+                                          as="span"
+                                          className="mt-1 flex items-center text-sm text-gray-500"
+                                        >
+                                          {deliveryMethod.turnaround}
+                                        </RadioGroup.Description>
+                                        <RadioGroup.Description as="span" className="mt-6 text-sm font-medium text-gray-900">
+                                          {formatPrice.format(deliveryMethod.price)}
+                                        </RadioGroup.Description>
+                                      </span>
+                                    </span>
+                                    {checked ? (
+                                      <CheckCircleIcon className="h-5 w-5 text-indigo-600" aria-hidden="true" />
+                                    ) : null}
+                                    <span
+                                      className={classNames(
+                                        active ? 'border' : 'border-2',
+                                        checked ? 'border-indigo-500' : 'border-transparent',
+                                        'pointer-events-none absolute -inset-px rounded-lg'
+                                      )}
+                                      aria-hidden="true"
+                                    />
+                                  </>
+                                )}
+                              </RadioGroup.Option>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    ) : ''
+                  }
+                  {/* <div className="mt-6 grid grid-cols-4 gap-x-4 gap-y-6">
                     <div className="col-span-4">
                       <label htmlFor="card-number" className="block text-sm font-medium text-gray-700">
                         Card number
@@ -237,8 +312,9 @@ const OrderPayment = () => {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
+
               </div>
             </div>
 
@@ -305,7 +381,9 @@ const OrderPayment = () => {
                   </button> : <button
                     onClick={createOrderSubmitHandler}
                     className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                    Confirm Payment - ${calculateTotalDiscountedPrice()}
+                    {/* Confirm Payment - ${calculateTotalDiscountedPrice()}
+                     */}
+                    Confirm Payment
                   </button>}
 
                 </div>

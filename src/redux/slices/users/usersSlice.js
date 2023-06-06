@@ -16,6 +16,8 @@ const initialState = {
         userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
     },
     isUpdated: false,
+    isAdded: false,
+    isAddShippingAddress: false,
     isDeleted: false,
 }
 
@@ -142,11 +144,38 @@ export const deleteUserAction = createAsyncThunk(
     }
 );
 
+// create user action
+export const createUserAction = createAsyncThunk(
+    "users/create-user",
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        const { fullName, email, address, phone, dateOfBirth, gender, password, role, } = payload;
+
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.post(`users/create`, {
+                fullName, email, address, phone, dateOfBirth, gender, password, role,
+            }, config);
+            SweetAlert({ icon: "success", title: "Success", message: "User created successfully" });
+
+            return data;
+        } catch (error) {
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
 // update user  profile action
 export const updateUserAction = createAsyncThunk(
     "users/update-user",
     async (payload, { rejectWithValue, getState, dispatch }) => {
-        const { id, fullName, email, role } = payload;
+        const { id, fullName, email, phone, role } = payload;
         try {
             const token = getState()?.users?.userAuth?.userInfo?.token;
             const config = {
@@ -158,6 +187,7 @@ export const updateUserAction = createAsyncThunk(
             const { data } = await axiosClient.put(`/users/${id}/update`, {
                 fullName,
                 email,
+                phone,
                 role
             }, config);
             SweetAlert({ icon: "success", title: "Success", message: "User updated successfully" });
@@ -212,11 +242,13 @@ const usersSlice = createSlice({
         builder.addCase(updateUserShippingAddressAction.fulfilled, (state, action) => {
             state.user = action.payload;
             state.loading = false;
+            state.isAddShippingAddress = true;
             SweetAlert({ icon: "success", title: "Success", message: "Add shipping successfully" });
         });
         builder.addCase(updateUserShippingAddressAction.rejected, (state, action) => {
             state.error = action.payload;
             state.loading = false;
+            state.isAddShippingAddress = false;
             SweetAlert({ icon: "error", title: "Error", message: action?.payload?.message });
         })
         // get user profile
@@ -276,10 +308,27 @@ const usersSlice = createSlice({
             state.isUpdated = false;
         })
 
+        // create user
+        builder.addCase(createUserAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(createUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isAdded = true;
+            state.user = action.payload;
+        });
+        builder.addCase(createUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            state.isAdded = false;
+        })
+
         // reset success action
         builder.addCase(resetSuccessAction.pending, (state, action) => {
             state.isDeleted = false;
             state.isUpdated = false;
+            state.isAdded = false;
+            state.isAddShippingAddress = false;
         })
         // reset error action
         builder.addCase(resetErrorAction.pending, (state, action) => {

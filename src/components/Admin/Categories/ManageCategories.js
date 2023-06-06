@@ -3,12 +3,19 @@ import { Link } from "react-router-dom";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
 
 export default function ManageCategories() {
-  const { categories, loading, error } = {};
+  const dispatch = useDispatch();
+  const { categories: { categories }, loading, error } = useSelector(state => state.category)
 
   //delete category handler
   const deleteCategoryHandler = (id) => { };
+  useEffect(() => {
+    dispatch(fetchCategoriesAction())
+  }, [dispatch])
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">

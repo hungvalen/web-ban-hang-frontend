@@ -18,15 +18,14 @@ import SweetAlert from "../../../Playground/SweetAlert";
 import baseURL from '../../../../utils/baseURL';
 import { useSearchParams } from 'react-router-dom';
 import { resetSuccessAction } from '../../../../redux/slices/globalActions/globalAction';
-import { updateUserAction } from '../../../../redux/slices/users/usersSlice';
+import { createUserAction, updateUserAction } from '../../../../redux/slices/users/usersSlice';
 //animated components for react-select
 const animatedComponents = makeAnimated();
-export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserModal, user }) {
+export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserModal }) {
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
     const roles = ["user", "admin", "staff"];
     const genders = ["male", "female", "other"];
-
     const [roleOption, setRoleOption] = useState([]);
     const handleRoleChange = (sizes) => {
         setRoleOption(sizes);
@@ -37,22 +36,21 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
             label: role
         }
     })
+    //---form data---
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        role: '',
+        address: '',
+        dateOfBirth: '',
+        gender: '',
+        password: '',
+    });
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     function togglePasswordVisibility() {
         setIsPasswordVisible((prevState) => !prevState);
     }
-    //---form data---
-    const [formData, setFormData] = useState({
-        fullName: user?.fullName,
-        email: user?.email,
-        phoneNumber: user?.phone,
-        role: user?.role,
-        address: user?.address,
-        dateOfBirth: new Date(user?.dateOfBirth),
-        gender: user?.gender,
-        password: user?.password,
-    });
-
     //onChange
     const handleOnChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,20 +60,23 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
     //onSubmit
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateUserAction({
-            id: user?._id,
+        dispatch(createUserAction({
             fullName: formData?.fullName,
             email: formData?.email,
             phone: formData?.phoneNumber,
+            password: formData?.password,
+            gender: formData?.gender,
+            dateOfBirth: formData?.dateOfBirth,
+            address: formData?.address,
             role: formData?.role
 
         }));
-        setIsShowEditUserModal(false)
+        setIsShowAddUserModal(false)
     };
     return (
         <>
-            <Transition.Root show={isShowEditUserModal ?? false} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowEditUserModal ?? false}>
+            <Transition.Root show={isShowAddUserModal ?? false} as={Fragment}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowAddUserModal ?? false}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -105,7 +106,7 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                         <div className="flex flex-col justify-center py-2 sm:px-6 lg:px-2 w-full">
                                             <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
                                                 <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                                                    Update User
+                                                    Create User
                                                 </h2>
                                                 <p className="mt-2 text-center text-sm text-gray-600">
                                                     <p className="font-medium text-indigo-600 hover:text-indigo-500">
@@ -146,19 +147,6 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                                         </div>
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Phone number
-                                                            </label>
-                                                            <div className="mt-1">
-                                                                <input
-                                                                    name="phoneNumber"
-                                                                    value={formData?.phoneNumber}
-                                                                    onChange={handleOnChange}
-                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-gray-700">
                                                                 Password
                                                             </label>
                                                             <div className="relative w-full container mx-auto mt-1">
@@ -167,7 +155,6 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                                                     placeholder="Password"
                                                                     name="password"
                                                                     onChange={handleOnChange}
-                                                                    value={formData?.password}
                                                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                                 />
                                                                 <span
@@ -212,6 +199,19 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
 
                                                                     )}
                                                                 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-gray-700">
+                                                                Phone number
+                                                            </label>
+                                                            <div className="mt-1">
+                                                                <input
+                                                                    name="phoneNumber"
+                                                                    value={formData?.phoneNumber}
+                                                                    onChange={handleOnChange}
+                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                                />
                                                             </div>
                                                         </div>
                                                         <div>
@@ -277,61 +277,20 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                                                 ))}
                                                             </select>
                                                         </div>
-                                                        {/* upload images */}
-                                                        {/* <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-                                                            <label
-                                                                htmlFor="cover-photo"
-                                                                className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                                Upload Images
-                                                            </label>
-                                                            <div className="mt-1 sm:col-span-2 sm:mt-0">
-                                                                <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-                                                                    <div className="space-y-1 text-center">
-                                                                        <svg
-                                                                            className="mx-auto h-12 w-12 text-gray-400"
-                                                                            stroke="currentColor"
-                                                                            fill="none"
-                                                                            viewBox="0 0 48 48"
-                                                                            aria-hidden="true">
-                                                                            <path
-                                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                                                strokeWidth={2}
-                                                                                strokeLinecap="round"
-                                                                                strokeLinejoin="round"
-                                                                            />
-                                                                        </svg>
-                                                                        <div className="flex text-sm text-gray-600">
-                                                                            <label
-                                                                                htmlFor="file-upload"
-                                                                                className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
-                                                                                <span>Upload files</span>
-                                                                                <input
-                                                                                    multiple
-                                                                                    onChange={fileHandleChange}
-                                                                                    type="file"
-                                                                                />
-                                                                            </label>
-                                                                        </div>
-                                                                        <p className="text-xs text-gray-500">
-                                                                            PNG, JPG, GIF up to 10MB
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> */}
+
                                                         <div>
-                                                            <div className="bg-white  py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                                            <div className="bg-white py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                                                 <button
                                                                     type="submit"
                                                                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
                                                                 // onClick={() => setIsShowEditProductModal(false)}
                                                                 >
-                                                                    Update
+                                                                    Create
                                                                 </button>
                                                                 <button
                                                                     type="button"
                                                                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                                                    onClick={() => setIsShowEditUserModal(false)}
+                                                                    onClick={() => setIsShowAddUserModal(false)}
                                                                     ref={cancelButtonRef}
                                                                 >
                                                                     Cancel

@@ -78,24 +78,36 @@ const ProductsFilters = () => {
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("");
   const [size, setSize] = useState("");
-  let productUrl = `${baseURL}/products`;
-  if (category) {
-    productUrl = `${baseURL}/products?category=${category}`;
-  }
-  if (brand) {
-    productUrl = `${productUrl}&brand=${brand}`;
-  }
-  if (size) {
-    productUrl = `${productUrl}&size=${size}`;
-  }
-  if (price) {
-    productUrl = `${productUrl}&price=${price}`;
-  }
+
 
   useEffect(() => {
-    dispatch(fetchAllProductAction({ url: productUrl }))
-  }, [dispatch, brand, size, category, price, color, productUrl])
-  let { products: { products }, loading, error } = useSelector((state) => state.product);
+    let productUrl = `${baseURL}/products`;
+
+    if (category) {
+      productUrl = `${baseURL}/products?category=${category}`;
+    }
+    if (brand) {
+      productUrl = `${productUrl}&brand=${brand}`;
+    }
+    if (size) {
+      productUrl = `${productUrl}&size=${size}`;
+    }
+    if (price) {
+      productUrl = `${productUrl}&price=${price}`;
+    }
+    dispatch(fetchAllProductAction({ url: productUrl, page: 1, limit: 5 }))
+  }, [dispatch, brand, size, category, price, color, params]);
+
+  // useEffect(() => {
+  //   let categoryUrl = `${baseURL}/products?category=${category}`;
+  //   if (category) {
+
+  //     dispatch(fetchAllProductAction({ url: categoryUrl, page: 1, limit: 5 }))
+
+  //     //     productUrl = `${baseURL}/products?category=${category}`;
+  //   }
+  // }, [dispatch, brand, size, category, price, color, params])
+  const { products: { products }, loading, error } = useSelector((state) => state.product);
 
   // fetch brands
   useEffect(() => {
@@ -537,7 +549,7 @@ const ProductsFilters = () => {
                           ) : (
                             <RadioGroup onChange={setColor}>
                               <div className="flex items-start  flex-row flex-wrap">
-                                {colors?.map((color) => (
+                                {colors?.map((color, index) => (
                                   <RadioGroup.Option
                                     key={color?.id}
                                     value={color}
@@ -596,8 +608,8 @@ const ProductsFilters = () => {
                       </h3>
                       <Disclosure.Panel className="pt-6">
                         <div className="space-y-6 mt-2">
-                          {allPrice?.map((price) => (
-                            <div className="flex items-center">
+                          {allPrice?.map((price, index) => (
+                            <div key={index} className="flex items-center">
                               <input
                                 onClick={() => setPrice(price?.amount)}
                                 name="price"
@@ -694,8 +706,8 @@ const ProductsFilters = () => {
                       </h3>
                       <Disclosure.Panel className="pt-6">
                         <div className="space-y-6">
-                          {sizeCategories.map((option) => (
-                            <div key={option} className="flex items-center">
+                          {sizeCategories.map((option, index) => (
+                            <div key={index} className="flex items-center">
                               <input
                                 type="radio"
                                 name="size"
@@ -721,7 +733,7 @@ const ProductsFilters = () => {
               ) : error ? (
                 <ErrorMsg message={error?.message} />
               ) : products?.length <= 0 ? <NoDataFound /> : (
-                <Products products={products} />
+                <Products products={products}/>
               )}
             </div>
           </section>
