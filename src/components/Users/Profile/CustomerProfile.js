@@ -4,6 +4,7 @@ import ShippingAddressDetails from './ShippingAddressDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileAction } from '../../../redux/slices/users/usersSlice';
 import LoadingComponent from '../../LoadingComp/LoadingComponent';
+import formatDate from '../../../utils/formatDate';
 
 const CustomerProfile = () => {
   let { profile, loading: loadingProfile } = useSelector((state) => state.users);
@@ -60,7 +61,7 @@ const CustomerProfile = () => {
                           </dt>
                           <dd className="mt-1 text-gray-500">
                             <time>
-                              {new Date(order?.createdAt).toDateString()}
+                              {formatDate(order?.createdAt)}
                             </time>
                           </dd>
                         </div>

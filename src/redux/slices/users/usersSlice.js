@@ -4,6 +4,7 @@ import baseURL from "../../../utils/baseURL";
 import SweetAlert from "../../../components/Playground/SweetAlert";
 import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import axiosClient from "../../../utils/axiosClient";
+import { redirect } from "react-router-dom";
 const initialState = {
     loading: false,
     error: null,
@@ -19,6 +20,8 @@ const initialState = {
     isAdded: false,
     isAddShippingAddress: false,
     isDeleted: false,
+    isTokenValid: false,
+    resetToken: null
 }
 
 // login action
@@ -200,6 +203,53 @@ export const updateUserAction = createAsyncThunk(
         }
     }
 );
+
+// reset password user action
+export const resetPasswordUserAction = createAsyncThunk(
+    "users/reset-password",
+    async (email, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.post(`/users/forgot-password`, {
+                email,
+            });
+            SweetAlert({ icon: "success", title: "Success", message: "Reset password successfully" });
+            if (data) {
+                redirect(`/reset-password/${data?.resetToken}`)
+            }
+            return data;
+        } catch (error) {
+            console.log(error);
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+// forgot password user action
+export const forgotPasswordUserAction = createAsyncThunk(
+    "users/forgot-password",
+    async ({ password, token }, { rejectWithValue, getState, dispatch }) => {
+        try {
+            // make the http request
+            const { data } = await axiosClient.post(`/users/reset-password/${token}`, {
+                password,
+            });
+            SweetAlert({ icon: "success", title: "Success", message: "Change password successfully" });
+            return data;
+            // return data;
+        } catch (error) {
+            console.log(error);
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 // users slice
 const usersSlice = createSlice({
     name: "users",
@@ -322,6 +372,38 @@ const usersSlice = createSlice({
             state.loading = false;
             state.isAdded = false;
         })
+
+        // reset password
+        builder.addCase(resetPasswordUserAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(resetPasswordUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isTokenValid = true;
+            state.token = action.payload;
+        });
+        builder.addCase(resetPasswordUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            state.isTokenValid = false;
+            state.token = null;
+        })
+
+        // // forgot password
+        // builder.addCase(forgotPasswordUserAction.pending, (state, action) => {
+        //     state.loading = true;
+        // });
+        // builder.addCase(forgotPasswordUserAction.fulfilled, (state, action) => {
+        //     state.loading = false;
+        //     // state.isTokenValid = true;
+        //     state.user = action.payload;
+        // });
+        // builder.addCase(forgotPasswordUserAction.rejected, (state, action) => {
+        //     state.error = action.payload;
+        //     state.loading = false;
+        //     // state.isTokenValid = false;
+        //     state.user = null;
+        // })
 
         // reset success action
         builder.addCase(resetSuccessAction.pending, (state, action) => {

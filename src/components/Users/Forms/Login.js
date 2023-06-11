@@ -3,13 +3,18 @@ import { loginUserAction } from "../../../redux/slices/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import { Link } from "react-router-dom";
 
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "admin@gmail.com",
-    password: "12345",
+    email: "hung@gmail.com",
+    password: "123456",
   });
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  function togglePasswordVisibility() {
+    setIsPasswordVisible((prevState) => !prevState);
+  }
   //---Destructuring---
   const { email, password } = formData;
   //---onchange handler----
@@ -26,13 +31,13 @@ const Login = () => {
 
   // get data from store
   const { error, loading, userInfo } = useSelector((state) => state?.users?.userAuth);
-  
+
   // redirect
   useEffect(() => {
     if (userInfo?.userFound) {
       window.location.href = "/"
     }
-  
+
   }, [userInfo])
   return (
     <>
@@ -53,7 +58,7 @@ const Login = () => {
                 <form
                   className="flex flex-wrap -mx-4"
                   onSubmit={onSubmitHandler}>
-                  <div className="w-full md:w-1/2 px-4 mb-8 md:mb-12">
+                  <div className="w-full md:w-1/2 px-4 mb-4 md:mb-4">
                     <label>
                       <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
                         Your Email
@@ -67,7 +72,7 @@ const Login = () => {
                       />
                     </label>
                   </div>
-                  <div className="w-full md:w-1/2 px-4 mb-12">
+                  <div className="w-full md:w-1/2 px-4 mb-4">
                     <label>
                       <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
                         Password
@@ -77,17 +82,33 @@ const Login = () => {
                         value={password}
                         onChange={onChangeHandler}
                         className="p-5 w-full border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
-                        type="password"
+                        type={isPasswordVisible ? "text" : "password"}
                       />
                     </label>
                   </div>
+                  <div className="flex items-center px-4 mb-4">
+                    <input
+                      onChange={() => setIsPasswordVisible((state) => !state)}
+                      defaultChecked={isPasswordVisible}
+                      id="default-checkbox"
+                      type="checkbox"
+                      value=""
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label for="default-checkbox" className="ml-2 text-sm font-semibold text-gray-900 font-heading">Show password</label>
+                  </div>
 
                   <div className="w-full px-4">
-                    {loading ? <LoadingComponent/> : (
+                    {loading ? <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
+                      Loading...
+                    </button> : (
                       <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
                         Login
                       </button>
                     )}
+                  </div>
+                  <div className="w-full flex items-center px-4 mb-4 mt-2">
+                    <Link to="/reset-password" className="font-semibold underline">Forgot password?</Link>
                   </div>
                 </form>
               </div>

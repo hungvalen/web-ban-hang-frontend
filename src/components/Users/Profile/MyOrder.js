@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getUserProfileAction } from '../../../redux/slices/users/usersSlice'
 import LoadingComponent from '../../LoadingComp/LoadingComponent'
 import { formatPrice } from '../../../utils/formatCurrency'
+import { Link } from 'react-router-dom'
 
 // const orders = [
 //     {
@@ -118,15 +119,14 @@ export default function MyOrder() {
                                                                 <div className="py-1">
                                                                     <Menu.Item>
                                                                         {({ active }) => (
-                                                                            <a
-                                                                                href={order.href}
-                                                                                className={classNames(
+                                                                            <Link
+                                                                                to={`order-details/${order._id}`} className={classNames(
                                                                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                                                     'block px-4 py-2 text-sm'
                                                                                 )}
                                                                             >
                                                                                 View
-                                                                            </a>
+                                                                            </Link>
                                                                         )}
                                                                     </Menu.Item>
                                                                     <Menu.Item>
@@ -148,13 +148,14 @@ export default function MyOrder() {
                                                     </Menu>
 
                                                     <div className="hidden lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4">
-                                                        <a
-                                                            href={order?.href}
+                                                        <Link
+                                                            state={{ orderDetails: order }}
+                                                            to={`/order-details/${order._id}`}
                                                             className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                         >
                                                             <span>View Order</span>
                                                             <span className="sr-only">{order?.number}</span>
-                                                        </a>
+                                                        </Link>
                                                         <a
                                                             href={order?.invoiceHref}
                                                             className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -197,12 +198,13 @@ export default function MyOrder() {
 
                                                                 <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
                                                                     <div className="flex flex-1 justify-center">
-                                                                        <a
-                                                                            href={product?.href}
+                                                                        <Link
+                                                                            to={`/products/${product?._id}`}
+                                                                            // href={product?.href}
                                                                             className="whitespace-nowrap text-indigo-600 hover:text-indigo-500"
                                                                         >
                                                                             View product
-                                                                        </a>
+                                                                        </Link>
                                                                     </div>
                                                                     <div className="flex flex-1 justify-center pl-4">
                                                                         <a href="#" className="whitespace-nowrap text-indigo-600 hover:text-indigo-500">

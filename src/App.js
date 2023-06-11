@@ -35,6 +35,9 @@ import Navigation from "./components/Navbar/Navigation";
 import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering";
 import ManageCustomers from "./components/Admin/Customers/Customers";
 import MyOrder from "./components/Users/Profile/MyOrder";
+import OrderDetails from "./components/Users/Profile/OrderDetails";
+import ResetPassword from "./components/Users/Auth/ResetPassword";
+import ForgotPassword from "./components/Users/Auth/ForgotPassword";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -91,7 +94,10 @@ const App = () => {
         {/* users */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password/:token" element={<ForgotPassword />} />
         <Route path="/customer-profile" element={<CustomerProfile />} />
+        <Route path="/order-details/:id" element={<OrderDetails />} />
         <Route path="/my-order" element={<MyOrder />} />
       </Routes>
     </BrowserRouter>
