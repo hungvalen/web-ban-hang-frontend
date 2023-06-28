@@ -3,82 +3,61 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import AsyncSelect from 'react-select/async';
-
-import ErrorMsg from "../../../ErrorMsg/ErrorMsg";
-import LoadingComponent from "../../../LoadingComp/LoadingComponent";
-import SuccessMsg from "../../../SuccessMsg/SuccessMsg";
-import { fetchCategoriesAction } from "../../../../redux/slices/categories/categoriesSlice";
-import { fetchBrandAction } from "../../../../redux/slices/brand/brandSlice";
-import { fetchAllProductAction, fetchSingleProductAction, updateProductAction } from "../../../../redux/slices/products/productSlices";
-import { fetchColorAction } from "../../../../redux/slices/color/colorSlice";
-import { createProductAction } from "../../../../redux/slices/products/productSlices";
-import Swal from "sweetalert2";
-import SweetAlert from "../../../Playground/SweetAlert";
-import baseURL from '../../../../utils/baseURL';
-import { useSearchParams } from 'react-router-dom';
-import { resetSuccessAction } from '../../../../redux/slices/globalActions/globalAction';
-import { createUserAction, updateUserAction } from '../../../../redux/slices/users/usersSlice';
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-
+import { updateUserAction, updateUserProfileAction } from '../../../../redux/slices/users/usersSlice';
+import { PhotoIcon } from '@heroicons/react/20/solid';
+import { dataURItoFile, fileName, getEncodedDataFromDataURI } from '../../../../utils/handleFileImage';
 //animated components for react-select
 const animatedComponents = makeAnimated();
-export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserModal }) {
+export default function EditProfileModal({ isShowEditProfileModal, setIsShowEditProfileModal, user }) {
+    console.log(user);
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
-    const roles = ["user", "admin", "staff"];
-    const genders = ["male", "female", "other"];
-    const [roleOption, setRoleOption] = useState([]);
-    const handleRoleChange = (sizes) => {
-        setRoleOption(sizes);
-    }
-    const roleOptionsConverted = roles?.map((role) => {
-        return {
-            value: role,
-            label: role
-        }
-    })
+    const [selectedImage, setSelectedImage] = useState(user?.photo ?? '');
+
     //---form data---
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        role: '',
-        address: '',
-        dateOfBirth: '',
-        gender: '',
-        password: '',
+        fullName: user?.fullName ?? '',
+        email: user?.email ?? "",
+        phone: user?.phone ?? '',
+        address: user?.address ?? '',
+        dateOfBirth: user?.dateOfBirth ?? "",
+        gender: user?.gender ?? "",
+        bio: user?.bio ?? "",
+        file: user?.photo ?? ""
     });
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    function togglePasswordVisibility() {
-        setIsPasswordVisible((prevState) => !prevState);
-    }
     //onChange
     const handleOnChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const fileHandleChange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
+        reader.onload = () => {
+            setSelectedImage(reader.result)
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
     //onSubmit
     const handleOnSubmit = (e) => {
+        const encodedData = getEncodedDataFromDataURI(selectedImage)
+        const convertFile = dataURItoFile(encodedData, fileName);
         e.preventDefault();
-        dispatch(createUserAction({
-            fullName: formData?.fullName,
-            email: formData?.email,
-            phone: formData?.phoneNumber,
-            password: formData?.password,
-            gender: formData?.gender,
-            dateOfBirth: formData?.dateOfBirth,
-            address: formData?.address,
-            role: formData?.role
-
-        }));
-        setIsShowAddUserModal(false)
+        dispatch(updateUserProfileAction({
+            ...formData,
+            file: convertFile
+        }))
+        setIsShowEditProfileModal(false)
     };
+
     return (
         <>
-            <Transition.Root show={isShowAddUserModal ?? false} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowAddUserModal ?? false}>
+            <Transition.Root show={isShowEditProfileModal ?? false} as={Fragment}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowEditProfileModal ?? false}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -103,11 +82,12 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left  transition-all lg:max-w-3xl sm:my-8 sm:w-full sm:max-w-lg">
+
                                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Add User</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit User</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -141,61 +121,35 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="sm:col-span-3">
-                                                            <label className="block text-sm font-medium text-gray-700">
-                                                                Password
+                                                        <div className="col-span-full">
+                                                            <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
+                                                                Avatar
                                                             </label>
-                                                            <div className="relative w-full container mx-auto mt-1">
-                                                                <input
-                                                                    type={isPasswordVisible ? "text" : "password"}
-                                                                    placeholder="Password"
-                                                                    name="password"
-                                                                    onChange={handleOnChange}
-                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                                />
-                                                                <span
-                                                                    className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
-                                                                    onClick={togglePasswordVisibility}
-                                                                >
-                                                                    {isPasswordVisible ? (
-                                                                        <svg
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            fill="none"
-                                                                            viewBox="0 0 24 24"
-                                                                            strokeWidth={1.5}
-                                                                            stroke="currentColor"
-                                                                            className="w-5 h-5"
-                                                                        >
-                                                                            <path
-                                                                                strokeLinecap="round"
-                                                                                strokeLinejoin="round"
-                                                                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                                                                            />
-                                                                            <path
-                                                                                strokeLinecap="round"
-                                                                                strokeLinejoin="round"
-                                                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                                            />
-                                                                        </svg>
-                                                                    ) : (
-                                                                        <svg
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            fill="none"
-                                                                            viewBox="0 0 24 24"
-                                                                            strokeWidth={1.5}
-                                                                            stroke="currentColor"
-                                                                            className="w-5 h-5"
-                                                                        >
-                                                                            <path
-                                                                                strokeLinecap="round"
-                                                                                strokeLinejoin="round"
-                                                                                d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
-                                                                            />
-                                                                        </svg>
+                                                            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                                                                <div className="text-center">
 
-                                                                    )}
-                                                                </span>
+                                                                    <div className="flex mt-5 flex-col">
+                                                                        <img
+                                                                            className='mx-auto h-56 w-56 rounded-full object-cover'
+                                                                            src={selectedImage} alt="" />
+                                                                    </div>
+
+
+                                                                    <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                                                        <label
+                                                                            htmlFor="file-upload"
+                                                                            className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                                                                        >
+                                                                            <span>Upload a file</span>
+                                                                            <input accept="image/*" id="file-upload" name="file-upload" type="file" className="sr-only" onChange={fileHandleChange} />
+                                                                        </label>
+                                                                        <p className="pl-1">or drag and drop</p>
+                                                                    </div>
+                                                                    <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+
+                                                                </div>
                                                             </div>
+
                                                         </div>
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
@@ -203,8 +157,8 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
-                                                                    name="phoneNumber"
-                                                                    value={formData?.phoneNumber}
+                                                                    name="phone"
+                                                                    value={formData?.phone}
                                                                     onChange={handleOnChange}
                                                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                                 />
@@ -224,24 +178,7 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="sm:col-span-3">
-                                                            <label className="block text-sm font-medium text-gray-700">
-                                                                Select gender
-                                                            </label>
-                                                            <select
-                                                                name="gender"
-                                                                value={formData.gender}
-                                                                onChange={handleOnChange}
-                                                                className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
-                                                                defaultValue="user">
-                                                                <option>-- Select gender --</option>
-                                                                {genders?.map((gender, index) => (
-                                                                    <option key={index} value={gender}>
-                                                                        {gender}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
+
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
                                                                 Address
@@ -255,31 +192,12 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="sm:col-span-3">
-                                                            <label className="block text-sm font-medium text-gray-700">
-                                                                Select Role
-                                                            </label>
-                                                            <select
-                                                                name="role"
-                                                                value={formData.role}
-                                                                onChange={handleOnChange}
-                                                                className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
-                                                                defaultValue="user">
-                                                                <option>-- Select Role --</option>
-                                                                {roles?.map((role, index) => (
-                                                                    <option key={index} value={role}>
-                                                                        {role}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
-
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
-                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowAddUserModal(false)}
+                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowEditProfileModal(!isShowEditProfileModal)}
                                                     ref={cancelButtonRef}>
                                                     Cancel
                                                 </button>
@@ -292,8 +210,6 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
                                             </div>
                                         </form>
                                     </div>
-
-                                    
                                     {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                     <button
                                         type="submit"

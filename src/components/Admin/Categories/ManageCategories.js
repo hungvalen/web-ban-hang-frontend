@@ -3,19 +3,54 @@ import { Link } from "react-router-dom";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
+import EditCategory from "./modal/EditCategory";
+import AddCategory from "./modal/AddCategory";
+import DeleteCategoryModal from "./modal/DeleteCategory";
 
 export default function ManageCategories() {
   const dispatch = useDispatch();
-  const { categories: { categories }, loading, error } = useSelector(state => state.category)
-
+  const { categories: { categories }, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.category)
+  const [isShowEditCategoryModal, setIsShowEditCategoryModal] = useState(false);
+  const [isShowAddCategoryModal, setIsShowAddCategoryModal] = useState(false);
+  const [isShowDeleteCategoryModal, setIsShowDeleteCategoryModal] = useState(false);
+  const [category, setCategory] = useState('');
   //delete category handler
-  const deleteCategoryHandler = (id) => { };
+  const deleteCategoryHandler = (item) => {
+    setIsShowDeleteCategoryModal(!isShowDeleteCategoryModal)
+    setCategory(item);
+  };
   useEffect(() => {
     dispatch(fetchCategoriesAction())
   }, [dispatch])
+
+  const handleEditCategory = (item) => {
+    setIsShowEditCategoryModal(!isShowEditCategoryModal);
+    setCategory(item);
+  }
+  const handleAddCategory = () => {
+    setIsShowAddCategoryModal(!isShowAddCategoryModal);
+  }
+
+  useEffect(() => {
+    if (isAdded) {
+      dispatch(fetchCategoriesAction());
+    }
+  }, [isAdded, dispatch])
+
+  useEffect(() => {
+    if (isUpdated) {
+      dispatch(fetchCategoriesAction());
+    }
+  }, [isUpdated, dispatch])
+
+  useEffect(() => {
+    if (isDeleted) {
+      dispatch(fetchCategoriesAction());
+    }
+  }, [isDeleted, dispatch])
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -28,12 +63,13 @@ export default function ManageCategories() {
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Link
-            to="/admin/add-category"
+          <button
+            // to="/admin/add-category"
+            onClick={handleAddCategory}
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
             Add New Category
-          </Link>
+          </button>
         </div>
       </div>
       {loading ? (
@@ -108,7 +144,7 @@ export default function ManageCategories() {
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                            {category?.user?.fullname}
+                            {category?.user?.fullName}
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -116,11 +152,9 @@ export default function ManageCategories() {
                         </td>
                         {/* edit icon */}
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                          <Link
-                            to={`/admin/edit-category/${category?._id}`}
-                            state={{
-                              categoryName: category?.name,
-                            }}
+                          <button
+                            onClick={() => handleEditCategory(category)}
+                            type="button"
                             className="text-indigo-600 hover:text-indigo-900">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -135,14 +169,13 @@ export default function ManageCategories() {
                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                               />
                             </svg>
-
-                            <span className="sr-only">, {category?.name}</span>
-                          </Link>
+                            {/* <span className="sr-only">, {category?.name}</span> */}
+                          </button>
                         </td>
                         {/* delete icon */}
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                           <button
-                            onClick={() => deleteCategoryHandler(category?._id)}
+                            onClick={() => deleteCategoryHandler(category)}
                             className="text-indigo-600 hover:text-indigo-900">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +193,9 @@ export default function ManageCategories() {
                           </button>
                         </td>
                       </tr>
-                    ))}
+
+                    ))
+                    }
                   </tbody>
                 </table>
               </div>
@@ -168,6 +203,15 @@ export default function ManageCategories() {
           </div>
         </div>
       )}
+      {
+        isShowEditCategoryModal && <EditCategory isShowEditCategoryModal={isShowEditCategoryModal} setIsShowEditCategoryModal={setIsShowEditCategoryModal} category={category} />
+      }
+      {
+        isShowAddCategoryModal && <AddCategory isShowAddCategoryModal={isShowAddCategoryModal} setIsShowAddCategoryModal={setIsShowAddCategoryModal} />
+      }
+      {
+        isShowDeleteCategoryModal && <DeleteCategoryModal isShowDeleteCategoryModal={isShowDeleteCategoryModal} setIsShowDeleteCategoryModal={setIsShowDeleteCategoryModal} category={category} />
+      }
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBrandAction } from "../../../../redux/slices/brand/brandSlice";
 import LoadingComponent from "../../../LoadingComp/LoadingComponent";
 
-export default function BrandsCategoryList() {
+export default function ManageColors() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchBrandAction())

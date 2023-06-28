@@ -65,7 +65,7 @@ export const createProductAction = createAsyncThunk(
 export const updateProductAction = createAsyncThunk(
     "product/update", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { name, description, category, sizes, brand, colors, price, totalQty, id } = payload;
+            const { name, description, category, sizes, brand, colors, price, files, totalQty, id } = payload;
             console.log(payload)
 
             // make request
@@ -77,9 +77,26 @@ export const updateProductAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                 }
             }
+            // use formData
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("category", category);
+            formData.append("brand", brand);
+            formData.append("price", price);
+            formData.append("totalQty", totalQty);
+            sizes.forEach((size) => {
+                formData.append("sizes", size);
+            })
+            colors.forEach((color) => {
+                formData.append("colors", color);
+            })
 
+            files.forEach((file) => {
+                formData.append("files", file);
+            })
             const { data } = await axios.put(`${baseURL}/products/${id}`,
-                { name, description, category, sizes, brand, colors, price, totalQty }, config)
+                formData, config)
             SweetAlert({ icon: "success", title: "Success", message: "Product Update successfully" });
 
             return data;
@@ -99,8 +116,14 @@ export const fetchAllProductAction = createAsyncThunk("product/list", async ({ u
                 Authorization: `Bearer ${token}`,
             }
         }
-        const { data } = await axios.get(`${url}?page=${page}&limit=${limit}`, config);
-        return data;
+        if (url === `${baseURL}/products`) {
+            const { data } = await axios.get(`${url}?page=${page}&limit=${limit}`, config);
+            return data;
+        }
+        else {
+            const { data } = await axios.get(`${url}&page=${page}&limit=${limit}`, config);
+            return data;
+        }
     } catch (error) {
         console.log(error);
         SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });

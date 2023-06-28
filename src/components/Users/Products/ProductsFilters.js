@@ -78,7 +78,8 @@ const ProductsFilters = () => {
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("");
   const [size, setSize] = useState("");
-
+  const [page, setPage] = useState(1);
+  const limit = 5;
 
   useEffect(() => {
     let productUrl = `${baseURL}/products`;
@@ -95,7 +96,10 @@ const ProductsFilters = () => {
     if (price) {
       productUrl = `${productUrl}&price=${price}`;
     }
-    dispatch(fetchAllProductAction({ url: productUrl, page: 1, limit: 5 }))
+    if (color) {
+      productUrl = `${productUrl}&color=${color.name}`;
+    }
+    dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
   }, [dispatch, brand, size, category, price, color, params]);
 
   // useEffect(() => {
@@ -123,7 +127,8 @@ const ProductsFilters = () => {
   let colorsLoading;
   let colorsError;
   let { colors } = useSelector((state) => state.color.colors);
-  let { brands } = useSelector((state) => state.brand.brands);
+  let { brands } = useSelector((state) => state.brand);
+  console.log(brands);
   return (
     <div className="bg-white">
       <div>
@@ -251,10 +256,10 @@ const ProductsFilters = () => {
                               ) : (
                                 <RadioGroup onChange={setColor}>
                                   <div className="flex items-start  flex-row flex-wrap">
-                                    {colors?.map((color) => (
+                                    {colors?.map((item) => (
                                       <RadioGroup.Option
-                                        key={color?._id}
-                                        value={color}
+                                        key={item?._id}
+                                        value={item}
                                         className={({ active, checked }) =>
                                           classNames(
                                             active && checked
@@ -266,7 +271,7 @@ const ProductsFilters = () => {
                                         }>
                                         <span
                                           style={{
-                                            backgroundColor: color?.name,
+                                            backgroundColor: item?.name,
                                           }}
                                           aria-hidden="true"
                                           className="h-8 w-8 border border-black border-opacity-10 rounded-full"
@@ -733,7 +738,7 @@ const ProductsFilters = () => {
               ) : error ? (
                 <ErrorMsg message={error?.message} />
               ) : products?.length <= 0 ? <NoDataFound /> : (
-                <Products products={products}/>
+                <Products products={products} />
               )}
             </div>
           </section>

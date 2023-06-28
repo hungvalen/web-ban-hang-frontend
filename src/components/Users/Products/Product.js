@@ -12,6 +12,8 @@ import { addOrderToCartAction, cartItemsFromLocalStorageAction } from "../../../
 import SweetAlert from "../../Playground/SweetAlert";
 import Skeleton from "react-loading-skeleton";
 import { formatPrice } from "../../../utils/formatCurrency";
+import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/react'
+
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -171,7 +173,7 @@ export default function Product() {
               </h1>
               <p className="text-xl font-medium text-gray-900">
                 {
-                  loading ? <Skeleton className="" width={200} height={30} /> : product?.price
+                  loading ? <Skeleton className="" width={200} height={30} /> : formatPrice.format(product?.price)
                 }
 
               </p>
@@ -231,9 +233,9 @@ export default function Product() {
           <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0">
             <h2 className="sr-only">Images</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:gap-8">
+            <>
 
-              {product?.images?.map((image) => (
+              {/* {product?.images?.map((image) => (
                 <img
                   // key={image.id}
                   src={image}
@@ -245,8 +247,49 @@ export default function Product() {
                     "rounded-lg"
                   )}
                 />
-              ))}
-            </div>
+              ))} */}
+              <Tab.Group as="div" className="flex flex-col-reverse">
+                {/* Image selector */}
+                <div className="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
+                  <Tab.List className="grid grid-cols-4 gap-6">
+                    {product?.images?.map((image) => (
+                      <Tab
+                        key={image?._id}
+                        className="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                      >
+                        {({ selected }) => (
+                          <>
+                            {/* <span className="sr-only"> {image} </span> */}
+                            <span className="absolute inset-0 overflow-hidden rounded-md">
+                              <img src={image} alt="" className="h-full w-full object-cover object-center" />
+                            </span>
+                            <span
+                              className={classNames(
+                                selected ? 'ring-indigo-500' : 'ring-transparent',
+                                'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2'
+                              )}
+                              aria-hidden="true"
+                            />
+                          </>
+                        )}
+                      </Tab>
+                    ))}
+                  </Tab.List>
+                </div>
+
+                <Tab.Panels className="aspect-h-1 aspect-w-1 w-full">
+                  {product?.images?.map((image) => (
+                    <Tab.Panel key={image?._id}>
+                      <img
+                        src={image}
+                        alt={image}
+                        className="h-full w-full object-cover object-center sm:rounded-lg"
+                      />
+                    </Tab.Panel>
+                  ))}
+                </Tab.Panels>
+              </Tab.Group>
+            </>
           </div>
 
           <div className="mt-8 lg:col-span-5">
@@ -390,7 +433,7 @@ export default function Product() {
           </h2>
 
           <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
-            {product?.product?.reviews.map((review) => (
+            {product?.product?.reviews?.length > 0 ? product?.product?.reviews.map((review) => (
               <div
                 key={review._id}
                 className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8">
@@ -437,7 +480,7 @@ export default function Product() {
                   </time>
                 </div>
               </div>
-            ))}
+            )) : <p className="font-medium text-gray-900 ">No review found</p>}
           </div>
         </section >
       </main >

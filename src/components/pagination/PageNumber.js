@@ -6,7 +6,7 @@ const active = "px-4 py-2 text-sm font-semibold flex justify-center items-center
 const PageNumber = ({ text, setCurrentPage, currentPage, icon }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(location)
+    console.log('check location', location);
     const [paramsSearch] = useSearchParams();
     let entries = paramsSearch.entries();
 

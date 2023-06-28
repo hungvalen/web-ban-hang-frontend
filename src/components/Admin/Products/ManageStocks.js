@@ -11,24 +11,30 @@ import Skeleton from "react-loading-skeleton";
 import EditProduct from "./modal/EditProduct";
 import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
 import DeleteProduct from "./modal/DeleteProduct";
+import ReactPaginate from 'react-paginate';
+import { limitNumber } from "../../../utils/limitNumber";
+import AddProduct from "./modal/AddProduct";
 
 export default function ManageStocks() {
   const [params] = useSearchParams();
   const [isShowEditProductModal, setIsShowEditProductModal] = useState(false);
   const [isShowDeleteProductModal, setIsShowDeleteProductModal] = useState(false);
+  const [isShowAddProductModal, setIsShowAddProductModal] = useState(false);
   const [product, setProduct] = useState('');
   //Selector
   let { products, loading, error, isUpdated, isDeleted } = useSelector(state => state.product);
   let count = products?.count;
+  let totalPage = Math.ceil(count / limitNumber);
   let productUrl = `${baseURL}/products`
   const dispatch = useDispatch();
-  const page = params.get("page") || 1;
+  const [page, setPage] = useState(1);
   const limit = params.get("limit") || 5;
+  const [searchParams] = useSearchParams();
+  // const [pages, setPages] = useState(totalPage)
   useEffect(() => {
-    dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
+    dispatch(fetchAllProductAction({ url: productUrl, page: page, limit }))
   }, [dispatch, page, limit, productUrl])
 
-  console.log(products);
 
   useEffect(() => {
     if (isUpdated) {
@@ -48,6 +54,9 @@ export default function ManageStocks() {
     setIsShowEditProductModal(!isShowEditProductModal)
     setProduct(product)
   };
+  const handleShowAddProductModal = () => {
+    setIsShowAddProductModal(!isShowAddProductModal)
+  };
 
   const handleShowDeleteProductModal = (product) => {
     setIsShowDeleteProductModal(!isShowDeleteProductModal)
@@ -66,12 +75,13 @@ export default function ManageStocks() {
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Link
-            to="/admin/add-product"
+          <button
+            // to="/admin/add-product"
+            onClick={() => handleShowAddProductModal()}
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
             Add New Product
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -146,7 +156,7 @@ export default function ManageStocks() {
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={product?.images}
+                                src={product?.images[0] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCzs32Uq8r3JrGXjvogJmoMb7h-KW0YU79hg&usqp=CAU'}
                                 alt={product?.name}
                               />
                             </div>
@@ -242,19 +252,24 @@ export default function ManageStocks() {
                     ))}
                   </tbody>
                 </table>
-                <Pagination count={count} />
+                <Pagination page={page} pages={totalPage} changePage={setPage} />
               </div>
             </div>
           </div>
 
           {
-            isShowEditProductModal === true && (
+            isShowEditProductModal && (
               <EditProduct isShowEditProductModal={isShowEditProductModal} product={product} setIsShowEditProductModal={setIsShowEditProductModal} />
             )
           }
           {
-            isShowDeleteProductModal === true && (
+            isShowDeleteProductModal && (
               <DeleteProduct isShowDeleteProductModal={isShowDeleteProductModal} product={product} setIsShowDeleteProductModal={setIsShowDeleteProductModal} />
+            )
+          }
+          {
+            isShowAddProductModal && (
+              <AddProduct isShowAddProductModal={isShowAddProductModal} setIsShowAddProductModal={setIsShowAddProductModal} />
             )
           }
           {/* <EditProduct isShowEditProductModal={isShowEditProductModal} productId={productId} /> */}

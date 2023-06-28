@@ -4,17 +4,15 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import ManageCoupons from "./components/Admin/Coupons/ManageCoupons";
 import AddCoupon from "./components/Admin/Coupons/AddCoupon";
 import Login from "./components/Users/Forms/Login";
-import AddProduct from "./components/Admin/Products/AddProduct";
 import RegisterForm from "./components/Users/Forms/RegisterForm";
 import HomePage from "./components/HomePage/HomePage";
 import Navbar from "./components/Navbar/Navbar";
 import OrderHistory from "./components/Admin/Orders/ManageOrders";
 import OrderPayment from "./components/Users/Products/OrderPayment";
 import ManageCategories from "./components/Admin/Categories/ManageCategories";
-import UpdateProduct from "./components/Admin/Products/UpdateProduct";
 import ManageStocks from "./components/Admin/Products/ManageStocks";
 import CategoryToAdd from "./components/Admin/Categories/CategoryToAdd";
-import AddCategory from "./components/Admin/Categories/AddCategory";
+import AddCategory from "./components/Admin/Categories/modal/AddCategory";
 import AddBrand from "./components/Admin/Categories/AddBrand";
 import AddColor from "./components/Admin/Categories/AddColor";
 import AllCategories from "./components/HomePage/AllCategories";
@@ -38,6 +36,7 @@ import MyOrder from "./components/Users/Profile/MyOrder";
 import OrderDetails from "./components/Users/Profile/OrderDetails";
 import ResetPassword from "./components/Users/Auth/ResetPassword";
 import ForgotPassword from "./components/Users/Auth/ForgotPassword";
+import ManageBrands from "./components/Admin/Categories/brand/ManageBrands";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -56,9 +55,7 @@ const App = () => {
           </AdminRoute>
         }>
           {/* products */} <Route path="" element={<OrdersList />} />
-          <Route path="add-product" element={<AddProduct />} />
           <Route path="manage-products" element={<ManageStocks />} />
-          <Route path="products/edit/:id" element={<UpdateProduct />} />
           {/* coupons */}
           <Route path="add-coupon" element={<AddCoupon />} />
           <Route path="manage-coupon" element={<ManageCoupons />} />
@@ -70,7 +67,7 @@ const App = () => {
           <Route path="edit-category/:id" element={<UpdateCategory />} />
           {/* brand category */}
           <Route path="add-brand" element={<AddBrand />} />
-          <Route path="all-brands" element={<BrandsColorsList />} />
+          <Route path="all-brands" element={<ManageBrands />} />
           {/* color category */}
           <Route path="add-color" element={<AddColor />} />
           <Route path="all-colors" element={<BrandsColorsList />} />

@@ -7,6 +7,9 @@ import { Bars3Icon, BellIcon, ShoppingCartIcon, XMarkIcon, UserIcon, ArrowRightO
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
+import Skeleton from "react-loading-skeleton";
+import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
+import { getUserProfileAction } from "../../redux/slices/users/usersSlice";
 
 const user = {
     name: 'Tom Cook',
@@ -32,10 +35,17 @@ function classNames(...classes) {
 
 export default function Navigation() {
     let { cartItems } = useSelector(state => state.carts);
+    const { categories: { categories }, loading } = useSelector(state => state.category)
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchCategoriesAction())
     }, [dispatch])
+
+    useEffect(() => {
+        dispatch(getUserProfileAction());
+    }, [dispatch])
+
+    let { profile, loading: loadingProfile } = useSelector((state) => state.users);
 
     // get login user from localstorage
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -262,19 +272,21 @@ export default function Navigation() {
                             </div>
                         </div>
                         <nav className="hidden lg:flex lg:space-x-8 lg:py-2" aria-label="Global">
-                            {navigation.map((item) => (
-                                <a
-                                    key={item.name}
-                                    href={item.href}
-                                    className={classNames(
-                                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                        'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium'
-                                    )}
-                                    aria-current={item.current ? 'page' : undefined}
-                                >
-                                    {item.name}
-                                </a>
-                            ))}
+                            {
+                                loading ? <Skeleton className="mt-2" width={500} height={30} /> :
+                                    categories?.map((item) => (
+                                        <Link
+                                            key={item.name}
+                                            to={`products-filters?category=${item?.name}`}
+                                            className={classNames(
+                                                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium'
+                                            )}
+                                            aria-current={item.current ? 'page' : undefined}
+                                        >
+                                            {capitalizeFirstLetter(item?.name)}
+                                        </Link>
+                                    ))}
                         </nav>
                     </div>
 

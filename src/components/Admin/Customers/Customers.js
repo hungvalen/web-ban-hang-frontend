@@ -10,6 +10,7 @@ import EditCustomer from "./modal/EditCustomer";
 import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
 import DeleteCustomer from "./modal/deleteCustomer";
 import AddCustomerModal from "./modal/AddCustomer";
+import { limitNumber } from "../../../utils/limitNumber";
 
 export default function ManageCustomers() {
   const [isShowEditUserModal, setIsShowEditUserModal] = useState(false);
@@ -17,12 +18,14 @@ export default function ManageCustomers() {
   const [isShowAddUserModal, setIsShowAddUserModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [params] = useSearchParams();
-  const page = params.get("page") || 1;
   const limit = params.get("limit") || 5;
   const dispatch = useDispatch();
   const { users, loading, error, isUpdated, isDeleted, isAdded } = useSelector(state => state.users);
   const count = users?.count;
   const [user, setUser] = useState(" ");
+  const [page, setPage] = useState(1);
+  let totalPage = Math.ceil(count / limitNumber);
+
   useEffect(() => {
     dispatch(getListUsersAction({
       page,
@@ -200,7 +203,7 @@ export default function ManageCustomers() {
                     ))}
                 </tbody>
               </table>
-              <Pagination count={count} />
+              <Pagination page={page} pages={totalPage} changePage={setPage} />
 
             </div>
           </div>

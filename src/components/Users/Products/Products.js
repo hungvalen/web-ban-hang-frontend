@@ -2,15 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../../../utils/formatCurrency";
 import { useSelector } from "react-redux";
+import { defaultImage } from "../../../utils/defaultImage";
 
 const Products = ({ products }) => {
   console.log(products)
   return (
-    <>
-      <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:col-span-3 lg:gap-x-8">
+    <section aria-labelledby="product-heading" className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
+      {/* <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:col-span-3 lg:gap-x-8">
         {products?.map((product, index) => (
           <>
-            {/* new */}
             <div key={index} className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
               <div className="relative bg-gray-50">
                 <span className="absolute top-0 left-0 ml-6 mt-6 px-2 py-1 text-xs font-bold font-heading bg-white border-2 border-red-500 rounded-full text-red-500">
@@ -20,9 +20,7 @@ const Products = ({ products }) => {
                   className="block"
                   to={{
                     pathname: `/products/${product?.id}`,
-                    // state: {
-                    //   product: product,
-                    // },
+                  
                   }}>
                   <img
                     className="w-full h-64 object-cover"
@@ -67,8 +65,37 @@ const Products = ({ products }) => {
             </div>
           </>
         ))}
+      </div> */}
+      <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
+        {products?.map((product) => (
+          <div
+            key={product?._id}
+            className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
+          >
+            <div className="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-96">
+              <img
+                src={product?.images[0] ?? defaultImage}
+                alt={product?.name}
+                className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+              />
+            </div>
+            <div className="flex flex-1 flex-col space-y-2 p-4">
+              <h3 className="text-sm font-medium text-gray-900">
+                <a href={product?.href}>
+                  <span aria-hidden="true" className="absolute inset-0" />
+                  {product?.name}
+                </a>
+              </h3>
+              <p className="text-sm text-gray-500">{product?.description}</p>
+              <div className="flex flex-1 flex-col justify-end">
+                <p className="text-sm italic text-gray-500">{product?.colors?.length === 1 ? product?.colors[0] : `${product?.colors?.length} colors`}</p>
+                <p className="text-base font-medium text-gray-900">{formatPrice.format(product?.price)}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </>
+    </section>
   );
 };
 
