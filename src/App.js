@@ -37,6 +37,8 @@ import OrderDetails from "./components/Users/Profile/OrderDetails";
 import ResetPassword from "./components/Users/Auth/ResetPassword";
 import ForgotPassword from "./components/Users/Auth/ForgotPassword";
 import ManageBrands from "./components/Admin/Categories/brand/ManageBrands";
+import ManageShippingUnit from "./components/Admin/ShippingUnit/ManageShippingUnit";
+import ManagePaymentMethod from "./components/Admin/PaymentMethod/ManagePaymentMethod";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -75,6 +77,10 @@ const App = () => {
           <Route path="manage-orders" element={<ManageOrders />} />
           <Route path="order-payment" element={<OrderPayment />} />
           <Route path="customers" element={<ManageCustomers />} />
+          {/* Shipping unut */}
+          <Route path="shipping-unit" element={<ManageShippingUnit />} />
+          <Route path="payment-method" element={<ManagePaymentMethod />} />
+
         </Route>
         {/* public links */}
         {/* Products */}

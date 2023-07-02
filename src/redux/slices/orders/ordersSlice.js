@@ -3,6 +3,7 @@ import baseURL from "../../../utils/baseURL";
 import axios from "axios";
 import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import SweetAlert from "../../../components/Playground/SweetAlert";
+import axiosClient from "../../../utils/axiosClient";
 // initialState
 const initialState = {
     error: null,
@@ -46,8 +47,9 @@ export const placeOrderAction = createAsyncThunk(
     })
 
 // fetch all order action
-export const fetchOrdersAction = createAsyncThunk("orders/list", async (payload, { rejectWithValue, getState, dispatch }) => {
+export const fetchOrdersAction = createAsyncThunk("orders/list", async ({ page, limit, query }, { rejectWithValue, getState, dispatch }) => {
     try {
+
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
         const config = {
@@ -55,7 +57,7 @@ export const fetchOrdersAction = createAsyncThunk("orders/list", async (payload,
                 Authorization: `Bearer ${token}`,
             }
         }
-        const { data } = await axios.get(`${baseURL}/orders`, config);
+        const { data } = await axiosClient.get(`${baseURL}/orders?page=${page}&limit=${limit}&query=${query}`, config);
         return data;
     } catch (error) {
         console.log(error);

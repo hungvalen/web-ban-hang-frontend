@@ -1,162 +1,174 @@
-import { Menu, Transition } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react'
+import OrdersStatistics from './OrdersStatistics';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrdersAction } from '../../../redux/slices/orders/ordersSlice';
+import UpdateOrderModal from './UpdateOrdersModal';
+import Skeleton from 'react-loading-skeleton';
+import LoadingComponent from '../../LoadingComp/LoadingComponent';
+import { resetSuccessAction } from '../../../redux/slices/globalActions/globalAction';
+import Pagination from '../../pagination/Pagination';
+import { limitNumber } from '../../../utils/limitNumber';
 const ManageOrders = () => {
-  let { loading, error, allOrders } = useSelector(state => state.orders);
+  const [openUpdateOrderModal, setOpenUpdateModel] = useState(false);
+  const [orderDetails, setOrderDetails] = useState('');
+  const dispatch = useDispatch();
+  const { orders, loading, error, isUpdated } = useSelector(state => state.orders);
+  const [query, setQuery] = useState("");
+  let count = orders?.count;
+  let totalPage = Math.ceil(count / limitNumber);
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    dispatch(fetchOrdersAction({
+      page: 1,
+      limit: 5,
+      query: query
+    }));
+  }, [dispatch, page, query])
 
+  useEffect(() => {
+    if (isUpdated) {
+      dispatch(fetchOrdersAction({
+        page: 1,
+        limit: 5,
+        query: ''
+      }));
+      dispatch(resetSuccessAction());
+    }
+  }, [isUpdated, dispatch])
+
+  const handleUpdateOrderModal = (order) => {
+    setOpenUpdateModel(!openUpdateOrderModal)
+    setOrderDetails(order)
+  }
   return (
     <>
-      <div className="bg-gray-50">
-        <main className="py-24">
-          <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
-            <div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                Manage Orders
-              </h1>
-              <p className="mt-2 text-sm text-gray-500">
-                Check the status of recent orders, manage returns, and discover
-                similar products.
-              </p>
-            </div>
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="sm:flex sm:items-center"></div>
+        {/* order stats */}
+        <OrdersStatistics />
+
+        <div className="flex items-center justify-between mt-3">
+          <h3 className="text-lg font-medium leading-6 text-gray-900 mt-5">
+            Manage Oders
+          </h3>
+          <div className="flex items-center justify-end">
+            <input
+              type="search"
+              name="search"
+              placeHolder="Search order"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="block  appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+            />
           </div>
+        </div>
+        <div className="-mx-4 mt-3  overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
+          <table className="min-w-full divide-y divide-gray-300">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                  Order ID
+                </th>
+                <th
+                  scope="col"
+                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
+                  Payment Status
+                </th>
+                <th
+                  scope="col"
+                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
+                  Payment Method
+                </th>
+                <th
+                  scope="col"
+                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
+                  Oder Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  Delivery Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  Status
+                </th>
 
-          <section aria-labelledby="recent-heading" className="mt-16">
-            <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
-              <div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
-                {loading ? (
-                  <h2>Loading...</h2>
-                ) : error ? (
-                  <h2>{error}</h2>
-                ) : (
-                  allOrders?.map((order) => (
-                    <div
-                      key={order.number}
-                      className="border-t border-b border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border">
-                      <div className="flex items-center border-b border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6">
-                        <dl className="grid flex-1 grid-cols-2 gap-x-6 text-sm sm:col-span-3 sm:grid-cols-3 lg:col-span-2">
-                          <div>
-                            <dt className="font-medium text-gray-900">
-                              Order number
-                            </dt>
-                            <dd className="mt-1 text-gray-500">
-                              {order?.orderNumber}
-                            </dd>
-                          </div>
-                          <div className="hidden sm:block">
-                            <dt className="font-medium text-gray-900">
-                              Date placed
-                            </dt>
-                            <dd className="mt-1 text-gray-500">
-                              <time dateTime={order.createdDatetime}>
-                                {new Date(order.createdAt).toLocaleDateString()}
-                              </time>
-                            </dd>
-                          </div>
-                          <div>
-                            <dt className="font-medium text-gray-900">
-                              Total amount
-                            </dt>
-                            <dd className="mt-1 font-medium text-gray-900">
-                              $ {order.totalPrice}
-                            </dd>
-                          </div>
-                        </dl>
-
-                        <Menu
-                          as="div"
-                          className="relative flex justify-end lg:hidden">
-                          <div className="flex items-center">
-                            <Menu.Button className="-m-2 flex items-center p-2 text-gray-400 hover:text-gray-500">
-                              <EllipsisVerticalIcon
-                                className="h-6 w-6"
-                                aria-hidden="true"
-                              />
-                            </Menu.Button>
-                          </div>
-                        </Menu>
-                        {/* payment method */}
-                        <div>
-                          <dt className="font-medium text-gray-900">
-                            Payment Method
-                          </dt>
-                          <dd className="mt-1 font-medium text-gray-900">
-                            {order?.paymentMethod}
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  Total
+                </th>
+                {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span className="sr-only">Edit</span>
+              </th> */}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {
+                loading ? <p className="px-3 py-4">Loading...</p> : <>
+                  {orders?.orders?.map((order) => (
+                    <tr key={order._id}>
+                      <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
+                        {order.orderNumber}
+                        <dl className="font-normal lg:hidden">
+                          <dt className="sr-only">Title</dt>
+                          <dd className="mt-1 truncate text-gray-700">
+                            {order.paymentMethod}
                           </dd>
-                        </div>
-                      </div>
+                          <dt className="sr-only sm:hidden">Email</dt>
+                          <dd className="mt-1 truncate text-gray-500 sm:hidden">
+                            {order.email}
+                          </dd>
+                        </dl>
+                      </td>
+                      <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                        {order?.paymentStatus === "Not paid" ? (
+                          <span className="px-3  inline-flex text-xs leading-5 font-semibold rounded-full bg-red-600 text-white">{order?.paymentStatus}</span>) : (order?.paymentStatus)
+                        }
+                      </td>
+                      <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                        {order?.paymentMethod}
+                      </td>
+                      <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        {new Date(order?.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {order?.deliveryDate ?? 'Unknown'}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {order?.status ?? 'Unknown'}
+                      </td>
+                      <td className="px-3 py-4 text-sm font-medium sm:pr-6">
+                        {
+                          order?.paymentStatus !== 'Not paid' ? <button disabled className="text-indigo-600 hover:text-indigo-900">
+                            Edit
+                          </button> : <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleUpdateOrderModal(order)}>
+                            Edit
+                          </button>
+                        }
 
-                      {/* Products */}
+                      </td>
+                    </tr>
+                  ))}
 
-                      <ul role="list" className="divide-y divide-gray-200">
-                        {order?.orderItems?.map((product) => (
-                          <li key={product?.id} className="p-4 sm:p-6">
-                            <div className="flex items-center sm:items-start">
-                              <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40">
-                                <img
-                                  src={product?.imageSrc}
-                                  alt={product?.imageAlt}
-                                  className="h-full w-full object-cover object-center"
-                                />
-                              </div>
-                              <div className="ml-6 flex-1 text-sm">
-                                <div className="font-medium text-gray-900 sm:flex sm:justify-between">
-                                  <h5>{product?.name}</h5>
-                                  <p className="mt-2 sm:mt-0">
-                                    ${product?.discountedPrice}
-                                  </p>
-                                </div>
-                                <p className="hidden text-gray-500 sm:mt-2 sm:block">
-                                  {product?.description}
-                                </p>
-                              </div>
-                            </div>
+                </>
+              }
 
-                            <div className="mt-6 sm:flex sm:justify-between">
-                              <div className="flex items-center">
-                                <CheckCircleIcon
-                                  className="h-5 w-5 text-yellow-500"
-                                  aria-hidden="true"
-                                />
-                                <p className="ml-2 text-sm font-medium text-gray-500">
-                                  Status {order.status}
-                                </p>
-                              </div>
-                              {/* payment status icon */}
+            </tbody>
+          </table >
+          <Pagination page={page} pages={totalPage} changePage={setPage} count={count} />
+        </div >
+      </div >
+      {
+        openUpdateOrderModal === true && (
+          <UpdateOrderModal openUpdateOrderModal={openUpdateOrderModal} setOpenUpdateModel={setOpenUpdateModel} orderDetails={orderDetails} />
 
-                              <div className="flex items-center">
-                                <svg
-                                  className="h-5 w-5 text-red-500"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                  xmlns="http://www.w3.org/2000/svg">
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <p className="ml-2 text-sm font-medium text-gray-500">
-                                  Payment Status: {order.paymentStatus}
-                                </p>
-                              </div>
-
-                              {/* update order */}
-                              {/* <UpdateOrders id={order?._id} /> */}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </section>
-        </main>
-      </div>
+        )
+      }
     </>
   );
 }

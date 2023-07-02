@@ -1,93 +1,83 @@
-import { Link } from "react-router-dom";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import NoDataFound from "../../NoDataFound/NoDataFound";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBrandAction } from "../../../../redux/slices/brand/brandSlice";
-import LoadingComponent from "../../../LoadingComp/LoadingComponent";
-import ErrorMsg from "../../../ErrorMsg/ErrorMsg";
-import NoDataFound from "../../../NoDataFound/NoDataFound";
-import { limitNumber } from "../../../../utils/limitNumber";
-import Pagination from "../../../pagination/Pagination";
-import AddBrand from "./modal/AddBrand";
-import EditBrand from "./modal/EditBrand";
-import DeleteBrandModal from "./modal/DeleteBrand";
-import { resetSuccessAction } from "../../../../redux/slices/globalActions/globalAction";
+import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
+// import EditShippingUnit from "./modal/EditShippingUnit";
+// import AddShippingUnit from "./modal/AddShippingUnit";
+// import DeleteShippingUnitModal from "./modal/DeleteShippingUnit";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import { fetchShippingUnitAction } from "../../../redux/slices/shipping-unit/shippingUnitSlice";
+import AddShippingUnit from "./modal/AddShippingUnit";
+import EditShippingUnit from "./modal/EditShippingUnit";
+import DeleteShippingUnitModal from "./modal/DeleteShippingUnit";
 
-
-export default function ManageBrands() {
+export default function ManageShippingUnit() {
     const dispatch = useDispatch();
-    const { brands, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.brand)
-    let count = brands?.count;
-    let totalPage = Math.ceil(count / limitNumber);
-    const [isShowEditBrandModal, setIsShowEditBrandModal] = useState(false);
-    const [isShowAddBrandModal, setIsShowAddBrandModal] = useState(false);
-    const [isShowDeleteBrandModal, setIsShowDeleteBrandModal] = useState(false);
-    const [brand, setBrand] = useState('');
-    const [page, setPage] = useState(1);
-    const limit = 5;
-    //delete brand handler
-    const deleteBrandHandler = (item) => {
-        setIsShowDeleteBrandModal(!isShowDeleteBrandModal)
-        setBrand(item);
+    const { shippingUnits: { shippingUnit }, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.shippingUnit)
+    const [isShowEditShippingUnitModal, setIsShowEditShippingUnitModal] = useState(false);
+    const [isShowAddShippingUnitModal, setIsShowAddShippingUnitModal] = useState(false);
+    const [isShowDeleteShippingUnitModal, setIsShowDeleteShippingUnitModal] = useState(false);
+    const [ShippingUnit, setShippingUnit] = useState('');
+    //delete ShippingUnit handler
+    const deleteShippingUnitHandler = (item) => {
+        setIsShowDeleteShippingUnitModal(!isShowDeleteShippingUnitModal)
+        setShippingUnit(item);
     };
     useEffect(() => {
-        dispatch(fetchBrandAction({
-            page, limit
-        }))
-    }, [dispatch, page, limit])
+        dispatch(fetchShippingUnitAction())
+    }, [dispatch])
 
-    const handleEditBrand = (item) => {
-        setIsShowEditBrandModal(!isShowEditBrandModal);
-        setBrand(item);
+    const handleEditShippingUnit = (item) => {
+        setIsShowEditShippingUnitModal(!isShowEditShippingUnitModal);
+        setShippingUnit(item);
     }
-    const handleAddBrand = () => {
-        setIsShowAddBrandModal(!isShowAddBrandModal);
+    const handleAddShippingUnit = () => {
+        setIsShowAddShippingUnitModal(!isShowAddShippingUnitModal);
     }
 
     useEffect(() => {
         if (isAdded) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchShippingUnitAction());
             dispatch(resetSuccessAction());
-        }
 
-    }, [isAdded, dispatch, page, limit])
+        }
+    }, [isAdded, dispatch])
 
     useEffect(() => {
         if (isUpdated) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchShippingUnitAction());
             dispatch(resetSuccessAction());
 
         }
-    }, [isUpdated, dispatch, page, limit])
+    }, [isUpdated, dispatch])
 
     useEffect(() => {
         if (isDeleted) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchShippingUnitAction());
             dispatch(resetSuccessAction());
+
         }
-    }, [isDeleted, dispatch, page, limit])
+    }, [isDeleted, dispatch])
+
     return (
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="px-4 py-2 sm:px-6 lg:px-8">
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
                     <h1 className="text-xl font-semibold text-gray-900">
-                        All Brands
+                        All Shipping Unit
                     </h1>
-                    <p className="mt-2 text-sm text-gray-700">
+                    {/* <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title,
-                    </p>
+                    </p> */}
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <button
-                        onClick={handleAddBrand}
+                        onClick={handleAddShippingUnit}
                         type="button"
                         className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-                        Add New Brand
+                        Add new shipping unit
                     </button>
                 </div>
             </div>
@@ -95,7 +85,7 @@ export default function ManageBrands() {
                 <LoadingComponent />
             ) : error ? (
                 <ErrorMsg message={error?.message} />
-            ) : brands?.length <= 0 ? (
+            ) : shippingUnit?.length <= 0 ? (
                 <NoDataFound />
             ) : (
                 <div className="mt-8 flex flex-col">
@@ -109,11 +99,6 @@ export default function ManageBrands() {
                                                 scope="col"
                                                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
                                                 Name
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                No. Products
                                             </th>
                                             <th
                                                 scope="col"
@@ -138,30 +123,37 @@ export default function ManageBrands() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {brands?.brands?.map((brand) => (
-                                            <tr key={brand?._id}>
+                                        {shippingUnit?.map((item) => (
+                                            <tr key={item?._id}>
                                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                                    <div className="font-medium text-gray-900">
-                                                        {brand?.name}
+                                                    <div className="flex items-center">
+                                                        <div className="h-10 w-10 flex-shrink-0">
+                                                            <img
+                                                                className="h-10 w-10 rounded-full"
+                                                                src={item?.image}
+                                                                alt={item?.name}
+                                                            />
+                                                        </div>
+                                                        <div className="ml-4">
+                                                            <div className="font-medium text-gray-900">
+                                                                {item?.name}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <div className="text-gray-900">
-                                                        {brand?.products?.length}
-                                                    </div>
-                                                </td>
+
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                                                        {brand?.user?.fullName ?? 'admin'}
+                                                        {item?.user?.fullName}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    {new Date(brand?.createdAt).toLocaleDateString()}
+                                                    {new Date(item?.createdAt).toLocaleDateString()}
                                                 </td>
                                                 {/* edit icon */}
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                                                     <button
-                                                        onClick={() => handleEditBrand(brand)}
+                                                        onClick={() => handleEditShippingUnit(item)}
                                                         type="button"
                                                         className="text-indigo-600 hover:text-indigo-900">
                                                         <svg
@@ -177,13 +169,13 @@ export default function ManageBrands() {
                                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                                                             />
                                                         </svg>
-                                                        {/* <span className="sr-only">, {category?.name}</span> */}
+                                                        {/* <span className="sr-only">, {ShippingUnit?.name}</span> */}
                                                     </button>
                                                 </td>
                                                 {/* delete icon */}
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                                                     <button
-                                                        onClick={() => deleteBrandHandler(brand)}
+                                                        onClick={() => deleteShippingUnitHandler(item)}
                                                         className="text-indigo-600 hover:text-indigo-900">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
@@ -206,22 +198,19 @@ export default function ManageBrands() {
                                         }
                                     </tbody>
                                 </table>
-                                <Pagination page={page} pages={totalPage} changePage={setPage} />
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             )}
             {
-                isShowEditBrandModal && <EditBrand isShowEditBrandModal={isShowEditBrandModal} setIsShowEditBrandModal={setIsShowEditBrandModal} brand={brand} />
+                isShowEditShippingUnitModal && <EditShippingUnit isShowEditShippingUnitModal={isShowEditShippingUnitModal} setIsShowEditShippingUnitModal={setIsShowEditShippingUnitModal} ShippingUnit={ShippingUnit} />
             }
             {
-                isShowAddBrandModal && <AddBrand isShowAddBrandModal={isShowAddBrandModal} setIsShowAddBrandModal={setIsShowAddBrandModal} />
+                isShowAddShippingUnitModal && <AddShippingUnit isShowAddShippingUnitModal={isShowAddShippingUnitModal} setIsShowAddShippingUnitModal={setIsShowAddShippingUnitModal} />
             }
             {
-                isShowDeleteBrandModal && <DeleteBrandModal isShowDeleteBrandModal={isShowDeleteBrandModal} setIsShowDeleteBrandModal={setIsShowDeleteBrandModal} brand={brand} />
+                isShowDeleteShippingUnitModal && <DeleteShippingUnitModal isShowDeleteShippingUnitModal={isShowDeleteShippingUnitModal} setIsShowDeleteShippingUnitModal={setIsShowDeleteShippingUnitModal} ShippingUnit={ShippingUnit} />
             }
         </div>
     );

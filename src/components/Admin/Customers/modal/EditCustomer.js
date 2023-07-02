@@ -3,25 +3,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import AsyncSelect from 'react-select/async';
-
-import ErrorMsg from "../../../ErrorMsg/ErrorMsg";
-import LoadingComponent from "../../../LoadingComp/LoadingComponent";
-import SuccessMsg from "../../../SuccessMsg/SuccessMsg";
-import { fetchCategoriesAction } from "../../../../redux/slices/categories/categoriesSlice";
-import { fetchBrandAction } from "../../../../redux/slices/brand/brandSlice";
-import { fetchAllProductAction, fetchSingleProductAction, updateProductAction } from "../../../../redux/slices/products/productSlices";
-import { fetchColorAction } from "../../../../redux/slices/color/colorSlice";
-import { createProductAction } from "../../../../redux/slices/products/productSlices";
-import Swal from "sweetalert2";
-import SweetAlert from "../../../Playground/SweetAlert";
-import baseURL from '../../../../utils/baseURL';
-import { useSearchParams } from 'react-router-dom';
-import { resetSuccessAction } from '../../../../redux/slices/globalActions/globalAction';
 import { updateUserAction } from '../../../../redux/slices/users/usersSlice';
+import DatePicker from "react-datepicker";
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserModal, user }) {
+    console.log(new Date(user?.dateOfBirth).toLocaleDateString())
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
     const roles = ["user", "admin", "staff"];
@@ -67,8 +54,9 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
             fullName: formData?.fullName,
             email: formData?.email,
             phone: formData?.phoneNumber,
-            role: formData?.role
-
+            role: formData?.role,
+            dateOfBirth: formData?.dateOfBirth,
+            gender: formData?.gender
         }));
         setIsShowEditUserModal(false)
     };
@@ -100,7 +88,7 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left  transition-all lg:max-w-3xl sm:my-8 sm:w-full sm:max-w-lg">
-                                   
+
                                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
@@ -213,13 +201,15 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
                                                                 Date of birth
                                                             </label>
                                                             <div className="mt-1">
-                                                                <input
-                                                                    name="dateOfBirth"
-                                                                    type="date"
-                                                                    value={formData?.dateOfBirth}
-                                                                    onChange={handleOnChange}
-                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                                />
+                                                               
+                                                                <>
+                                                                    <DatePicker
+                                                                        dateFormat="dd/MM/yyyy"
+                                                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                        selected={formData?.dateOfBirth}
+                                                                        onChange={(date) => setFormData({ ...formData, dateOfBirth: date })}
+                                                                    />
+                                                                </>
                                                             </div>
                                                         </div>
                                                         <div className="sm:col-span-3">

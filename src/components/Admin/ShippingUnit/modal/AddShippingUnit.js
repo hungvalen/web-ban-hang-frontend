@@ -1,66 +1,57 @@
-import { Fragment, useRef, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { useState, Fragment, useRef } from "react";
+import { Link } from "react-router-dom";
+import ErrorComponent from "../../../ErrorMsg/ErrorMsg";
+import SuccessMsg from "../../../SuccessMsg/SuccessMsg";
+import LoadingComponent from "../../../LoadingComp/LoadingComponent";
 import { useDispatch, useSelector } from "react-redux";
-import makeAnimated from "react-select/animated";
-import { updateCategoryAction } from "../../../../redux/slices/categories/categoriesSlice";
-import { dataURItoFile, fileName, getEncodedDataFromDataURI } from '../../../../utils/handleFileImage';
-//animated components for react-select
-const animatedComponents = makeAnimated();
-export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCategoryModal, category }) {
-    console.log(category)
+import { createShippingUnitAction } from "../../../../redux/slices/shipping-unit/shippingUnitSlice";
+import { Dialog, Transition } from '@headlessui/react'
+export default function AddShippingUnit({ isShowAddShippingUnitModal, setIsShowAddShippingUnitModal }) {
     const cancelButtonRef = useRef(null)
-    const dispatch = useDispatch();
-    const [file, setFile] = useState(category?.image ?? null);
-    const [convertFile, setConvertFile] = useState(null);
-    const [encodedData, setEncodedData] = useState(null);
-    //---form data---
     const [formData, setFormData] = useState({
-        name: category?.name ?? 'no name',
+        name: "",
     });
-    //onChange
+    const dispatch = useDispatch()
+    // files
+    const [file, setFile] = useState(null);
+    const [fileErr, setFileErr] = useState([]);
+    const fileHandleChange = (event) => {
+
+        const newFile = event.target.files[0]
+        // validation
+
+        if (newFile.size > 1000000) {
+            setFileErr(`${newFile.name} is too large, please pick a smaller file`)
+        }
+        if (!newFile.type.startsWith("image/")) {
+            setFileErr(`${newFile.name} is not a valid format`)
+        }
+        setFile(newFile);
+    }
+
+    //---onChange---
     const handleOnChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
+    let { error, isAdded, loading } = useSelector(state => state.shippingUnit)
     //onSubmit
-
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateCategoryAction({
+        dispatch(createShippingUnitAction({
             name: formData?.name,
-            file: convertFile,
-            id: category?._id,
-        }));
-        setIsShowEditCategoryModal(!isShowEditCategoryModal)
+            file: file
+        }))
+        setFormData({ name: "" });
+        setIsShowAddShippingUnitModal(!isShowAddShippingUnitModal);
     };
-    const fileHandleChange = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            setFile(reader.result)
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
-        console.log(file)
-        getEncodedDataFromDataURI(file)
-            .then((encodedData) => {
-                console.log("Encoded data:", encodedData);
-                setEncodedData(encodedData)
-                setConvertFile(dataURItoFile(encodedData, fileName))
-
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
 
     return (
         <>
-            <Transition.Root show={isShowEditCategoryModal ?? false} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowEditCategoryModal ?? false}>
+            {error && <ErrorComponent message={error?.message} />}
+            {isAdded && <SuccessMsg message="ShippingUnit added successfully" />}
+
+            <Transition.Root show={isShowAddShippingUnitModal ?? false} as={Fragment}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowAddShippingUnitModal ?? false}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -90,7 +81,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit Category</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Add Shipping Unit</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -159,17 +150,12 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                                     <div className="sm:col-span-6">
                                                         <div className="flex items-center justify-center flex-wrap gap-2 mt-2">
                                                             {
-                                                                file !== '' ? (
-                                                                    <>
-                                                                        <div className="overflow-hidden relative">
-                                                                            <img src={file} alt="" className="h-56 w-56 object-cover object-center  rounded-md" />
-                                                                        </div>
-                                                                    </>
-                                                                )
+                                                                file != null && (
+                                                                    <div className="overflow-hidden relative">
 
-                                                                    : (
-                                                                        <>no image</>
-                                                                    )
+                                                                        <img src={URL.createObjectURL(file)} alt="" className="h-56 w-full object-cover object-center rounded-md" />
+                                                                    </div>
+                                                                )
                                                             }
                                                         </div>
 
@@ -178,7 +164,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                             </div>
 
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
-                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowEditCategoryModal(false)}
+                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowAddShippingUnitModal(false)}
                                                     ref={cancelButtonRef}>
                                                     Cancel
                                                 </button>
@@ -191,23 +177,6 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                             </div>
                                         </form>
                                     </div>
-                                    {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                    // onClick={() => setIsShowEditProductModal(false)}
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                        onClick={() => setIsShowEditProductModal(false)}
-                                        ref={cancelButtonRef}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div> */}
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>
@@ -215,6 +184,5 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                 </Dialog>
             </Transition.Root >
         </>
-
-    )
+    );
 }

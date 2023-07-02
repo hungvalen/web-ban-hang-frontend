@@ -23,7 +23,7 @@ axiosClient.interceptors.response.use((res) => {
     console.log(error)
     if (error?.response?.data?.message === "Invalid/Expired token, please login again") {
         localStorage.removeItem('userInfo')
-        window.location.assign('/login')
+        // window.location.assign('/login')
     }
     return Promise.reject(error)
 }

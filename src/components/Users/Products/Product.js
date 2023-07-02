@@ -13,6 +13,8 @@ import SweetAlert from "../../Playground/SweetAlert";
 import Skeleton from "react-loading-skeleton";
 import { formatPrice } from "../../../utils/formatCurrency";
 import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/react'
+import AddReview from "../Reviews/AddReview";
+import AddReviewModal from "../Reviews/AddReview";
 
 const product = {
   name: "Basic Tee",
@@ -93,6 +95,7 @@ function classNames(...classes) {
 export default function Product() {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [showAddReviewModal, setShowAddReviewModal] = useState(false);
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -106,6 +109,9 @@ export default function Product() {
     dispatch(cartItemsFromLocalStorageAction())
   }, [])
 
+  const handleAddReview = () => {
+    setShowAddReviewModal(!showAddReviewModal)
+  }
 
   //Add to cart handler
   const addToCartHandler = () => {
@@ -220,11 +226,11 @@ export default function Product() {
               {/* leave a review */}
 
               <div className="mt-4">
-                <Link to={`/add-review/${product?._id}`}>
-                  <h3 className="text-sm font-medium text-blue-600">
+                <>
+                  <button type="button" className="text-sm font-medium text-blue-600 cursor-pointer" onClick={handleAddReview}>
                     Leave a review
-                  </h3>
-                </Link>
+                  </button>
+                </>
               </div>
             </div>
           </div>
@@ -480,8 +486,12 @@ export default function Product() {
                   </time>
                 </div>
               </div>
+
             )) : <p className="font-medium text-gray-900 ">No review found</p>}
           </div>
+          {
+            showAddReviewModal && <AddReviewModal showAddReviewModal={showAddReviewModal} setShowAddReviewModal={setShowAddReviewModal} productId={product._id} />
+          }
         </section >
       </main >
     </div >

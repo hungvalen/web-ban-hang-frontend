@@ -8,20 +8,20 @@ import axiosClient from "../../../utils/axiosClient";
 
 // initialState
 const initialState = {
-    categories: [],
+    paymentMethods: [],
     loading: false,
-    category: {},
+    paymentMethod: {},
     error: null,
     isAdded: false,
     isUpdated: false,
     isDeleted: false,
 }
 
-// create category action
-export const createCategoryAction = createAsyncThunk(
-    "category/create", async (payload, { rejectWithValue, getState, dispatch }) => {
+// create payment method action
+export const createPaymentMethodAction = createAsyncThunk(
+    "payment-method/create", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { name, file } = payload;
+            const { name, description } = payload;
             // make request
 
             // token
@@ -29,16 +29,13 @@ export const createCategoryAction = createAsyncThunk(
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
                 }
             }
 
-            const formData = new FormData();
-            formData.append("name", name);
-            formData.append("file", file);
-
-            const { data } = await axios.post(`${baseURL}/categories`, formData, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Category created successfully" });
+            const { data } = await axiosClient.post(`${baseURL}/payment-method`, {
+                name, description
+            }, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Payment created successfully" });
 
             return data;
         } catch (error) {
@@ -47,11 +44,11 @@ export const createCategoryAction = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
-// update category action
-export const updateCategoryAction = createAsyncThunk(
-    "category/update", async (payload, { rejectWithValue, getState, dispatch }) => {
+// update payment method action
+export const updatePaymentMethodAction = createAsyncThunk(
+    "payment-method/update", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { name, file, id } = payload;
+            const { name, description, id } = payload;
             // make request
 
             // token
@@ -59,16 +56,10 @@ export const updateCategoryAction = createAsyncThunk(
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
                 }
             }
-
-            const formData = new FormData();
-            formData.append("name", name);
-            formData.append("file", file);
-
-            const { data } = await axios.put(`${baseURL}/categories/${id}`, formData, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Category updated successfully" });
+            const { data } = await axios.put(`${baseURL}/payment-method/${id}`, { name, description }, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Payment method updated successfully" });
 
             return data;
         } catch (error) {
@@ -78,11 +69,11 @@ export const updateCategoryAction = createAsyncThunk(
         }
     })
 
-// fetch category action
-export const fetchCategoriesAction = createAsyncThunk(
-    "category/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
+// fetch payment method action
+export const fetchPaymentMethodAction = createAsyncThunk(
+    "payment-method/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axiosClient.get(`${baseURL}/categories`)
+            const { data } = await axiosClient.get(`${baseURL}/payment-method`)
             return data;
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oop", message: `${error.response.data.message}` });
@@ -90,12 +81,12 @@ export const fetchCategoriesAction = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
-// delete category action
-export const deleteCategoryAction = createAsyncThunk(
-    "category/delete", async (id, { rejectWithValue, getState, dispatch }) => {
+// delete payment method action
+export const deletePaymentMethodAction = createAsyncThunk(
+    "payment-method/delete", async (id, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axios.delete(`${baseURL}/categories/${id}`)
-            SweetAlert({ icon: "success", title: "Success", message: "Category deleted successfully" });
+            const { data } = await axios.delete(`${baseURL}/payment-method/${id}`)
+            SweetAlert({ icon: "success", title: "Success", message: "Payment method deleted successfully" });
 
             return data;
         } catch (error) {
@@ -105,65 +96,63 @@ export const deleteCategoryAction = createAsyncThunk(
         }
     })
 // slice
-const categorySlice = createSlice({
-    name: "categories",
+const PaymentMethodSlice = createSlice({
+    name: "payment-method",
     initialState,
     extraReducers: (builder) => {
         // create category
-        builder.addCase(createCategoryAction.pending, (state, action) => {
+        builder.addCase(createPaymentMethodAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(createCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(createPaymentMethodAction.fulfilled, (state, action) => {
             state.loading = false;
             state.isAdded = true;
-            state.categories = action.payload;
+            state.paymentMethods = action.payload;
         })
-        builder.addCase(createCategoryAction.rejected, (state, action) => {
+        builder.addCase(createPaymentMethodAction.rejected, (state, action) => {
             state.loading = false;
-            state.categories = null;
+            state.paymentMethods = null;
             state.error = action.payload;
             state.isAdded = false;
         })
-        // update category
-        builder.addCase(updateCategoryAction.pending, (state, action) => {
+        // update payment method
+        builder.addCase(updatePaymentMethodAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(updateCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(updatePaymentMethodAction.fulfilled, (state, action) => {
             state.loading = false;
             state.isUpdated = true;
-            state.category = action.payload;
+            state.paymentMethod = action.payload;
         })
-        builder.addCase(updateCategoryAction.rejected, (state, action) => {
+        builder.addCase(updatePaymentMethodAction.rejected, (state, action) => {
             state.loading = false;
-            state.category = null;
+            state.paymentMethod = null;
             state.error = action.payload;
             state.isUpdated = false;
         })
-        // fetch all category
-        builder.addCase(fetchCategoriesAction.pending, (state, action) => {
+        // fetch all payment method
+        builder.addCase(fetchPaymentMethodAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(fetchCategoriesAction.fulfilled, (state, action) => {
+        builder.addCase(fetchPaymentMethodAction.fulfilled, (state, action) => {
             state.loading = false;
-            state.categories = action.payload;
+            state.paymentMethods = action.payload;
         })
-        builder.addCase(fetchCategoriesAction.rejected, (state, action) => {
+        builder.addCase(fetchPaymentMethodAction.rejected, (state, action) => {
             state.loading = false;
-            state.categories = null;
+            state.paymentMethods = null;
             state.error = action.payload;
         })
-        // delete category
-        builder.addCase(deleteCategoryAction.pending, (state, action) => {
+        // delete payment-method
+        builder.addCase(deletePaymentMethodAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(deleteCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(deletePaymentMethodAction.fulfilled, (state, action) => {
             state.loading = false;
-            state.category = action.payload;
             state.isDeleted = true;
         })
-        builder.addCase(deleteCategoryAction.rejected, (state, action) => {
+        builder.addCase(deletePaymentMethodAction.rejected, (state, action) => {
             state.loading = false;
-            state.category = null;
             state.error = action.payload;
             state.isDeleted = false;
 
@@ -180,4 +169,4 @@ const categorySlice = createSlice({
 })
 
 // generate reducer
-export const categoryReducer = categorySlice.reducer;
+export const PaymentMethodReducer = PaymentMethodSlice.reducer;

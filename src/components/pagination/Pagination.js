@@ -101,7 +101,7 @@
 // export default Pagination
 import "./Pagination.css";
 
-const Pagination = ({ page, pages, changePage }) => {
+const Pagination = ({ page, pages, changePage, count }) => {
     // console.log(page, pages, changePage);
     let middlePagination;
 
@@ -183,23 +183,32 @@ const Pagination = ({ page, pages, changePage }) => {
 
     return (
         pages > 1 && (
-            <div className="pagination flex justify-end">
-                <button
-                    className="pagination__prev"
-                    onClick={() => changePage((page) => page - 1)}
-                    disabled={page === 1}
-                >
-                    &#171;
-                </button>
-                {middlePagination}
-                <button
-                    className="pagination__next"
-                    onClick={() => changePage((page) => page + 1)}
-                    disabled={page === pages}
-                >
-                    &#187;
-                </button>
+            <div className="flex justify-between items-center">
+                <div className="ml-6">
+                    <p className="text-sm text-gray-700">
+                        Showing <span className="font-medium">{page}</span> to <span className="font-medium">{pages}</span> of{' '}
+                        <span className="font-medium">{count}</span> results
+                    </p>
+                </div>
+                <div className="pagination flex justify-end mr-12">
+                    <button
+                        className="pagination__prev"
+                        onClick={() => changePage((page) => page - 1)}
+                        disabled={page === 1}
+                    >
+                        &#171;
+                    </button>
+                    {middlePagination}
+                    <button
+                        className="pagination__next"
+                        onClick={() => changePage((page) => page + 1)}
+                        disabled={page === pages}
+                    >
+                        &#187;
+                    </button>
+                </div>
             </div>
+
         )
     );
 };

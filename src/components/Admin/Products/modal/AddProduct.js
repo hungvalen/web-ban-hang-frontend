@@ -386,7 +386,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               </label>
                               <div className="mt-1">
                                 <textarea
-                                  rows={7}
+                                  rows={5}
                                   name="description"
                                   value={formData.description}
                                   onChange={handleOnChange}

@@ -103,7 +103,7 @@ export const getUserProfileAction = createAsyncThunk(
 // user profile action
 export const getListUsersAction = createAsyncThunk(
     "users/list-users",
-    async ({ page, limit }, { rejectWithValue, getState, dispatch }) => {
+    async ({ page, limit, query }, { rejectWithValue, getState, dispatch }) => {
 
         try {
             const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -113,7 +113,7 @@ export const getListUsersAction = createAsyncThunk(
                 }
             }
             // make the http request
-            const { data } = await axiosClient.get(`/users/user-list?page=${page}&limit=${limit}`, config);
+            const { data } = await axiosClient.get(`/users/user-list?page=${page}&limit=${limit}&query=${query}`, config);
 
             return data;
         } catch (error) {
@@ -150,7 +150,8 @@ export const updateUserProfileAction = createAsyncThunk(
             const { data } = await axiosClient.put(`/users/update-profile`,
                 formData
                 , config);
-           
+            SweetAlert({ icon: "success", title: "Success", message: 'Profile updated successfully' });
+
             return data;
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
@@ -214,7 +215,7 @@ export const createUserAction = createAsyncThunk(
 export const updateUserAction = createAsyncThunk(
     "users/update-user",
     async (payload, { rejectWithValue, getState, dispatch }) => {
-        const { id, fullName, email, phone, role } = payload;
+        const { id, fullName, email, phone, role, dateOfBirth, gender } = payload;
         try {
             const token = getState()?.users?.userAuth?.userInfo?.token;
             const config = {
@@ -228,7 +229,9 @@ export const updateUserAction = createAsyncThunk(
                 fullName,
                 email,
                 phone,
-                role
+                role,
+                dateOfBirth,
+                gender
             }, config);
             SweetAlert({ icon: "success", title: "Success", message: "User updated successfully" });
 

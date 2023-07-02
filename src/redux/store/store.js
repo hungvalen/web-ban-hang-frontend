@@ -9,6 +9,8 @@ import { couponReducer } from "../slices/coupons/couponSlice";
 import { addressReducer } from "../slices/address/addressSlice";
 import { orderReducer } from "../slices/orders/ordersSlice";
 import { reviewReducer } from "../slices/reviews/reviewSlice";
+import { shippingUnitReducer } from "../slices/shipping-unit/shippingUnitSlice";
+import { PaymentMethodReducer } from "../slices/payment-method/paymentMethodSlice";
 
 // store
 const store = configureStore({
@@ -16,6 +18,8 @@ const store = configureStore({
         users: usersReducer,
         product: productReducer,
         category: categoryReducer,
+        shippingUnit: shippingUnitReducer,
+        paymentMethod: PaymentMethodReducer,
         brand: brandReducer,
         color: colorReducer,
         carts: cartReducer,

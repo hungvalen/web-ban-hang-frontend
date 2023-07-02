@@ -81,10 +81,10 @@ const Products = ({ products }) => {
             </div>
             <div className="flex flex-1 flex-col space-y-2 p-4">
               <h3 className="text-sm font-medium text-gray-900">
-                <a href={product?.href}>
+                <Link to={product?._id}>
                   <span aria-hidden="true" className="absolute inset-0" />
                   {product?.name}
-                </a>
+                </Link>
               </h3>
               <p className="text-sm text-gray-500">{product?.description}</p>
               <div className="flex flex-1 flex-col justify-end">

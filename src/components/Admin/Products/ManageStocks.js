@@ -229,7 +229,7 @@ export default function ManageStocks() {
                         {/* delete */}
                         <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
                           <button
-                            onClick={() => handleShowDeleteProductModal(product._id)}
+                            onClick={() => handleShowDeleteProductModal(product)}
                             className="text-indigo-600 hover:text-indigo-900">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +252,7 @@ export default function ManageStocks() {
                     ))}
                   </tbody>
                 </table>
-                <Pagination page={page} pages={totalPage} changePage={setPage} />
+                <Pagination page={page} pages={totalPage} changePage={setPage} count={count} />
               </div>
             </div>
           </div>

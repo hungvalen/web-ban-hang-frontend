@@ -25,9 +25,40 @@ export const dataURItoFile = (dataURI, fileName) => {
     return new File([blob], fileName, { type: 'image/jpeg' });
 }
 
-export const getEncodedDataFromDataURI = (dataURI) => {
-    const [, encodedData] = dataURI?.split(',');
-    return encodedData;
+export const getEncodedDataFromDataURI = (file) => {
+    // console.log(dataURI);
+    // const [, encodedData] = dataURI?.split(',');
+    // const mimeType = encodedData[0].split(":")[1];
+    // const data = encodedData[1];
+    // return encodedData;
+    // if (typeof dataURI === "string") {
+    //     const dataURIParts = dataURI.split(",");
+    //     if (dataURIParts.length === 2) {
+    //         const encodedData = dataURIParts[1];
+    //         return encodedData;
+    //     }
+    // }
+    // return null;
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            const dataURI = reader.result;
+            const dataURIParts = dataURI.split(",");
+            if (dataURIParts.length === 2) {
+                const encodedData = dataURIParts[1];
+                resolve(encodedData);
+            } else {
+                reject("Invalid data URI or image file");
+            }
+        };
+
+        reader.onerror = () => {
+            reject("Error reading file");
+        };
+
+        reader.readAsDataURL(file);
+    });
 }
 
 export const fileName = 'image.jpg';

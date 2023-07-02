@@ -1,82 +1,67 @@
 import { Link } from "react-router-dom";
+
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import NoDataFound from "../../NoDataFound/NoDataFound";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBrandAction } from "../../../../redux/slices/brand/brandSlice";
-import LoadingComponent from "../../../LoadingComp/LoadingComponent";
-import ErrorMsg from "../../../ErrorMsg/ErrorMsg";
-import NoDataFound from "../../../NoDataFound/NoDataFound";
-import { limitNumber } from "../../../../utils/limitNumber";
-import Pagination from "../../../pagination/Pagination";
-import AddBrand from "./modal/AddBrand";
-import EditBrand from "./modal/EditBrand";
-import DeleteBrandModal from "./modal/DeleteBrand";
-import { resetSuccessAction } from "../../../../redux/slices/globalActions/globalAction";
+import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import { fetchPaymentMethodAction } from "../../../redux/slices/payment-method/paymentMethodSlice";
 
-
-export default function ManageBrands() {
+export default function ManagePaymentMethod() {
     const dispatch = useDispatch();
-    const { brands, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.brand)
-    let count = brands?.count;
-    let totalPage = Math.ceil(count / limitNumber);
-    const [isShowEditBrandModal, setIsShowEditBrandModal] = useState(false);
-    const [isShowAddBrandModal, setIsShowAddBrandModal] = useState(false);
-    const [isShowDeleteBrandModal, setIsShowDeleteBrandModal] = useState(false);
-    const [brand, setBrand] = useState('');
-    const [page, setPage] = useState(1);
-    const limit = 5;
-    //delete brand handler
-    const deleteBrandHandler = (item) => {
-        setIsShowDeleteBrandModal(!isShowDeleteBrandModal)
-        setBrand(item);
+    const { paymentMethods: { paymentMethod }, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.paymentMethod)
+    const [isShowEditPaymentMethodModal, setIsShowEditPaymentMethodModal] = useState(false);
+    const [isShowAddPaymentMethodModal, setIsShowAddPaymentMethodModal] = useState(false);
+    const [isShowDeletePaymentMethodModal, setIsShowDeletePaymentMethodModal] = useState(false);
+    const [PaymentMethod, setPaymentMethod] = useState('');
+    //delete PaymentMethod handler
+    const deletePaymentMethodHandler = (item) => {
+        setIsShowDeletePaymentMethodModal(!isShowDeletePaymentMethodModal)
+        setPaymentMethod(item);
     };
     useEffect(() => {
-        dispatch(fetchBrandAction({
-            page, limit
-        }))
-    }, [dispatch, page, limit])
+        dispatch(fetchPaymentMethodAction())
+    }, [dispatch])
 
-    const handleEditBrand = (item) => {
-        setIsShowEditBrandModal(!isShowEditBrandModal);
-        setBrand(item);
+    const handleEditPaymentMethod = (item) => {
+        setIsShowEditPaymentMethodModal(!isShowEditPaymentMethodModal);
+        setPaymentMethod(item);
     }
-    const handleAddBrand = () => {
-        setIsShowAddBrandModal(!isShowAddBrandModal);
+    const handleAddPaymentMethod = () => {
+        setIsShowAddPaymentMethodModal(!isShowAddPaymentMethodModal);
     }
 
     useEffect(() => {
         if (isAdded) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchPaymentMethodAction());
             dispatch(resetSuccessAction());
-        }
 
-    }, [isAdded, dispatch, page, limit])
+        }
+    }, [isAdded, dispatch])
 
     useEffect(() => {
         if (isUpdated) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchPaymentMethodAction());
             dispatch(resetSuccessAction());
 
         }
-    }, [isUpdated, dispatch, page, limit])
+    }, [isUpdated, dispatch])
 
     useEffect(() => {
         if (isDeleted) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
+            dispatch(fetchPaymentMethodAction());
             dispatch(resetSuccessAction());
+
         }
-    }, [isDeleted, dispatch, page, limit])
+    }, [isDeleted, dispatch])
     return (
         <div className="px-4 sm:px-6 lg:px-8">
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
                     <h1 className="text-xl font-semibold text-gray-900">
-                        All Brands
+                        All Categories
                     </h1>
                     <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title,
@@ -84,10 +69,11 @@ export default function ManageBrands() {
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <button
-                        onClick={handleAddBrand}
+                        // to="/admin/add-PaymentMethod"
+                        onClick={handleAddPaymentMethod}
                         type="button"
                         className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-                        Add New Brand
+                        Add New PaymentMethod
                     </button>
                 </div>
             </div>
@@ -95,7 +81,7 @@ export default function ManageBrands() {
                 <LoadingComponent />
             ) : error ? (
                 <ErrorMsg message={error?.message} />
-            ) : brands?.length <= 0 ? (
+            ) : paymentMethod?.length <= 0 ? (
                 <NoDataFound />
             ) : (
                 <div className="mt-8 flex flex-col">
@@ -113,7 +99,7 @@ export default function ManageBrands() {
                                             <th
                                                 scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                No. Products
+                                                Description
                                             </th>
                                             <th
                                                 scope="col"
@@ -138,30 +124,32 @@ export default function ManageBrands() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {brands?.brands?.map((brand) => (
-                                            <tr key={brand?._id}>
+                                        {paymentMethod?.map((item) => (
+                                            <tr key={PaymentMethod?._id}>
                                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+
                                                     <div className="font-medium text-gray-900">
-                                                        {brand?.name}
+                                                        {item?.name}
                                                     </div>
+
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <div className="text-gray-900">
-                                                        {brand?.products?.length}
+                                                    <div className="font-medium text-gray-900">
+                                                        {item?.description}
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                                                        {brand?.user?.fullName ?? 'admin'}
+                                                        {item?.user?.fullName}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    {new Date(brand?.createdAt).toLocaleDateString()}
+                                                    {new Date(item?.createdAt).toLocaleDateString()}
                                                 </td>
                                                 {/* edit icon */}
-                                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
+                                                <td td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6" >
                                                     <button
-                                                        onClick={() => handleEditBrand(brand)}
+                                                        onClick={() => handleEditPaymentMethod(item)}
                                                         type="button"
                                                         className="text-indigo-600 hover:text-indigo-900">
                                                         <svg
@@ -177,13 +165,13 @@ export default function ManageBrands() {
                                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                                                             />
                                                         </svg>
-                                                        {/* <span className="sr-only">, {category?.name}</span> */}
+                                                        {/* <span className="sr-only">, {PaymentMethod?.name}</span> */}
                                                     </button>
                                                 </td>
                                                 {/* delete icon */}
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                                                     <button
-                                                        onClick={() => deleteBrandHandler(brand)}
+                                                        onClick={() => deletePaymentMethodHandler(PaymentMethod)}
                                                         className="text-indigo-600 hover:text-indigo-900">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
@@ -206,23 +194,21 @@ export default function ManageBrands() {
                                         }
                                     </tbody>
                                 </table>
-                                <Pagination page={page} pages={totalPage} changePage={setPage} />
                             </div>
                         </div>
                     </div>
-
-                </div>
-
-            )}
-            {
-                isShowEditBrandModal && <EditBrand isShowEditBrandModal={isShowEditBrandModal} setIsShowEditBrandModal={setIsShowEditBrandModal} brand={brand} />
+                </div >
+            )
+            }
+            {/* {
+                isShowEditPaymentMethodModal && <EditPaymentMethod isShowEditPaymentMethodModal={isShowEditPaymentMethodModal} setIsShowEditPaymentMethodModal={setIsShowEditPaymentMethodModal} PaymentMethod={PaymentMethod} />
             }
             {
-                isShowAddBrandModal && <AddBrand isShowAddBrandModal={isShowAddBrandModal} setIsShowAddBrandModal={setIsShowAddBrandModal} />
+                isShowAddPaymentMethodModal && <AddPaymentMethod isShowAddPaymentMethodModal={isShowAddPaymentMethodModal} setIsShowAddPaymentMethodModal={setIsShowAddPaymentMethodModal} />
             }
             {
-                isShowDeleteBrandModal && <DeleteBrandModal isShowDeleteBrandModal={isShowDeleteBrandModal} setIsShowDeleteBrandModal={setIsShowDeleteBrandModal} brand={brand} />
-            }
-        </div>
+                isShowDeletePaymentMethodModal && <DeletePaymentMethodModal isShowDeletePaymentMethodModal={isShowDeletePaymentMethodModal} setIsShowDeletePaymentMethodModal={setIsShowDeletePaymentMethodModal} PaymentMethod={PaymentMethod} />
+            } */}
+        </div >
     );
 }

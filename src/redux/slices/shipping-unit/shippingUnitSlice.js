@@ -8,18 +8,18 @@ import axiosClient from "../../../utils/axiosClient";
 
 // initialState
 const initialState = {
-    categories: [],
+    shippingUnits: [],
     loading: false,
-    category: {},
+    shippingUnit: {},
     error: null,
     isAdded: false,
     isUpdated: false,
     isDeleted: false,
 }
 
-// create category action
-export const createCategoryAction = createAsyncThunk(
-    "category/create", async (payload, { rejectWithValue, getState, dispatch }) => {
+// create shipping unit action
+export const createShippingUnitAction = createAsyncThunk(
+    "shipping-unit/create", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
             const { name, file } = payload;
             // make request
@@ -37,8 +37,8 @@ export const createCategoryAction = createAsyncThunk(
             formData.append("name", name);
             formData.append("file", file);
 
-            const { data } = await axios.post(`${baseURL}/categories`, formData, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Category created successfully" });
+            const { data } = await axiosClient.post(`${baseURL}/shipping-unit`, formData, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Shipping created successfully" });
 
             return data;
         } catch (error) {
@@ -47,9 +47,9 @@ export const createCategoryAction = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
-// update category action
-export const updateCategoryAction = createAsyncThunk(
-    "category/update", async (payload, { rejectWithValue, getState, dispatch }) => {
+// update shipping unit action
+export const updateShippingUnitAction = createAsyncThunk(
+    "shipping-unit/update", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
             const { name, file, id } = payload;
             // make request
@@ -67,8 +67,8 @@ export const updateCategoryAction = createAsyncThunk(
             formData.append("name", name);
             formData.append("file", file);
 
-            const { data } = await axios.put(`${baseURL}/categories/${id}`, formData, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Category updated successfully" });
+            const { data } = await axios.put(`${baseURL}/shipping-unit/${id}`, formData, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Shipping Unit updated successfully" });
 
             return data;
         } catch (error) {
@@ -78,11 +78,11 @@ export const updateCategoryAction = createAsyncThunk(
         }
     })
 
-// fetch category action
-export const fetchCategoriesAction = createAsyncThunk(
-    "category/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
+// fetch shipping unit action
+export const fetchShippingUnitAction = createAsyncThunk(
+    "shipping-unit/fetch-all", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axiosClient.get(`${baseURL}/categories`)
+            const { data } = await axiosClient.get(`${baseURL}/shipping-unit`)
             return data;
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oop", message: `${error.response.data.message}` });
@@ -90,12 +90,12 @@ export const fetchCategoriesAction = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
-// delete category action
-export const deleteCategoryAction = createAsyncThunk(
-    "category/delete", async (id, { rejectWithValue, getState, dispatch }) => {
+// delete shipping unit action
+export const deleteShippingUnitAction = createAsyncThunk(
+    "shipping-unit/delete", async (id, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axios.delete(`${baseURL}/categories/${id}`)
-            SweetAlert({ icon: "success", title: "Success", message: "Category deleted successfully" });
+            const { data } = await axios.delete(`${baseURL}/shipping-unit/${id}`)
+            SweetAlert({ icon: "success", title: "Success", message: "Shipping unit deleted successfully" });
 
             return data;
         } catch (error) {
@@ -105,65 +105,63 @@ export const deleteCategoryAction = createAsyncThunk(
         }
     })
 // slice
-const categorySlice = createSlice({
-    name: "categories",
+const shippingUnitSlice = createSlice({
+    name: "shipping-unit",
     initialState,
     extraReducers: (builder) => {
         // create category
-        builder.addCase(createCategoryAction.pending, (state, action) => {
+        builder.addCase(createShippingUnitAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(createCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(createShippingUnitAction.fulfilled, (state, action) => {
             state.loading = false;
             state.isAdded = true;
-            state.categories = action.payload;
+            state.shippingUnit = action.payload;
         })
-        builder.addCase(createCategoryAction.rejected, (state, action) => {
+        builder.addCase(createShippingUnitAction.rejected, (state, action) => {
             state.loading = false;
-            state.categories = null;
+            state.shippingUnit = null;
             state.error = action.payload;
             state.isAdded = false;
         })
-        // update category
-        builder.addCase(updateCategoryAction.pending, (state, action) => {
+        // update shipping unit
+        builder.addCase(updateShippingUnitAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(updateCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(updateShippingUnitAction.fulfilled, (state, action) => {
             state.loading = false;
             state.isUpdated = true;
-            state.category = action.payload;
+            state.shippingUnit = action.payload;
         })
-        builder.addCase(updateCategoryAction.rejected, (state, action) => {
+        builder.addCase(updateShippingUnitAction.rejected, (state, action) => {
             state.loading = false;
-            state.category = null;
+            state.shippingUnit = null;
             state.error = action.payload;
             state.isUpdated = false;
         })
-        // fetch all category
-        builder.addCase(fetchCategoriesAction.pending, (state, action) => {
+        // fetch all shipping unit
+        builder.addCase(fetchShippingUnitAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(fetchCategoriesAction.fulfilled, (state, action) => {
+        builder.addCase(fetchShippingUnitAction.fulfilled, (state, action) => {
             state.loading = false;
-            state.categories = action.payload;
+            state.shippingUnits = action.payload;
         })
-        builder.addCase(fetchCategoriesAction.rejected, (state, action) => {
+        builder.addCase(fetchShippingUnitAction.rejected, (state, action) => {
             state.loading = false;
-            state.categories = null;
+            state.shippingUnits = null;
             state.error = action.payload;
         })
-        // delete category
-        builder.addCase(deleteCategoryAction.pending, (state, action) => {
+        // delete shipping-unit
+        builder.addCase(deleteShippingUnitAction.pending, (state, action) => {
             state.loading = true;
         })
-        builder.addCase(deleteCategoryAction.fulfilled, (state, action) => {
+        builder.addCase(deleteShippingUnitAction.fulfilled, (state, action) => {
             state.loading = false;
-            state.category = action.payload;
             state.isDeleted = true;
         })
-        builder.addCase(deleteCategoryAction.rejected, (state, action) => {
+        builder.addCase(deleteShippingUnitAction.rejected, (state, action) => {
             state.loading = false;
-            state.category = null;
             state.error = action.payload;
             state.isDeleted = false;
 
@@ -180,4 +178,4 @@ const categorySlice = createSlice({
 })
 
 // generate reducer
-export const categoryReducer = categorySlice.reducer;
+export const shippingUnitReducer = shippingUnitSlice.reducer;

@@ -9,6 +9,7 @@ import { fetchCategoriesAction } from "../../../redux/slices/categories/categori
 import EditCategory from "./modal/EditCategory";
 import AddCategory from "./modal/AddCategory";
 import DeleteCategoryModal from "./modal/DeleteCategory";
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
 
 export default function ManageCategories() {
   const dispatch = useDispatch();
@@ -37,18 +38,24 @@ export default function ManageCategories() {
   useEffect(() => {
     if (isAdded) {
       dispatch(fetchCategoriesAction());
+      dispatch(resetSuccessAction());
+
     }
   }, [isAdded, dispatch])
 
   useEffect(() => {
     if (isUpdated) {
       dispatch(fetchCategoriesAction());
+      dispatch(resetSuccessAction());
+
     }
   }, [isUpdated, dispatch])
 
   useEffect(() => {
     if (isDeleted) {
       dispatch(fetchCategoriesAction());
+      dispatch(resetSuccessAction());
+
     }
   }, [isDeleted, dispatch])
   return (

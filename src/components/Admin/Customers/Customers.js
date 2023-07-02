@@ -16,7 +16,7 @@ export default function ManageCustomers() {
   const [isShowEditUserModal, setIsShowEditUserModal] = useState(false);
   const [isShowDeleteUserModal, setIsShowDeleteUserModal] = useState(false);
   const [isShowAddUserModal, setIsShowAddUserModal] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [query, setQuery] = useState("");
   const [params] = useSearchParams();
   const limit = params.get("limit") || 5;
   const dispatch = useDispatch();
@@ -29,38 +29,45 @@ export default function ManageCustomers() {
   useEffect(() => {
     dispatch(getListUsersAction({
       page,
-      limit
+      limit,
+      query
     }))
-  }, [page, limit, dispatch])
+  }, [page, limit, dispatch, query])
   useEffect(() => {
     if (isUpdated) {
       dispatch(getListUsersAction({
         page,
-        limit
+        limit,
+        query
+
       }))
       dispatch(resetSuccessAction());
     }
-  }, [isUpdated, dispatch, page, limit])
+  }, [isUpdated, dispatch, page, limit, query])
 
   useEffect(() => {
     if (isDeleted) {
       dispatch(getListUsersAction({
         page,
-        limit
+        limit,
+        query
+
       }))
       dispatch(resetSuccessAction());
     }
-  }, [isDeleted, dispatch, page, limit])
+  }, [isDeleted, dispatch, page, limit, query])
 
   useEffect(() => {
     if (isAdded) {
       dispatch(getListUsersAction({
         page,
-        limit
+        limit,
+        query
+
       }))
       dispatch(resetSuccessAction());
     }
-  }, [isAdded, dispatch, page, limit])
+  }, [isAdded, dispatch, page, limit, query])
 
   const handleShowEditUserModal = (person) => {
     setIsShowEditUserModal(true);
@@ -99,9 +106,9 @@ export default function ManageCustomers() {
           type="search"
           name="search"
           placeHolder="Seach user"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className="block  appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
         />
       </div>
       {loading ? <LoadingComponent /> : error ? <ErrorMsg /> : users.length <= 0 ? <NoDataFound /> : <div className="mt-8 flex flex-col">
@@ -156,14 +163,7 @@ export default function ManageCustomers() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {
-                    users?.users.filter((val) => {
-                      if (searchValue === "") {
-                        return val
-                      }
-                      else if (val.fullName.toLowerCase().includes(searchValue.toLocaleLowerCase())) {
-                        return val
-                      }
-                    })?.map((person) => (
+                    users?.users?.map((person) => (
                       <tr key={person._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
                           {person._id}
@@ -203,7 +203,7 @@ export default function ManageCustomers() {
                     ))}
                 </tbody>
               </table>
-              <Pagination page={page} pages={totalPage} changePage={setPage} />
+              <Pagination page={page} pages={totalPage} changePage={setPage} count={count} />
 
             </div>
           </div>

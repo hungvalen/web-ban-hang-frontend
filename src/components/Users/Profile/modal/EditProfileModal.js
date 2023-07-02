@@ -6,6 +6,8 @@ import makeAnimated from "react-select/animated";
 import { updateUserAction, updateUserProfileAction } from '../../../../redux/slices/users/usersSlice';
 import { PhotoIcon } from '@heroicons/react/20/solid';
 import { dataURItoFile, fileName, getEncodedDataFromDataURI } from '../../../../utils/handleFileImage';
+import DatePicker from "react-datepicker";
+
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditProfileModal({ isShowEditProfileModal, setIsShowEditProfileModal, user }) {
@@ -13,18 +15,20 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
     const [selectedImage, setSelectedImage] = useState(user?.photo ?? '');
-
+    const genders = ["male", "female", "other"];
     //---form data---
     const [formData, setFormData] = useState({
         fullName: user?.fullName ?? '',
         email: user?.email ?? "",
         phone: user?.phone ?? '',
         address: user?.address ?? '',
-        dateOfBirth: user?.dateOfBirth ?? "",
+        dateOfBirth: new Date(user?.dateOfBirth ?? ""),
         gender: user?.gender ?? "",
         bio: user?.bio ?? "",
         file: user?.photo ?? ""
     });
+    const [convertFile, setConvertFile] = useState(null);
+    const [encodedData, setEncodedData] = useState(null);
     //onChange
     const handleOnChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,11 +45,19 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
         if (file) {
             reader.readAsDataURL(file);
         }
+        getEncodedDataFromDataURI(file)
+            .then((encodedData) => {
+                console.log("Encoded data:", encodedData);
+                setEncodedData(encodedData)
+                setConvertFile(dataURItoFile(encodedData, fileName))
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
     //onSubmit
     const handleOnSubmit = (e) => {
-        const encodedData = getEncodedDataFromDataURI(selectedImage)
-        const convertFile = dataURItoFile(encodedData, fileName);
         e.preventDefault();
         dispatch(updateUserProfileAction({
             ...formData,
@@ -169,12 +181,11 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                                 Date of birth
                                                             </label>
                                                             <div className="mt-1">
-                                                                <input
-                                                                    name="dateOfBirth"
-                                                                    type="date"
-                                                                    value={formData?.dateOfBirth}
-                                                                    onChange={handleOnChange}
-                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                                <DatePicker
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                    selected={formData?.dateOfBirth}
+                                                                    onChange={(date) => setFormData({ ...formData, dateOfBirth: date })}
                                                                 />
                                                             </div>
                                                         </div>
@@ -191,6 +202,24 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                                 />
                                                             </div>
+                                                        </div>
+                                                        <div className="sm:col-span-3">
+                                                            <label className="block text-sm font-medium text-gray-700">
+                                                                Select gender
+                                                            </label>
+                                                            <select
+                                                                name="gender"
+                                                                value={formData.gender}
+                                                                onChange={handleOnChange}
+                                                                className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
+                                                                defaultValue="user">
+                                                                <option>-- Select gender --</option>
+                                                                {genders?.map((gender, index) => (
+                                                                    <option key={index} value={gender}>
+                                                                        {gender}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
