@@ -94,9 +94,9 @@ export const deleteBrandAction = createAsyncThunk(
 
 // create brand action
 export const fetchBrandAction = createAsyncThunk(
-    "brand/fetch-all", async ({ page, limit }, { rejectWithValue, getState, dispatch }) => {
+    "brand/fetch-all", async ({ page, limit, query }, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { data } = await axiosClient.get(`${baseURL}/brands?page=${page}&limit=${limit}`)
+            const { data } = await axiosClient.get(`${baseURL}/brands?page=${page}&limit=${limit}&query=${query}`)
             return data;
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });

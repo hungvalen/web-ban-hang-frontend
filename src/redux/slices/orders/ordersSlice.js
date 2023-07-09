@@ -19,7 +19,7 @@ const initialState = {
 export const placeOrderAction = createAsyncThunk(
     "order/place-order", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { orderItems, shippingAddress, totalPrice, paymentMethod } = payload;
+            const { orderItems, shippingAddress, totalPrice, shippingUnit, paymentMethod } = payload;
             // make request
             // token
             const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -34,12 +34,14 @@ export const placeOrderAction = createAsyncThunk(
                     orderItems,
                     shippingAddress,
                     totalPrice,
+                    shippingUnit,
                     paymentMethod
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
+            dispatch(navigateToOrderSuccess());
             return data;
-            return window.open(data.url);
+            // return window.open(data.url);
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
             return rejectWithValue(error.response.data);
@@ -127,7 +129,11 @@ export const updateOrderAction = createAsyncThunk("orders/update-order", async (
         return rejectWithValue(error?.response?.data);
     }
 })
-
+export const navigateToOrderSuccess = () => {
+    // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
+    // Ví dụ: sử dụng window.location.href hoặc history.push()
+    window.location.href = "success"
+};
 // slice
 const ordersSlice = createSlice({
     name: "orders",

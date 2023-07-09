@@ -99,7 +99,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit User</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit Profile</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">

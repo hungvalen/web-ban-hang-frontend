@@ -11,7 +11,6 @@ import Skeleton from "react-loading-skeleton";
 import EditProduct from "./modal/EditProduct";
 import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
 import DeleteProduct from "./modal/DeleteProduct";
-import ReactPaginate from 'react-paginate';
 import { limitNumber } from "../../../utils/limitNumber";
 import AddProduct from "./modal/AddProduct";
 
@@ -30,6 +29,8 @@ export default function ManageStocks() {
   const [page, setPage] = useState(1);
   const limit = params.get("limit") || 5;
   const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState("");
+  const [isView, setIsView] = useState(false);
   // const [pages, setPages] = useState(totalPage)
   useEffect(() => {
     dispatch(fetchAllProductAction({ url: productUrl, page: page, limit }))
@@ -50,9 +51,10 @@ export default function ManageStocks() {
     }
   }, [isDeleted, productUrl, page, limit, dispatch])
 
-  const handleShowEditProductModal = (product) => {
+  const handleShowEditProductModal = (product, isView) => {
     setIsShowEditProductModal(!isShowEditProductModal)
     setProduct(product)
+    setIsView(isView)
   };
   const handleShowAddProductModal = () => {
     setIsShowAddProductModal(!isShowAddProductModal)
@@ -63,16 +65,17 @@ export default function ManageStocks() {
     setProduct(product)
   };
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
+    <div className="px-4 sm:px-6 lg:px-8 mt-3">
+      <div className="sm:flex sm:items-center mb-3">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">
-            Product List- {products?.length} items
+            {/* Product List- {products?.length} items */}
+            Manage Products
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
+          {/* <p className="mt-2 text-sm text-gray-700">
             List of all the products in your account including their name,
             title,
-          </p>
+          </p> */}
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
@@ -83,6 +86,16 @@ export default function ManageStocks() {
             Add New Product
           </button>
         </div>
+      </div>
+      <div className="flex items-center justify-end">
+        <input
+          type="search"
+          name="search"
+          placeHolder="Search user"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+        />
       </div>
 
       {loading ? (
@@ -138,13 +151,13 @@ export default function ManageStocks() {
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Edit
+                        Actions
                       </th>
-                      <th
+                      {/* <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                         Delete
-                      </th>
+                      </th> */}
 
                     </tr>
                   </thead>
@@ -206,9 +219,20 @@ export default function ManageStocks() {
                         {/* edit */}
                         <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
                           <button
-                            onClick={() => handleShowEditProductModal(product)}
+                            onClick={() => handleShowEditProductModal(product, true)}
+                            className="text-black hover:text-indigo-700 mx-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+
+
+                            <span className="sr-only">, {product.name}</span>
+                          </button>
+                          <button
+                            onClick={() => handleShowEditProductModal(product, false)}
                             // to={`/admin/products/edit/${product._id}`}
-                            className="text-indigo-600 hover:text-indigo-900">
+                            className="text-indigo-600 hover:text-indigo-900 mx-1">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -225,12 +249,9 @@ export default function ManageStocks() {
 
                             <span className="sr-only">, {product.name}</span>
                           </button>
-                        </td>
-                        {/* delete */}
-                        <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
                           <button
                             onClick={() => handleShowDeleteProductModal(product)}
-                            className="text-indigo-600 hover:text-indigo-900">
+                            className="text-rose-600 hover:text-rose-700 mx-1">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -247,7 +268,12 @@ export default function ManageStocks() {
 
                             <span className="sr-only">, {product.name}</span>
                           </button>
+
                         </td>
+                        {/* delete */}
+                        {/* <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">
+                        
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>
@@ -259,7 +285,7 @@ export default function ManageStocks() {
 
           {
             isShowEditProductModal && (
-              <EditProduct isShowEditProductModal={isShowEditProductModal} product={product} setIsShowEditProductModal={setIsShowEditProductModal} />
+              <EditProduct isShowEditProductModal={isShowEditProductModal} product={product} setIsShowEditProductModal={setIsShowEditProductModal} isView={isView} />
             )
           }
           {

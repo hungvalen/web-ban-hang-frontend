@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 export default function ThanksForOrdering() {
   return (
     <>
-      <main className="relative lg:min-h-full">
         <div className="h-80 overflow-hidden lg:absolute lg:h-full lg:w-1/2 lg:pr-4 xl:pr-12">
           <img
             src="https://tailwindui.com/img/ecommerce-images/confirmation-page-06-hero.jpg"
@@ -37,7 +36,6 @@ export default function ThanksForOrdering() {
             </div>
           </div>
         </div>
-      </main>
     </>
   );
 }

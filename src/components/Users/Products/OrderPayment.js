@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import AddShippingAddress from '../Forms/AddShippingAddress';
 import { Dialog, Popover, RadioGroup, Tab, Transition } from '@headlessui/react'
-import { CheckCircleIcon, ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid'
+import { CheckCircleIcon, ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux';
 import { cartItemsFromLocalStorageAction } from '../../../redux/slices/cart/cartSlices';
 import { formatPrice } from '../../../utils/formatCurrency';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getUserProfileAction } from '../../../redux/slices/users/usersSlice';
 import { placeOrderAction } from '../../../redux/slices/orders/ordersSlice';
+import { fetchShippingUnitAction } from '../../../redux/slices/shipping-unit/shippingUnitSlice';
+import { resetSuccessAction } from '../../../redux/slices/globalActions/globalAction';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 const deliveryMethods = [
@@ -21,28 +23,64 @@ const deliveryMethods = [
 const paymentMethods = [
   { id: 'cod', title: 'Thanh toán khi nhận hàng' },
   { id: 'credit card', title: 'Credit card' },
-  { id: 'paypal', title: 'PayPal' },
   { id: 'banking', title: 'Banking' },
 ]
 const OrderPayment = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    country: "",
+    provinceId: "",
+    districtId: "",
+    wardId: "",
+    province: "",
+    district: "",
+    ward: "",
+    region: "",
+    postalCode: "",
+    phone: "",
+  });
+  //onchange
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const navigate = useNavigate();
   const location = useLocation();
   const { sumTotalPrice } = location.state;
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0])
+  const { isAdded } = useSelector(state => state.orders)
   const [paymentMethod, setPaymentMethod] = useState();
-
+  const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction());
+    dispatch(fetchShippingUnitAction())
+
   }, [dispatch])
+
+  useEffect(() => {
+    if (isAdded) {
+      navigate('success');
+      dispatch(resetSuccessAction());
+    }
+  }, [])
   const { cartItems } = useSelector(state => state.carts)
-
+  const { shippingUnits, loading: loadingShippingUnit } = useSelector(state => state.shippingUnit)
+  const [shippingUnitsOptions, setShippingUnitsOptions] = useState([]);
   const calculateTotalDiscountedPrice = () => { };
-
   // get profile user
   useEffect(() => {
     dispatch(getUserProfileAction());
   }, [dispatch])
 
+
+  useEffect(() => {
+    if (shippingUnits !== undefined) {
+      setShippingUnitsOptions(shippingUnits)
+    }
+  }, [shippingUnits])
   const { loading, error, profile } = useSelector(state => state.users);
   const user = profile?.user;
 
@@ -53,9 +91,12 @@ const OrderPayment = () => {
   const createOrderSubmitHandler = (e) => {
     e.preventDefault();
     dispatch(placeOrderAction({
-      shippingAddress,
+      shippingAddress: {
+        ...formData
+      },
       orderItems: cartItems,
       totalPrice: sumTotalPrice,
+      shippingUnit: selected,
       paymentMethod: paymentMethod
     }))
     localStorage.removeItem('cartItems');
@@ -64,6 +105,7 @@ const OrderPayment = () => {
     setPaymentMethod(e.target.value)
   }
   const { loading: loadingOrder, error: errorOrder, order } = useSelector(state => state.orders);
+
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
@@ -72,7 +114,7 @@ const OrderPayment = () => {
 
           <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
             <div>
-              <div>
+              {/* <div>
                 <h2 className="text-lg font-medium text-gray-900">Contact information</h2>
 
                 <div className="mt-4">
@@ -90,12 +132,62 @@ const OrderPayment = () => {
                     />
                   </div>
                 </div>
-              </div>
-              <div className="mt-10 border-t border-gray-200 pt-10">
+              </div> */}
+              <div>
                 {/* shipping Address */}
-                <AddShippingAddress />
+                <AddShippingAddress formData={formData} setFormData={setFormData} onChange={onChange} />
+                <div className="border-t border-gray-200 pt-10">
+                  <h2 className="text-lg font-medium text-gray-900">Shipping unit</h2>
+                  {loadingShippingUnit ? <div className="mt-3">Loading ...</div> :
+                    shippingUnits?.shippingUnit?.map((item) => {
+                      return (<RadioGroup value={selected} onChange={setSelected}>
+                        <RadioGroup.Label className="sr-only"> Server size </RadioGroup.Label>
+                        <div className="my-2">
+                          <RadioGroup.Option
+                            key={item?.name}
+                            value={item}
+                            className={({ checked, active }) =>
+                              classNames(
+                                checked ? 'border-transparent' : 'border-gray-300',
+                                active ? 'border-indigo-600 ring-2 ring-indigo-600' : '',
+                                'relative block cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between'
+                              )
+                            }
+                          >
+                            {({ active, checked }) => (
+                              <>
+                                <span className="flex items-center">
+                                  <span className="flex flex-col text-sm">
+                                    <RadioGroup.Label as="span" className="font-medium text-gray-900">
+                                      {item?.name}
+                                    </RadioGroup.Label>
 
-
+                                  </span>
+                                </span>
+                                <RadioGroup.Description
+                                  as="span"
+                                  className="mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right"
+                                >
+                                  <img src={item?.image} alt="" className="h-8 w-8 rounded-md object-fill" />
+                                  {/* <span className="font-medium text-gray-900">{item?.name}</span>
+                                  <span className="ml-1 text-gray-500 sm:ml-0">/mo</span> */}
+                                </RadioGroup.Description>
+                                <span
+                                  className={classNames(
+                                    active ? 'border' : 'border-2',
+                                    checked ? 'border-indigo-600' : 'border-transparent',
+                                    'pointer-events-none absolute -inset-px rounded-lg'
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              </>
+                            )}
+                          </RadioGroup.Option>
+                        </div>
+                      </RadioGroup>)
+                    })
+                  }
+                </div>
                 {/* Payment */}
                 <div className="mt-10 border-t border-gray-200 pt-10">
                   <h2 className="text-lg font-medium text-gray-900">Payment</h2>
@@ -362,10 +454,20 @@ const OrderPayment = () => {
                   ))}
                 </ul>
                 <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <dt className="text-sm">Taxes</dt>
+                  <div className="flex items-center justify-between ">
+                    <dt className="flex items-center text-sm text-gray-600">
+                      <span>Shipping estimate</span>
+                      <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                        <span className="sr-only">Learn more about how shipping is calculated</span>
+                        <QuestionMarkCircleIcon className="h-5 w-5" aria-hidden="true" />
+                      </a>
+                    </dt>
                     <dd className="text-sm font-medium text-gray-900">{formatPrice.format(+selectedDeliveryMethod.price)}</dd>
                   </div>
+                  {/* <div className="flex items-center justify-between">
+                    <dt className="text-sm">Taxes</dt>
+                    <dd className="text-sm font-medium text-gray-900"></dd>
+                  </div> */}
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                     <dt className="text-base font-medium">Sub Total</dt>
                     <dd className="text-base font-medium text-gray-900">

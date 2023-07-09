@@ -11,6 +11,8 @@ export default function EditBrand({ isShowEditBrandModal, setIsShowEditBrandModa
     //---form data---
     const [formData, setFormData] = useState({
         name: brand?.name ?? 'no name',
+        email: "",
+        description: ""
     });
     //onChange
     const handleOnChange = (e) => {
@@ -65,7 +67,7 @@ export default function EditBrand({ isShowEditBrandModal, setIsShowEditBrandModa
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit Category</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit supplier</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -73,7 +75,7 @@ export default function EditBrand({ isShowEditBrandModal, setIsShowEditBrandModa
                                                     {/* <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p> */}
 
                                                     <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                                        <div className="sm:col-span-6">
+                                                        <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
                                                                 Name
                                                             </label>
@@ -86,8 +88,37 @@ export default function EditBrand({ isShowEditBrandModal, setIsShowEditBrandModa
                                                                 />
                                                             </div>
                                                         </div>
-
+                                                        <div className="sm:col-span-3">
+                                                            <label className="block text-sm font-medium text-gray-700">
+                                                                Email
+                                                            </label>
+                                                            <div className="mt-1">
+                                                                <input
+                                                                    required
+                                                                    type="email"
+                                                                    name="email"
+                                                                    value={formData?.email}
+                                                                    onChange={handleOnChange}
+                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="sm:col-span-full">
+                                                            <label className="block text-sm font-medium text-gray-700">
+                                                                Description
+                                                            </label>
+                                                            <div className="mt-1">
+                                                                <textarea
+                                                                    rows={5}
+                                                                    name="description"
+                                                                    value={formData.description}
+                                                                    onChange={handleOnChange}
+                                                                    className="block w-full rounded-md border-gray-300 border px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             </div>
 

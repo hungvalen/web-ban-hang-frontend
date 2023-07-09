@@ -16,13 +16,16 @@ import { resetSuccessAction } from "../../../../redux/slices/globalActions/globa
 export default function ManageBrands() {
     const dispatch = useDispatch();
     const { brands, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.brand)
+    const [query, setQuery] = useState("");
     let count = brands?.count;
-    let totalPage = Math.ceil(count / limitNumber);
+    let results = brands?.results;
+    let totalPage = query !== '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
     const [isShowEditBrandModal, setIsShowEditBrandModal] = useState(false);
     const [isShowAddBrandModal, setIsShowAddBrandModal] = useState(false);
     const [isShowDeleteBrandModal, setIsShowDeleteBrandModal] = useState(false);
     const [brand, setBrand] = useState('');
     const [page, setPage] = useState(1);
+
     const limit = 5;
     //delete brand handler
     const deleteBrandHandler = (item) => {
@@ -31,9 +34,9 @@ export default function ManageBrands() {
     };
     useEffect(() => {
         dispatch(fetchBrandAction({
-            page, limit
+            page, limit, query
         }))
-    }, [dispatch, page, limit])
+    }, [dispatch, page, limit, query])
 
     const handleEditBrand = (item) => {
         setIsShowEditBrandModal(!isShowEditBrandModal);
@@ -72,15 +75,15 @@ export default function ManageBrands() {
         }
     }, [isDeleted, dispatch, page, limit])
     return (
-        <div className="px-4 sm:px-6 lg:px-8">
-            <div className="sm:flex sm:items-center">
+        <div className="px-4 sm:px-6 lg:px-8 mt-3">
+            <div className="sm:flex sm:items-center mb-2">
                 <div className="sm:flex-auto">
                     <h1 className="text-xl font-semibold text-gray-900">
-                        All Brands
+                        Manage supplier
                     </h1>
-                    <p className="mt-2 text-sm text-gray-700">
+                    {/* <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title,
-                    </p>
+                    </p> */}
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <button
@@ -91,6 +94,16 @@ export default function ManageBrands() {
                     </button>
                 </div>
             </div>
+            <div className="flex items-center justify-end">
+                <input
+                    type="search"
+                    name="search"
+                    placeHolder="Search brand"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                />
+            </div>
             {loading ? (
                 <LoadingComponent />
             ) : error ? (
@@ -98,7 +111,7 @@ export default function ManageBrands() {
             ) : brands?.length <= 0 ? (
                 <NoDataFound />
             ) : (
-                <div className="mt-8 flex flex-col">
+                <div className="mt-4 flex flex-col">
                     <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, Transition } from '@headlessui/react'
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import { createBrandAction } from "../../../../../redux/slices/brand/brandSlice";
-export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }) {
+import { createPaymentMethodAction } from "../../../../../redux/slices/PaymentMethod/PaymentMethodSlice";
+export default function AddPaymentMethod({ isShowAddPaymentMethodModal, setIsShowAddPaymentMethodModal }) {
     const cancelButtonRef = useRef(null)
 
     const [formData, setFormData] = useState({
@@ -23,17 +23,17 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
     //onSubmit
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        dispatch(createBrandAction({
+        dispatch(createPaymentMethodAction({
             ...formData
 
         }))
         setFormData({ name: "" });
-        setIsShowAddBrandModal(!isShowAddBrandModal);
+        setIsShowAddPaymentMethodModal(!isShowAddPaymentMethodModal);
     };
     return (
         <>
-            <Transition.Root show={isShowAddBrandModal ?? false} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowAddBrandModal ?? false}>
+            <Transition.Root show={isShowAddPaymentMethodModal ?? false} as={Fragment}>
+                <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsShowAddPaymentMethodModal ?? false}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -121,7 +121,7 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                             </div>
 
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
-                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowAddBrandModal(!isShowAddBrandModal)}
+                                                <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowAddPaymentMethodModal(!isShowAddPaymentMethodModal)}
                                                     ref={cancelButtonRef}>
                                                     Cancel
                                                 </button>

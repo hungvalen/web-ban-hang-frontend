@@ -61,11 +61,11 @@ export default function ManagePaymentMethod() {
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
                     <h1 className="text-xl font-semibold text-gray-900">
-                        All Categories
+                        Manage Payment method
                     </h1>
-                    <p className="mt-2 text-sm text-gray-700">
+                    {/* <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title,
-                    </p>
+                    </p> */}
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <button

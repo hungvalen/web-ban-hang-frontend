@@ -57,161 +57,202 @@ const ShoppingCart = () => {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Shopping Cart
-        </h1>
-        <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-          <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            <h2 id="cart-heading" className="sr-only">
-              Items in your shopping cart
-            </h2>
 
-            <ul
-              role="list"
-              className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {cartItems?.map((product) => (
-                <li className="flex py-6 sm:py-10">
-                  <div className="flex-shrink-0">
-                    <img
-                      src={product?.image}
-                      alt={product?.name}
-                      className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                    />
-                  </div>
+        {
+          cartItems?.length > 0 ?
+            <>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Shopping Cart
+              </h1>
+              <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
 
-                  <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                    <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                      <div>
-                        <div className="flex justify-between">
-                          <h3 className="text-sm">
-                            <p
-                              className="font-medium text-gray-700 hover:text-gray-800">
-                              {product.name}
-                            </p>
-                          </h3>
+                <section aria-labelledby="cart-heading" className="lg:col-span-7">
+                  <h2 id="cart-heading" className="sr-only">
+                    Items in your shopping cart
+                  </h2>
+
+                  <ul
+                    role="list"
+                    className="divide-y divide-gray-200 border-t border-b border-gray-200">
+                    {cartItems?.map((product) => (
+                      <li className="flex py-6 sm:py-10">
+                        <div className="flex-shrink-0">
+                          <img
+                            src={product?.image}
+                            alt={product?.name}
+                            className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
+                          />
                         </div>
-                        <div className="mt-1 flex text-sm">
-                          <p className="text-gray-500">{product.color}</p>
-                          {product.size ? (
-                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-                              {product.size}
-                            </p>
-                          ) : null}
-                        </div>
-                        <p className="mt-1 text-sm font-medium text-gray-900">
-                          {`${formatPrice.format(product?.price)} x ${product?.qty} = ${formatPrice.format(product?.totalPrice)}`}
-                        </p>
-                      </div>
 
-                      <div className="mt-4 sm:mt-0 sm:pr-9">
-                        <label className="sr-only">
-                          Quantity, {product.name}
-                        </label>
-                        <select
-                          value={product?.qty}
-                          onChange={(e) => changeOrderItemQtyHandler(product?._id, e.target.value)}
-                          className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-                          {/* use the qty  */}
-                          {[...Array(product?.qtyLeft).keys()].map((x) => {
-                            return <option key={x} value={x + 1}>{x + 1}</option>
-                          })}
+                        <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+                          <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+                            <div>
+                              <div className="flex justify-between">
+                                <h3 className="text-sm">
+                                  <p
+                                    className="font-medium text-gray-700 hover:text-gray-800">
+                                    {product.name}
+                                  </p>
+                                </h3>
+                              </div>
+                              <div className="mt-1 flex text-sm">
+                                <p className="text-gray-500">{product.color}</p>
+                                {product.size ? (
+                                  <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
+                                    {product.size}
+                                  </p>
+                                ) : null}
+                              </div>
+                              <p className="mt-1 text-sm font-medium text-gray-900">
+                                {`${formatPrice.format(product?.price)} x ${product?.qty} = ${formatPrice.format(product?.totalPrice)}`}
+                              </p>
+                            </div>
 
-                        </select>
-                        {/* remove */}
-                        <div className="absolute top-0 right-0">
-                          <button
-                            onClick={() =>
-                              removeOrderItemFromLocalStorageHandler(
-                                product?._id
-                              )
-                            }
-                            className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500">
-                            <span className="sr-only">Remove</span>
-                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                          </button>
+                            <div className="mt-4 sm:mt-0 sm:pr-9">
+                              <label className="sr-only">
+                                Quantity, {product.name}
+                              </label>
+                              <select
+                                value={product?.qty}
+                                onChange={(e) => changeOrderItemQtyHandler(product?._id, e.target.value)}
+                                className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                {/* use the qty  */}
+                                {[...Array(product?.qtyLeft).keys()].map((x) => {
+                                  return <option key={x} value={x + 1}>{x + 1}</option>
+                                })}
+
+                              </select>
+                              {/* remove */}
+                              <div className="absolute top-0 right-0">
+                                <button
+                                  onClick={() =>
+                                    removeOrderItemFromLocalStorageHandler(
+                                      product?._id
+                                    )
+                                  }
+                                  className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500">
+                                  <span className="sr-only">Remove</span>
+                                  <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                {/* Order summary */}
+                <section
+                  aria-labelledby="summary-heading"
+                  className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+                  <h2
+                    id="summary-heading"
+                    className="text-lg font-medium text-gray-900">
+                    Order summary
+                  </h2>
+
+                  <dl className="mt-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <dt className="text-sm text-gray-600">Subtotal</dt>
+                      <dd className="text-sm font-medium text-gray-900">
+                        {formatPrice.format(sumTotalPrice)}
+                        {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
+                      </dd>
                     </div>
+                    {/* <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+                      <dt className="flex items-center text-sm text-gray-600">
+                        <span>Shipping estimate</span>
+                        <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                          <span className="sr-only">Learn more about how shipping is calculated</span>
+                          <QuestionMarkCircleIcon className="h-5 w-5" aria-hidden="true" />
+                        </a>
+                      </dt>
+                      <dd className="text-sm font-medium text-gray-900">$5.00</dd>
+                    </div> */}
+                    <div className="flex items-center justify-between border-t border-gray-200"></div>
+                    {/* add coupon */}
+                    <dt className="flex items-center text-sm text-gray-600">
+                      <span>Have coupon code? </span>
+                    </dt>
+
+                    {/* success */}
+                    {isAdded && (SweetAlert({ icon: "success", title: "Success", message: `Congratulation you got ${coupon?.discount}` }))}
+                    <form onSubmit={applyCouponSubmit}>
+                      <div className="mt-1">
+                        <input
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          type="text"
+                          className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          placeholder=""
+                        />
+                      </div>
+                      {loading ? (
+                        <button
+                          disabled
+                          className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-gray-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                          Loading Please Wait...
+                        </button>
+                      ) : (
+                        <button className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                          Apply coupon
+                        </button>
+                      )}
+                    </form>
+
+                    <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+                      <dt className="text-base font-medium text-gray-900">
+                        Order total
+                      </dt>
+
+                      <dd className=" text-xl font-medium text-gray-900">
+                        {formatPrice.format(sumTotalPrice)}
+                        {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <div className="mt-6">
+                    <Link
+                      //  pass data to checkout page
+                      to="/order-payment"
+                      state={
+                        {
+                          sumTotalPrice
+                        }
+                      }
+                      className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                      Proceed to Checkout
+                    </Link>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Order summary */}
-          <section
-            aria-labelledby="summary-heading"
-            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-            <h2
-              id="summary-heading"
-              className="text-lg font-medium text-gray-900">
-              Order summary
-            </h2>
-
-            <dl className="mt-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-600">Subtotal</dt>
-                <dd className="text-sm font-medium text-gray-900">
-                  {formatPrice.format(sumTotalPrice)}
-                  {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
-                </dd>
+                </section>
               </div>
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4"></div>
-              {/* add coupon */}
-              <dt className="flex items-center text-sm text-gray-600">
-                <span>Have coupon code? </span>
-              </dt>
+            </>
+            :
+            <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+              <div className="text-center">
+                <p className="text-base font-semibold text-indigo-600 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  </svg>
+                </p>
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Your shopping cart is empty</h1>
+                <p className="mt-6 text-base leading-7 text-gray-600">Looks like you haven't added anything to your cart yet.</p>
+                <div className="mt-10 flex items-center justify-center gap-x-6">
+                  <Link
+                    to="/"
+                    className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Go back home
+                  </Link>
 
-              {/* success */}
-              {isAdded && (SweetAlert({ icon: "success", title: "Success", message: `Congratulation you got ${coupon?.discount}` }))}
-              <form onSubmit={applyCouponSubmit}>
-                <div className="mt-1">
-                  <input
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    type="text"
-                    className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="you@example.com"
-                  />
                 </div>
-                {loading ? (
-                  <button
-                    disabled
-                    className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-gray-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Loading Please Wait...
-                  </button>
-                ) : (
-                  <button className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Apply coupon
-                  </button>
-                )}
-              </form>
-
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <dt className="text-base font-medium text-gray-900">
-                  Order total
-                </dt>
-                <dd className=" text-xl font-medium text-gray-900">
-                  {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
-                </dd>
               </div>
-            </dl>
+            </main>
+        }
 
-            <div className="mt-6">
-              <Link
-                //  pass data to checkout page
-                to="/order-payment"
-                state={
-                  {
-                    sumTotalPrice
-                  }
-                }
-                className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                Proceed to Checkout
-              </Link>
-            </div>
-          </section>
-        </div>
       </div>
     </div>)
 }

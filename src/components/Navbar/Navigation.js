@@ -10,6 +10,7 @@ import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesS
 import Skeleton from "react-loading-skeleton";
 import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 import { getUserProfileAction } from "../../redux/slices/users/usersSlice";
+import CouponBanner from "./CouponBanner";
 
 const user = {
     name: 'Tom Cook',
@@ -60,6 +61,7 @@ export default function Navigation() {
         <Disclosure as="header" className="bg-gray-800">
             {({ open }) => (
                 <>
+                    <CouponBanner/>
                     <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-700 lg:px-8">
                         <div className="relative flex h-16 justify-between">
                             <div className="relative z-10 flex px-2 lg:px-0">

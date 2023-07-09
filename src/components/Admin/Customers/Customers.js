@@ -18,13 +18,23 @@ export default function ManageCustomers() {
   const [isShowAddUserModal, setIsShowAddUserModal] = useState(false);
   const [query, setQuery] = useState("");
   const [params] = useSearchParams();
-  const limit = params.get("limit") || 5;
   const dispatch = useDispatch();
   const { users, loading, error, isUpdated, isDeleted, isAdded } = useSelector(state => state.users);
   const count = users?.count;
+  const results = users?.results;
+  const [limit, setLimit] = useState(5);
   const [user, setUser] = useState(" ");
   const [page, setPage] = useState(1);
-  let totalPage = Math.ceil(count / limitNumber);
+  let totalPage = query !== '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
+
+  useEffect(() => {
+    if (results > 5) {
+      setLimit(results)
+    }
+    else {
+      setLimit(5)
+    }
+  }, [results])
 
   useEffect(() => {
     dispatch(getListUsersAction({
@@ -32,7 +42,9 @@ export default function ManageCustomers() {
       limit,
       query
     }))
-  }, [page, limit, dispatch, query])
+  }, [page, limit, dispatch, query, results])
+
+
   useEffect(() => {
     if (isUpdated) {
       dispatch(getListUsersAction({
@@ -82,6 +94,8 @@ export default function ManageCustomers() {
   const handleAddCustomer = () => {
     setIsShowAddUserModal(true);
   }
+
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -105,7 +119,7 @@ export default function ManageCustomers() {
         <input
           type="search"
           name="search"
-          placeHolder="Seach user"
+          placeHolder="Search user"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"

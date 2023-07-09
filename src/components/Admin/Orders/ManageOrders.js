@@ -15,7 +15,8 @@ const ManageOrders = () => {
   const { orders, loading, error, isUpdated } = useSelector(state => state.orders);
   const [query, setQuery] = useState("");
   let count = orders?.count;
-  let totalPage = Math.ceil(count / limitNumber);
+  let results = orders?.results;
+  let totalPage = query != '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
   const [page, setPage] = useState(1);
   useEffect(() => {
     dispatch(fetchOrdersAction({
@@ -109,7 +110,7 @@ const ManageOrders = () => {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {
-                loading ? <p className="px-3 py-4">Loading...</p> : <>
+                loading ? <p className="px-3 py-4">Loading...</p> : orders?.orders?.length === 0 ? <div className="w-full px-3 py-2 text-center">No order found</div> : <>
                   {orders?.orders?.map((order) => (
                     <tr key={order._id}>
                       <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">

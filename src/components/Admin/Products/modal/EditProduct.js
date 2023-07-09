@@ -17,7 +17,7 @@ import { XCircleIcon } from '@heroicons/react/24/solid';
 import { convertBlobArrayToFileArray, convertDataURIToFile, convertLinkToFile, convertUrlBlobArrayToImageFileArray } from '../../../../utils/handleFileImage';
 //animated components for react-select
 const animatedComponents = makeAnimated();
-export default function EditProduct({ isShowEditProductModal, setIsShowEditProductModal, product }) {
+export default function EditProduct({ isShowEditProductModal, setIsShowEditProductModal, product, isView }) {
     const [params] = useSearchParams();
     let { products: { products }, loading, error, isUpdated } = useSelector(state => state.product);
     let productUrl = `${baseURL}/products`
@@ -94,11 +94,12 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
         dispatch(fetchCategoriesAction());
         dispatch(fetchBrandAction({
             page: 1,
-            limit: 100
+            limit: 100,
+            query: ''
         }));
         dispatch(fetchColorAction());
 
-    }, [dispatch])
+    }, [dispatch, page, limit])
 
     const { colors } = useSelector(state => state.color)
     const { categories } = useSelector(state => state.category.categories)
@@ -240,7 +241,7 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Update product</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">{isView === true ? product?.name : 'Update Product'}</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -255,6 +256,7 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
                                                             <div className="mt-1">
                                                                 <input
                                                                     name="name"
+                                                                    disabled={isView === true}
                                                                     value={formData?.name}
                                                                     onChange={handleOnChange}
                                                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
