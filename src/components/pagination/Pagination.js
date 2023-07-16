@@ -104,7 +104,6 @@ import "./Pagination.css";
 const Pagination = ({ page, pages, changePage, count }) => {
     // console.log(page, pages, changePage);
     let middlePagination;
-
     if (pages <= 5) {
         middlePagination = [...Array(pages)].map((_, idx) => (
             <button

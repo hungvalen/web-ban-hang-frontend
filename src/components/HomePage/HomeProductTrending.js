@@ -17,7 +17,8 @@ const HomeProductTrending = () => {
     dispatch(fetchAllProductAction({
       url: productUrl,
       page: 1,
-      limit: 12
+      limit: 12,
+      name:''
     }));
   }, [dispatch, page, limit])
 

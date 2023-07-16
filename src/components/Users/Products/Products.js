@@ -3,9 +3,16 @@ import { Link } from "react-router-dom";
 import { formatPrice } from "../../../utils/formatCurrency";
 import { useSelector } from "react-redux";
 import { defaultImage } from "../../../utils/defaultImage";
+import Pagination from "../../pagination/Pagination";
 
-const Products = ({ products }) => {
-  console.log(products)
+const Products = ({ products, page,
+  totalPage,
+  setPage,
+  count, }) => {
+  console.log(products, page,
+    totalPage,
+    setPage,
+    count,)
   return (
     <section aria-labelledby="product-heading" className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
       {/* <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:col-span-3 lg:gap-x-8">
@@ -81,7 +88,7 @@ const Products = ({ products }) => {
             </div>
             <div className="flex flex-1 flex-col space-y-2 p-4">
               <h3 className="text-sm font-medium text-gray-900">
-                <Link to={product?._id}>
+                <Link to={`/products/${product?._id}`}>
                   <span aria-hidden="true" className="absolute inset-0" />
                   {product?.name}
                 </Link>
@@ -95,7 +102,7 @@ const Products = ({ products }) => {
           </div>
         ))}
       </div>
-    </section>
+    </section >
   );
 };
 

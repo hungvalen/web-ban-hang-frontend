@@ -36,6 +36,7 @@ import ForgotPassword from "./components/Users/Auth/ForgotPassword";
 import ManageBrands from "./components/Admin/Categories/brand/ManageBrands";
 import ManageShippingUnit from "./components/Admin/ShippingUnit/ManageShippingUnit";
 import ManagePaymentMethod from "./components/Admin/PaymentMethod/ManagePaymentMethod";
+import UserChatComponent from "./components/Chat/UserChatComponent";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -46,55 +47,58 @@ const App = () => {
       {/* hide navbar if admin */}
       <Routes>
         {/* nested route */}
-        <Route path="success" element={<ThanksForOrdering />} />
+        {/* <Route element={<UserChatComponent />}> */}
 
-        <Route path="admin" element={
-          <AdminRoute>
-            <AdminDashboard admin={isAdmin} />
-          </AdminRoute>
-        }>
-          {/* products */} <Route path="" element={<OrdersList />} />
-          <Route path="manage-products" element={<ManageStocks />} />
-          {/* coupons */}
-          <Route path="add-coupon" element={<AddCoupon />} />
-          <Route path="manage-coupon" element={<ManageCoupons />} />
-          <Route path="manage-coupon/edit/:code" element={<UpdateCoupon />} />
-          {/* Category */}
-          <Route path="manage-category" element={<ManageCategories />} />
-          {/* brand category */}
-          <Route path="add-brand" element={<AddBrand />} />
-          <Route path="all-brands" element={<ManageBrands />} />
-          {/* color category */}
-          <Route path="add-color" element={<AddColor />} />
-          {/* Orders */}
-          <Route path="manage-orders" element={<ManageOrders />} />
-          <Route path="order-payment" element={<OrderPayment />} />
-          <Route path="customers" element={<ManageCustomers />} />
-          {/* Shipping unut */}
-          <Route path="shipping-unit" element={<ManageShippingUnit />} />
-          <Route path="payment-method" element={<ManagePaymentMethod />} />
+          <Route path="success" element={<ThanksForOrdering />} />
 
-        </Route>
-        {/* public links */}
-        {/* Products */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/products-filters" element={<ProductsFilters />} />
-        <Route path="/products/:id" element={<Product />} />
-        <Route path="/all-categories" element={<AllCategories />} />
-        {/* review */}
-        <Route path="/add-review/:id" element={<AddReview />} />
+          <Route path="admin" element={
+            <AdminRoute>
+              <AdminDashboard admin={isAdmin} />
+            </AdminRoute>
+          }>
+            {/* products */} <Route path="" element={<OrdersList />} />
+            <Route path="manage-products" element={<ManageStocks />} />
+            {/* coupons */}
+            <Route path="add-coupon" element={<AddCoupon />} />
+            <Route path="manage-coupon" element={<ManageCoupons />} />
+            <Route path="manage-coupon/edit/:code" element={<UpdateCoupon />} />
+            {/* Category */}
+            <Route path="manage-category" element={<ManageCategories />} />
+            {/* brand category */}
+            <Route path="add-brand" element={<AddBrand />} />
+            <Route path="all-brands" element={<ManageBrands />} />
+            {/* color category */}
+            <Route path="add-color" element={<AddColor />} />
+            {/* Orders */}
+            <Route path="manage-orders" element={<ManageOrders />} />
+            <Route path="order-payment" element={<OrderPayment />} />
+            <Route path="customers" element={<ManageCustomers />} />
+            {/* Shipping unut */}
+            <Route path="shipping-unit" element={<ManageShippingUnit />} />
+            <Route path="payment-method" element={<ManagePaymentMethod />} />
 
-        {/* shopping cart */}
-        <Route path="/shopping-cart" element={<ShoppingCart />} />
-        <Route path="/order-payment" element={<OrderPayment />} />
-        {/* users */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/reset-password/:token" element={<ForgotPassword />} />
-        <Route path="/customer-profile" element={<CustomerProfile />} />
-        <Route path="/order-details/:id" element={<OrderDetails />} />
-        <Route path="/my-order" element={<MyOrder />} />
+          </Route>
+          {/* public links */}
+          {/* Products */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products-filters" element={<ProductsFilters />} />
+          <Route path="/products/:id" element={<Product />} />
+          <Route path="/all-categories" element={<AllCategories />} />
+          {/* review */}
+          <Route path="/add-review/:id" element={<AddReview />} />
+
+          {/* shopping cart */}
+          <Route path="/shopping-cart" element={<ShoppingCart />} />
+          <Route path="/order-payment" element={<OrderPayment />} />
+          {/* users */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password/:token" element={<ForgotPassword />} />
+          <Route path="/customer-profile" element={<CustomerProfile />} />
+          <Route path="/order-details/:id" element={<OrderDetails />} />
+          <Route path="/my-order" element={<MyOrder />} />
+        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   );

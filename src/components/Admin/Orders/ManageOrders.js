@@ -16,12 +16,14 @@ const ManageOrders = () => {
   const [query, setQuery] = useState("");
   let count = orders?.count;
   let results = orders?.results;
-  let totalPage = query != '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
+  let totalPage = Math.ceil(count / limitNumber);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+
   useEffect(() => {
     dispatch(fetchOrdersAction({
-      page: 1,
-      limit: 5,
+      page,
+      limit,
       query: query
     }));
   }, [dispatch, page, query])
@@ -29,8 +31,8 @@ const ManageOrders = () => {
   useEffect(() => {
     if (isUpdated) {
       dispatch(fetchOrdersAction({
-        page: 1,
-        limit: 5,
+        page,
+        limit,
         query: ''
       }));
       dispatch(resetSuccessAction());
@@ -46,7 +48,6 @@ const ManageOrders = () => {
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center"></div>
         {/* order stats */}
-        <OrdersStatistics />
 
         <div className="flex items-center justify-between mt-3">
           <h3 className="text-lg font-medium leading-6 text-gray-900 mt-5">
@@ -138,7 +139,7 @@ const ManageOrders = () => {
                         {new Date(order?.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
-                        {order?.deliveryDate ?? 'Unknown'}
+                        {new Date(order?.deliveredAt)?.toLocaleDateString() ?? 'Unknown'}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {order?.status ?? 'Unknown'}

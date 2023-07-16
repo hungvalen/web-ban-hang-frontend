@@ -1,10 +1,10 @@
 import logo from "./logoshop.png";
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Bars3Icon, BellIcon, ShoppingCartIcon, XMarkIcon, UserIcon, ArrowRightOnRectangleIcon, TruckIcon, WindowIcon } from '@heroicons/react/24/outline'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
 import Skeleton from "react-loading-skeleton";
@@ -35,6 +35,11 @@ function classNames(...classes) {
 }
 
 export default function Navigation() {
+    const [selectedOption, setSelectedOption] = useState('');
+    const navigate = useNavigate();
+    const handleChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
     let { cartItems } = useSelector(state => state.carts);
     const { categories: { categories }, loading } = useSelector(state => state.category)
     const dispatch = useDispatch();
@@ -47,7 +52,7 @@ export default function Navigation() {
     }, [dispatch])
 
     let { profile, loading: loadingProfile } = useSelector((state) => state.users);
-
+    console.log("check profile", profile);
     // get login user from localstorage
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const isLoggedIn = userInfo?.token ? true : false;
@@ -57,11 +62,15 @@ export default function Navigation() {
         localStorage.removeItem("userInfo");
         window.location.href = "/";
     }
+    console.log("check category", categories);
+    const handleSearchProduct = () => {
+        navigate(`/products-filters?category=${selectedOption}`)
+    }
     return (
         <Disclosure as="header" className="bg-gray-800">
             {({ open }) => (
                 <>
-                    <CouponBanner/>
+                    <CouponBanner />
                     <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-700 lg:px-8">
                         <div className="relative flex h-16 justify-between">
                             <div className="relative z-10 flex px-2 lg:px-0">
@@ -73,22 +82,60 @@ export default function Navigation() {
                                     />
                                 </Link>
                             </div>
-                            <div className="relative z-0 flex flex-1 items-center justify-center px-2 sm:absolute sm:inset-0">
-                                <div className="w-full sm:max-w-xs">
-                                    <label htmlFor="search" className="sr-only">
-                                        Search
-                                    </label>
-                                    <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+
+                            <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
+                                <div className="flex items-center px-6 py-4 md:mx-auto md:max-w-3xl lg:mx-0 lg:max-w-none xl:px-0">
+                                    <div className="w-full mx-32">
+                                        {/* <label htmlFor="search" className="sr-only">
+                                            Search
+                                        </label> */}
+
+                                        <div className="flex">
+
+                                            <div className="relative w-full">
+                                                <div className="absolute inset-y-0 left-0 flex items-center rounded border ">
+                                                    <label htmlFor="country" className="sr-only">
+                                                        Categories
+                                                    </label>
+                                                    <select
+                                                        value={selectedOption} onChange={handleChange}
+                                                        id="country"
+                                                        name="country"
+                                                        autoComplete="country"
+                                                        className="h-full w-32 rounded-md border-0 bg-transparent py-0 pl-3  text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                                                    >
+                                                        <option value="all">All </option>
+                                                        {
+                                                            loading ? <>...</> : categories && categories.length > 0 && categories?.map((item, index) => {
+                                                                return <option key={index} value={item.name}>{item?.name}</option>
+                                                            })
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <label htmlFor="search" className="sr-only">
+                                                    Search
+                                                </label>
+                                                <div className="pointer-events-none absolute inset-y-0 left-32 flex items-center pl-3">
+                                                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                </div>
+                                                <input
+                                                    id="search"
+                                                    name="search"
+                                                    className="block w-full rounded-lg bg-white py-1.5 pl-40 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                                    placeholder="Search"
+                                                    type="search"
+                                                />
+                                                <button
+                                                    onClick={handleSearchProduct}
+                                                    type="submit"
+                                                    class="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                                    </svg>
+                                                    <span class="sr-only">Search</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <input
-                                            id="search"
-                                            name="search"
-                                            className="block w-full rounded-md border-0 bg-gray-700 py-1.5 pl-10 pr-3 text-gray-300 placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 focus:placeholder:text-gray-500 sm:text-sm sm:leading-6"
-                                            placeholder="Search"
-                                            type="search"
-                                        />
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +166,7 @@ export default function Navigation() {
                                             <div>
                                                 <Menu.Button className="flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                     <span className="sr-only">Open user menu</span>
-                                                    <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                                                    <img className="h-8 w-8 rounded-full" src={profile?.user?.photo} alt="" />
                                                 </Menu.Button>
                                             </div>
                                             <Transition
@@ -273,7 +320,7 @@ export default function Navigation() {
 
                             </div>
                         </div>
-                        <nav className="hidden lg:flex lg:space-x-8 lg:py-2" aria-label="Global">
+                        {/* <nav className="hidden lg:flex lg:space-x-8 lg:py-2" aria-label="Global">
                             {
                                 loading ? <Skeleton className="mt-2" width={500} height={30} /> :
                                     categories?.map((item) => (
@@ -289,7 +336,7 @@ export default function Navigation() {
                                             {capitalizeFirstLetter(item?.name)}
                                         </Link>
                                     ))}
-                        </nav>
+                        </nav> */}
                     </div>
 
                     <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">

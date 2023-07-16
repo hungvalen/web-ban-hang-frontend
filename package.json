@@ -28,6 +28,8 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.0",
     "react-stripe-checkout": "^2.6.3",
+    "recharts": "^2.7.2",
+    "socket.io-client": "^4.7.1",
     "stripe": "^11.4.0",
     "sweetalert2": "^11.7.3",
     "sweetalert2-react-content": "^5.0.7",

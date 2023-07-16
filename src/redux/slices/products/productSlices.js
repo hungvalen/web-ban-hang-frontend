@@ -107,7 +107,7 @@ export const updateProductAction = createAsyncThunk(
     })
 
 // fetch all product action
-export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url, page, limit }, { rejectWithValue, getState, dispatch }) => {
+export const fetchAllProductAction = createAsyncThunk("product/list", async ({ url, page, limit, name }, { rejectWithValue, getState, dispatch }) => {
     try {
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -117,11 +117,11 @@ export const fetchAllProductAction = createAsyncThunk("product/list", async ({ u
             }
         }
         if (url === `${baseURL}/products`) {
-            const { data } = await axios.get(`${url}?page=${page}&limit=${limit}`, config);
+            const { data } = await axios.get(`${url}?page=${page}&limit=${limit}&name=${name}`, config);
             return data;
         }
         else {
-            const { data } = await axios.get(`${url}&page=${page}&limit=${limit}`, config);
+            const { data } = await axios.get(`${url}&page=${page}&limit=${limit}&name=${name}`, config);
             return data;
         }
     } catch (error) {

@@ -65,7 +65,7 @@ const AddShippingAddress = (props) => {
   return (
     <>
       {/* shipping details */}
-      {user?.hasShippingAddress ? (
+      {/* {user?.hasShippingAddress ? (
         <>
           <div className="mt-3">
             <h3 className="text-base font-semibold leading-6 text-gray-900">Shipping details</h3>
@@ -148,7 +148,7 @@ const AddShippingAddress = (props) => {
         //     </p>
         //   </div>
         // </div>
-      ) : (
+      ) : ( */}
         <>
           <h2 className="text-lg font-medium text-gray-900">Shipping information</h2>
 
@@ -340,7 +340,7 @@ const AddShippingAddress = (props) => {
 
           </form>
         </>
-      )}
+      {/* )} */}
     </>
   )
 }

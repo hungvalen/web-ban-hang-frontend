@@ -33,8 +33,8 @@ export default function ManageStocks() {
   const [isView, setIsView] = useState(false);
   // const [pages, setPages] = useState(totalPage)
   useEffect(() => {
-    dispatch(fetchAllProductAction({ url: productUrl, page: page, limit }))
-  }, [dispatch, page, limit, productUrl])
+    dispatch(fetchAllProductAction({ url: productUrl, page: page, limit, name: query }))
+  }, [dispatch, page, limit, productUrl, query])
 
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function ManageStocks() {
         <input
           type="search"
           name="search"
-          placeHolder="Search user"
+          placeHolder="Search product"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -102,7 +102,7 @@ export default function ManageStocks() {
         <LoadingComponent />
       ) : error ? (
         <ErrorMsg message={error?.message} />
-      ) : products?.length <= 0 ? (
+      ) : (products?.length <= 0 || products?.products?.length <= 0) ? (
         <NoDataFound />
       ) : (
         <div className="mt-8 flex flex-col">

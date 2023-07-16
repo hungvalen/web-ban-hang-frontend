@@ -570,8 +570,8 @@ export default function AdminDashboard() {
                       <>
                         {
                           loading ? <div className="avatar"><Skeleton cirle className="avatar avatar-skeleton" /></div> : <img
-                            className="hidden h-16 w-16 rounded-full sm:block"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                            className="hidden h-16 w-16 rounded-full sm:block object-cover object-center"
+                            src={profile?.user?.photo}
                             alt=""
                           />
                         }

@@ -86,7 +86,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
     dispatch(fetchCategoriesAction());
     dispatch(fetchBrandAction({
       page: 1,
-      limit: 100
+      limit: 100,
+      query:''
     }));
     dispatch(fetchColorAction());
 

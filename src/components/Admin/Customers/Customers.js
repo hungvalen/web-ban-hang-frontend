@@ -25,16 +25,17 @@ export default function ManageCustomers() {
   const [limit, setLimit] = useState(5);
   const [user, setUser] = useState(" ");
   const [page, setPage] = useState(1);
-  let totalPage = query !== '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
+  let totalPage = Math.ceil(count / limitNumber);
 
-  useEffect(() => {
-    if (results > 5) {
-      setLimit(results)
-    }
-    else {
-      setLimit(5)
-    }
-  }, [results])
+  // useEffect(() => {
+  //   // if (results > 5) {
+  //   //   setLimit(results)
+  //   // }
+  //   // else {
+  //   //   setLimit(5)
+  //   // }
+
+  // }, [results])
 
   useEffect(() => {
     dispatch(getListUsersAction({
@@ -42,7 +43,7 @@ export default function ManageCustomers() {
       limit,
       query
     }))
-  }, [page, limit, dispatch, query, results])
+  }, [page, limit, dispatch, query])
 
 
   useEffect(() => {
@@ -125,7 +126,7 @@ export default function ManageCustomers() {
           className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
         />
       </div>
-      {loading ? <LoadingComponent /> : error ? <ErrorMsg /> : users.length <= 0 ? <NoDataFound /> : <div className="mt-8 flex flex-col">
+      {loading ? <LoadingComponent /> : error ? <ErrorMsg /> : (users.length <= 0 || users?.users?.length <= 0) ? <NoDataFound /> : <div className="mt-8 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
