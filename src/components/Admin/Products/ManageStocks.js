@@ -13,6 +13,7 @@ import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAc
 import DeleteProduct from "./modal/DeleteProduct";
 import { limitNumber } from "../../../utils/limitNumber";
 import AddProduct from "./modal/AddProduct";
+import { useTranslation } from "react-i18next";
 
 export default function ManageStocks() {
   const [params] = useSearchParams();
@@ -39,7 +40,7 @@ export default function ManageStocks() {
 
   useEffect(() => {
     if (isUpdated) {
-      dispatch(fetchAllProductAction({ url: productUrl, page, limit }))
+      dispatch(fetchAllProductAction({ url: productUrl, page, limit, }))
       dispatch(resetSuccessAction());
     }
   }, [isUpdated, productUrl, page, limit, dispatch])
@@ -64,13 +65,15 @@ export default function ManageStocks() {
     setIsShowDeleteProductModal(!isShowDeleteProductModal)
     setProduct(product)
   };
+  const { t } = useTranslation();
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 mt-3">
       <div className="sm:flex sm:items-center mb-3">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">
             {/* Product List- {products?.length} items */}
-            Manage Products
+            {t('manage_stock')}
           </h1>
           {/* <p className="mt-2 text-sm text-gray-700">
             List of all the products in your account including their name,
@@ -83,7 +86,7 @@ export default function ManageStocks() {
             onClick={() => handleShowAddProductModal()}
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-            Add New Product
+            {t('add_new_product')}
           </button>
         </div>
       </div>
@@ -91,7 +94,7 @@ export default function ManageStocks() {
         <input
           type="search"
           name="search"
-          placeHolder="Search product"
+          placeHolder={t('search')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -115,43 +118,43 @@ export default function ManageStocks() {
                       <th
                         scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                        Name
+                        {t('name')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Category
+                        {t('category')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Status
+                        {t('status')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Total Qty
+                        {t('total_qty')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Total Sold
+                        {t('total_sold')}
                       </th>
 
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        QTY Left
+                        {t('qty_left')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Price
+                        {t('price')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Actions
+                        {t('action')}
                       </th>
                       {/* <th
                         scope="col"
@@ -195,11 +198,11 @@ export default function ManageStocks() {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {product?.qtyLeft < 0 ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                              Out of Stock
+                              {t('out_of_stock')}
                             </span>
                           ) : (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              In Stock
+                              {t('in_stock')}
                             </span>
                           )}
                         </td>

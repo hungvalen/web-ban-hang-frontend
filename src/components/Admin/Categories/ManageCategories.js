@@ -10,8 +10,10 @@ import EditCategory from "./modal/EditCategory";
 import AddCategory from "./modal/AddCategory";
 import DeleteCategoryModal from "./modal/DeleteCategory";
 import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import { useTranslation } from "react-i18next";
 
 export default function ManageCategories() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { categories: { categories }, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.category)
   const [isShowEditCategoryModal, setIsShowEditCategoryModal] = useState(false);
@@ -63,9 +65,9 @@ export default function ManageCategories() {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">
-            All Categories
+            {t('manage_category')}
           </h1>
-       
+
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
@@ -73,7 +75,7 @@ export default function ManageCategories() {
             onClick={handleAddCategory}
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-            Add New Category
+            {t('add_new_category')}
           </button>
         </div>
       </div>
@@ -94,7 +96,7 @@ export default function ManageCategories() {
                       <th
                         scope="col"
                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                        Name
+                        {t('name')}
                       </th>
                       <th
                         scope="col"
@@ -104,22 +106,22 @@ export default function ManageCategories() {
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Added By
+                        {t('added_by')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Created At
+                        {t('created_At')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Edit
+                        {t('edit')}
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Delete
+                        {t('delete')}
                       </th>
                     </tr>
                   </thead>

@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import makeAnimated from "react-select/animated";
 import { updateCategoryAction } from "../../../../redux/slices/categories/categoriesSlice";
 import { dataURItoFile, fileName, getEncodedDataFromDataURI } from '../../../../utils/handleFileImage';
+import { useTranslation } from 'react-i18next';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCategoryModal, category }) {
-    console.log(category)
+    const { t } = useTranslation();
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
     const [file, setFile] = useState(category?.image ?? null);
@@ -90,7 +91,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit Category</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">{t('edit_category')}</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -100,7 +101,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                                     <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                                         <div className="sm:col-span-6">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Name
+                                                                {t('name')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -117,7 +118,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                                         <label
                                                             htmlFor="cover-photo"
                                                             className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                            Upload Images
+                                                            {t('upload_images')}
                                                         </label>
                                                         <div className="mt-1 sm:col-span-2 sm:mt-0">
                                                             <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -150,7 +151,7 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                                                         </label>
                                                                     </div>
                                                                     <p className="text-xs text-gray-500">
-                                                                        PNG, JPG, GIF up to 10MB
+                                                                        PNG, JPG, GIF {t('upto')} 10MB
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -180,13 +181,13 @@ export default function EditCategory({ isShowEditCategoryModal, setIsShowEditCat
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
                                                 <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowEditCategoryModal(false)}
                                                     ref={cancelButtonRef}>
-                                                    Cancel
+                                                    {t('cancel')}
                                                 </button>
                                                 <button
                                                     type="submit"
                                                     className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 >
-                                                    Save
+                                                    {t('save')}
                                                 </button>
                                             </div>
                                         </form>

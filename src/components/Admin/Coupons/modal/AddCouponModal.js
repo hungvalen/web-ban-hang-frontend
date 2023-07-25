@@ -4,12 +4,12 @@ import { useDispatch } from "react-redux";
 import DatePicker from "react-datepicker";
 import LoadingComponent from "../../../LoadingComp/LoadingComponent";
 import { createCouponAction } from '../../../../redux/slices/coupons/couponSlice';
+import { useTranslation } from 'react-i18next';
 
 export default function AddCouponModal({ showAddCouponModal, setShowAddCouponModal }) {
     const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date(
-
-    ));
+    const [endDate, setEndDate] = useState(new Date());
+    const { t } = useTranslation();
 
     const [formData, setFormData] = useState({
         code: "",
@@ -72,11 +72,11 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                         <div className="flex flex-col justify-center py-2 sm:px-6 lg:px-2 w-full">
                                             <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
                                                 <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                                                    Add Coupon
+                                                    {t('add_new_coupon')}
                                                 </h2>
                                                 <p className="mt-2 text-center text-sm text-gray-600">
                                                     <p className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                        Manage Coupon
+                                                        {t('manage_coupon')}
                                                     </p>
                                                 </p>
                                                 {/* {error ? <ErrorMsg message={error?.message} /> : null} */}
@@ -88,7 +88,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-700">
                                                                 {/* name */}
-                                                                Name
+                                                                {t('code')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -103,7 +103,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-700">
                                                                 {/* discount */}
-                                                                Discount (in %)
+                                                                {t('discount')} (%)
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -118,7 +118,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                         {/* start date */}
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Start Date
+                                                                {t('start_date')}
                                                             </label>
                                                             <div className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                                                 <DatePicker
@@ -131,7 +131,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                         {/* end date */}
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                End Date
+                                                                {t('end_date')}
                                                             </label>
                                                             <div className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                                                 <DatePicker
@@ -149,7 +149,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                                         type="submit"
                                                                         className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
                                                                     >
-                                                                        Create
+                                                                        {t('create')}
                                                                     </button>
                                                                     <button
                                                                         type="button"
@@ -157,7 +157,7 @@ export default function AddCouponModal({ showAddCouponModal, setShowAddCouponMod
                                                                         onClick={() => setShowAddCouponModal(false)}
                                                                         ref={cancelButtonRef}
                                                                     >
-                                                                        Cancel
+                                                                        {t('cancel')}
                                                                     </button>
                                                                 </div>
                                                             )}

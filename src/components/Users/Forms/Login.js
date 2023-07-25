@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 const Login = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: "hung@gmail.com",
-    password: "123456",
+    password: "1234567",
   });
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   function togglePasswordVisibility() {
@@ -48,10 +50,14 @@ const Login = () => {
             <div className="w-full md:w-4/6 px-4">
               <div className="lg:max-w-3xl mx-auto py-20 px-4 md:px-10 lg:px-20">
                 <h3 className="mb-8 text-4xl md:text-5xl font-bold font-heading">
-                  Login to your account
+                  {
+                    t('login_account')
+                  }
                 </h3>
                 <p className="mb-10 font-semibold font-heading">
-                  Happy to see you again
+                  {
+                    t('happy')
+                  }
                 </p>
 
                 {/* err */}
@@ -61,7 +67,7 @@ const Login = () => {
                   <div className="w-full md:w-1/2 px-4 mb-4 md:mb-4">
                     <label>
                       <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
-                        Your Email
+                        {t('your_email')}
                       </h4>
                       <input
                         name="email"
@@ -75,7 +81,7 @@ const Login = () => {
                   <div className="w-full md:w-1/2 px-4 mb-4">
                     <label>
                       <h4 className="mb-5 text-gray-400 uppercase font-bold font-heading">
-                        Password
+                        {t('password')}
                       </h4>
                       <input
                         name="password"
@@ -95,7 +101,7 @@ const Login = () => {
                       value=""
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
-                    <label for="default-checkbox" className="ml-2 text-sm font-semibold text-gray-900 font-heading">Show password</label>
+                    <label for="default-checkbox" className="ml-2 text-sm font-semibold text-gray-900 font-heading">{t('show_password')}</label>
                   </div>
 
                   <div className="w-full px-4">
@@ -103,12 +109,12 @@ const Login = () => {
                       Loading...
                     </button> : (
                       <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                        Login
+                        {t('login')}
                       </button>
                     )}
                   </div>
                   <div className="w-full flex items-center px-4 mb-4 mt-2">
-                    <Link to="/reset-password" className="font-semibold underline">Forgot password?</Link>
+                    <Link to="/reset-password" className="font-semibold underline">{t('forgot_password')}?</Link>
                   </div>
                 </form>
               </div>

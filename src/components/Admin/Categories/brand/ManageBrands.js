@@ -11,10 +11,12 @@ import AddBrand from "./modal/AddBrand";
 import EditBrand from "./modal/EditBrand";
 import DeleteBrandModal from "./modal/DeleteBrand";
 import { resetSuccessAction } from "../../../../redux/slices/globalActions/globalAction";
+import { useTranslation } from "react-i18next";
 
 
 export default function ManageBrands() {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const { brands, loading, error, isAdded, isDeleted, isUpdated } = useSelector(state => state.brand)
     const [query, setQuery] = useState("");
     let count = brands?.count;

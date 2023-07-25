@@ -16,7 +16,7 @@ import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/
 import AddReview from "../Reviews/AddReview";
 import AddReviewModal from "../Reviews/AddReview";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
-
+import convertHtmlToPlainText from "../../../utils/convertHTMLToPlainText"
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -166,7 +166,10 @@ export default function Product() {
   // Get cart items
 
   // let cartItems = [];
-
+  function isHtmlText(text) {
+    const htmlRegex = /<[a-z][\s\S]*>/i;
+    return htmlRegex.test(text);
+  }
   return (
     <>
       {loading ? <LoadingComponent /> : <div className="bg-white">
@@ -398,7 +401,9 @@ export default function Product() {
               <div className="mt-10">
                 <h2 className="text-sm font-medium text-gray-900">Description</h2>
                 <div className="prose prose-sm mt-4 text-gray-500">
-                  {product?.description}
+                  {
+                    isHtmlText(product?.description) === true ? convertHtmlToPlainText(product?.description) : product?.description
+                  }
                 </div>
               </div>
 

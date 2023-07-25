@@ -3,9 +3,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux';
 import { deleteProductAction } from '../../../../redux/slices/products/productSlices';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteProduct({ isShowDeleteProductModal, setIsShowDeleteProductModal, product }) {
-    console.log(product)
+    const { t } = useTranslation();
     const cancelButtonRef = useRef(null);
     const dispatch = useDispatch();
     const handleDeleteProduct = () => {
@@ -46,12 +47,11 @@ export default function DeleteProduct({ isShowDeleteProductModal, setIsShowDelet
                                         </div>
                                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                             <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                Delete Product {product?.name}
+                                                {t('delete')} {t('product')} {product?.name}
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <p className="text-sm text-gray-500">
-                                                    Are you sure you want to delete this product? All of your data will be permanently
-                                                    removed. This action cannot be undone.
+                                                    {t('delete_product')}
                                                 </p>
                                             </div>
                                         </div>
@@ -63,7 +63,7 @@ export default function DeleteProduct({ isShowDeleteProductModal, setIsShowDelet
                                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                                         onClick={handleDeleteProduct}
                                     >
-                                        Delete
+                                        {t('delete')}
                                     </button>
                                     <button
                                         type="button"
@@ -71,7 +71,7 @@ export default function DeleteProduct({ isShowDeleteProductModal, setIsShowDelet
                                         onClick={() => setIsShowDeleteProductModal(false)}
                                         ref={cancelButtonRef}
                                     >
-                                        Cancel
+                                        {t('cancel')}
                                     </button>
                                 </div>
                             </Dialog.Panel>

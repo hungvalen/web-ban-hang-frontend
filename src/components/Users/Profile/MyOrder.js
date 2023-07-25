@@ -7,6 +7,8 @@ import { getUserProfileAction } from '../../../redux/slices/users/usersSlice'
 import LoadingComponent from '../../LoadingComp/LoadingComponent'
 import { formatPrice } from '../../../utils/formatCurrency'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import NoDataFound from '../../NoDataFound/NoDataFound'
 
 // const orders = [
 //     {
@@ -35,12 +37,22 @@ import { Link } from 'react-router-dom'
 //     },
 //     // More orders...
 // ]
+const tabs = [
+    { name: 'Tất cả đơn', href: '#', count: '52', current: false },
+    { name: 'Chờ thanh toán', href: '#', count: '6', current: false },
+    { name: 'Đang xử lý', href: '#', count: '4', current: true },
+    { name: 'Đang vận chuyển', href: '#', current: false },
+    { name: 'Đã giao', href: '#', current: false },
+    { name: 'Đã hủy', href: '#', current: false },
+]
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function MyOrder() {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     let error;
     // let orders = [];
@@ -60,7 +72,7 @@ export default function MyOrder() {
                         <div className="py-16 sm:py-24">
                             <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
                                 <div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
-                                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Order history</h1>
+                                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{t('order_history')}</h1>
                                     <p className="mt-2 text-sm text-gray-500">
                                         Check the status of recent orders, manage returns, and discover similar products.
                                     </p>
@@ -68,10 +80,60 @@ export default function MyOrder() {
                             </div>
 
                             <div className="mt-16">
+
                                 <h2 className="sr-only">Recent orders</h2>
                                 <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
                                     <div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
-                                        {orders != null && orders?.length > 0 && orders?.map((order) => (
+                                        <div>
+                                            <div className="sm:hidden">
+                                                <label htmlFor="tabs" className="sr-only">
+                                                    Select a tab
+                                                </label>
+                                                {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
+                                                <select
+                                                    id="tabs"
+                                                    name="tabs"
+                                                    className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                    defaultValue={tabs.find((tab) => tab.current).name}
+                                                >
+                                                    {tabs.map((tab) => (
+                                                        <option key={tab.name}>{tab.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="hidden sm:block">
+                                                <div className="border-b border-gray-200">
+                                                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                                                        {tabs.map((tab) => (
+                                                            <a
+                                                                key={tab.name}
+                                                                href="#"
+                                                                className={classNames(
+                                                                    tab.current
+                                                                        ? 'border-indigo-500 text-indigo-600'
+                                                                        : 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700',
+                                                                    'flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium'
+                                                                )}
+                                                                aria-current={tab.current ? 'page' : undefined}
+                                                            >
+                                                                {tab.name}
+                                                                {tab.count ? (
+                                                                    <span
+                                                                        className={classNames(
+                                                                            tab.current ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
+                                                                            'ml-3 hidden rounded-full py-0.5 px-2.5 text-xs font-medium md:inline-block'
+                                                                        )}
+                                                                    >
+                                                                        {tab.count}
+                                                                    </span>
+                                                                ) : null}
+                                                            </a>
+                                                        ))}
+                                                    </nav>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {orders != null && orders?.length > 0 ? orders?.map((order) => (
                                             <div
                                                 key={order?._id}
                                                 className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
@@ -217,7 +279,7 @@ export default function MyOrder() {
                                                     ))}
                                                 </ul>
                                             </div>
-                                        ))}
+                                        )) : <NoDataFound message={t('no_order')} />}
                                     </div>
                                 </div>
                             </div>

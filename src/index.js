@@ -7,14 +7,37 @@ import { Provider } from "react-redux";
 import store from "./redux/store/store";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { I18nextProvider } from 'react-i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+// Import translations
+import enTranslation from './locales/en.json'
+import viTranslation from './locales/vi.json';
+import "react-datepicker/dist/react-datepicker.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const storedLanguage = localStorage.getItem('language') || 'en'; // Get the language from Local Storage or use the default 'en'
 
+// Initialize i18next
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: enTranslation },
+    vi: { translation: viTranslation },
+  },
+  lng: storedLanguage, // Ngôn ngữ mặc định khi bắt đầu ứng dụng
+  fallbackLng: 'en', // Ngôn ngữ dự phòng nếu không tìm thấy ngôn ngữ hiện tại
+  interpolation: {
+    escapeValue: false, // Cho phép sử dụng biểu thức trong các chuỗi dịch
+  },
+});
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>
+  <I18nextProvider i18n={i18n}>
+    <Provider store={store}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </Provider>
+
+  </I18nextProvider>
 
 );
 

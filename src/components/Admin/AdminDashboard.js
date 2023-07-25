@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useTransition } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { Link, Outlet } from "react-router-dom";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -27,94 +27,18 @@ import logo from "../Navbar/logo3.png";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfileAction } from "../../redux/slices/users/usersSlice";
 import { TbTruckDelivery } from 'react-icons/tb'
-
-const dashboardLinks = [
-  {
-    name: "Dashboard",
-    href: "",
-    icon: AiOutlineHome,
-    current: true,
-  },
+import { useTranslation } from 'react-i18next';
 
 
-];
-
-const productsLinks = [
-  {
-    name: "Manage Stock",
-    href: "manage-products",
-    icon: ScaleIcon,
-    current: false,
-  },
-];
-const ordersLinks = [
-  {
-    name: "Manage Orders",
-    href: "manage-orders",
-    icon: HiOutlineCurrencyDollar
-
-  },
-];
-const usersLinks = [
-  {
-    name: "Manage Users",
-    href: "customers",
-    icon: AiOutlineUser
-  },
-];
-
-const couponsLinks = [
-  {
-    name: "Manage Coupon",
-    href: "manage-coupon",
-    icon: RiCoupon2Line
-  },
-];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const CategoryLinks = [
-  {
-    name: "Manage Category",
-    href: "manage-category",
-    icon: BiCategory,
-  },
-];
 
-const colorsLinks = [
-  {
-    name: "Manage Colors",
-    href: "all-colors",
-    icon: IoColorFilterOutline,
-  },
-];
-const shippingUnitLinks = [
-  {
-
-    name: "Manage shipping unit",
-    href: "shipping-unit",
-    icon: TbTruckDelivery
-  },
-];
-const paymentMethodLinks = [
-  {
-
-    name: "Manage payment method",
-    href: "payment-method",
-    icon: CreditCardIcon
-  },
-];
-
-const brandsLinks = [
-  {
-    name: "Manage Brands",
-    href: "all-brands",
-    icon: TbBrandItch,
-  },
-];
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   let { profile, loading } = useSelector((state) => state.users);
   console.log(profile, loading)
@@ -124,6 +48,87 @@ export default function AdminDashboard() {
   useEffect(() => {
     dispatch(getUserProfileAction());
   }, [dispatch])
+  const dashboardLinks = [
+    {
+      name: t('dashboard'),
+      href: "",
+      icon: AiOutlineHome,
+      current: true,
+    },
+
+
+  ];
+
+  const productsLinks = [
+    {
+      name: t('manage_stock'),
+      href: "manage-products",
+      icon: ScaleIcon,
+      current: false,
+    },
+  ];
+  const ordersLinks = [
+    {
+      name: t('manage_orders'),
+      href: "manage-orders",
+      icon: HiOutlineCurrencyDollar
+
+    },
+  ];
+  const usersLinks = [
+    {
+      name: t('manage_users'),
+      href: "customers",
+      icon: AiOutlineUser
+    },
+  ];
+
+  const couponsLinks = [
+    {
+      name: t('manage_coupon'),
+      href: "manage-coupon",
+      icon: RiCoupon2Line
+    },
+  ];
+  const CategoryLinks = [
+    {
+      name: t('manage_category'),
+      href: "manage-category",
+      icon: BiCategory,
+    },
+  ];
+
+  const colorsLinks = [
+    {
+      name: "Manage Colors",
+      href: "all-colors",
+      icon: IoColorFilterOutline,
+    },
+  ];
+  const shippingUnitLinks = [
+    {
+
+      name: t('manage_shipping_unit'),
+      href: "shipping-unit",
+      icon: TbTruckDelivery
+    },
+  ];
+  const paymentMethodLinks = [
+    {
+
+      name: t('manage_payment_method'),
+      href: "payment-method",
+      icon: CreditCardIcon
+    },
+  ];
+
+  const brandsLinks = [
+    {
+      name: t('manage_brands'),
+      href: "all-brands",
+      icon: TbBrandItch,
+    },
+  ];
   return (
     <>
       <div className="h-screen">
@@ -588,7 +593,7 @@ export default function AdminDashboard() {
                           {
                             loading ? <Skeleton className="ml-3" width={200} height={30}>
                             </Skeleton> : <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                              Good morning, {profile?.user?.fullName}
+                              {t('good_morning')}, {profile?.user?.fullName}
                             </h1>
                           }
                           {/* <SkeletonTheme baseColor="#202020" highlightColor="#444">
@@ -617,7 +622,7 @@ export default function AdminDashboard() {
                                     strokeWidth="2"
                                     d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                                 </svg>
-                                <span className="">Role: {profile?.user?.isAdmin ? 'Admin' : 'Customer'}</span>
+                                <span className="">{t('role')}: {profile?.user?.isAdmin ? t('Admin') : 'Customer'}</span>
                               </>
                             }
                           </dd>
@@ -637,7 +642,7 @@ export default function AdminDashboard() {
                                     strokeWidth="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                Date Joined: {new Date(profile?.user?.createdAt).toLocaleDateString()}
+                                {t('Date_Joined')}: {new Date(profile?.user?.createdAt).toLocaleDateString()}
                               </>
                             }
 

@@ -15,12 +15,15 @@ import { resetSuccessAction } from "../../../../redux/slices/globalActions/globa
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { TrashIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { convertDataURIToFile, convertLinkToFile } from "../../../../utils/handleFileImage";
+import Editor from "../../../Editor/Editor";
+import { useTranslation } from "react-i18next";
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 
 export default function AddProduct({ isShowAddProductModal, setIsShowAddProductModal }) {
   const cancelButtonRef = useRef(null)
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -87,7 +90,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
     dispatch(fetchBrandAction({
       page: 1,
       limit: 100,
-      query:''
+      query: ''
     }));
     dispatch(fetchColorAction());
 
@@ -165,6 +168,9 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
 
   };
 
+  const handleEditorChange = (data) => {
+    setFormData({ ...formData, description: data })
+  }
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
@@ -202,7 +208,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                     <form onSubmit={handleOnSubmit}>
                       <div className="space-y-6">
                         <div className="border-b border-gray-900/10 pb-2">
-                          <h2 className="text-base font-semibold leading-7 text-gray-900">Add product</h2>
+                          <h2 className="text-base font-semibold leading-7 text-gray-900">{t('add_product')}</h2>
                         </div>
 
                         <div className="border-b border-gray-900/10 pb-7">
@@ -212,7 +218,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                           <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Product Name
+                                {t('product_name')}
                               </label>
                               <div className="mt-1">
                                 <input
@@ -225,7 +231,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Select Size
+                                {t('select_size')}
                               </label>
                               <Select
                                 // components={animatedComponents}
@@ -243,7 +249,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Select Category
+                                {t('select_category')}
                               </label>
                               <select
                                 name="category"
@@ -261,7 +267,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Select Brand
+                                {t('select_brand')}
                               </label>
                               <select
                                 name="brand"
@@ -279,7 +285,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Select Color
+                                {t('select_color')}
                               </label>
                               <Select
                                 components={animatedComponents}
@@ -297,7 +303,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
-                                Price
+                                {t('price')}
                               </label>
                               <div className="mt-1">
                                 <input
@@ -313,7 +319,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               <label
                                 htmlFor="cover-photo"
                                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                Upload Images
+                                {t('upload_images')}
                               </label>
                               <div className="mt-1 sm:col-span-2 sm:mt-0">
                                 <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -335,7 +341,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                       <label
                                         htmlFor="file-upload"
                                         className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
-                                        <span>Upload files</span>
+                                        <span>{t('upload_files')}</span>
                                         <input
                                           multiple
                                           onChange={fileHandleChange}
@@ -345,7 +351,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                       </label>
                                     </div>
                                     <p className="text-xs text-gray-500">
-                                      PNG, JPG, GIF up to 10MB
+                                      PNG, JPG, GIF {t('upto')} 10MB
                                     </p>
                                   </div>
                                 </div>
@@ -367,7 +373,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                             </div>
                             <div className="sm:col-span-6">
                               <label className="block text-sm font-medium text-gray-700">
-                                Total Quantity
+                                {t('total_quantity')}
                               </label>
                               <div className="mt-1">
                                 <input
@@ -383,16 +389,17 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               <label
                                 htmlFor="comment"
                                 className="block text-sm font-medium text-gray-700">
-                                Product Description
+                                {t('product_desc')}
                               </label>
                               <div className="mt-1">
-                                <textarea
+                                {/* <textarea
                                   rows={5}
                                   name="description"
                                   value={formData.description}
                                   onChange={handleOnChange}
                                   className="block w-full rounded-md border-gray-300 border px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                />
+                                /> */}
+                                <Editor value={formData.description} onChange={handleEditorChange} />
                               </div>
                             </div>
 
@@ -405,13 +412,13 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                           ref={cancelButtonRef}
                           onClick={() => setIsShowAddProductModal(false)}
                         >
-                          Cancel
+                          {t('cancel')}
                         </button>
                         <button
                           type="submit"
                           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Save
+                          {t('save')}
                         </button>
                       </div>
                     </form>

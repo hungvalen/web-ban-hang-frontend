@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 .avatar {
-    width              : 4rem;
-    height             : 4rem;
-    border-radius      : 50%;
-    display            : flex;
-    align-items        : center;
-    justify-content    : center;
-    margin-bottom      : 0.5rem;
-     background-color: #eaeaea; 
+    width           : 4rem;
+    height          : 4rem;
+    border-radius   : 50%;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    margin-bottom   : 0.5rem;
+    background-color: #eaeaea;
 
 }
 
@@ -23,4 +23,13 @@
 .avatar img {
     width : 70%;
     height: 70%;
+}
+
+.ck-editor__editable_inline {
+    min-height: 500px;
+    padding   : 2rem;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
 }

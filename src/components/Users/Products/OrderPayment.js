@@ -23,7 +23,7 @@ const deliveryMethods = [
 const paymentMethods = [
   { id: 'cod', title: 'Thanh toán khi nhận hàng' },
   { id: 'credit card', title: 'Credit card' },
-  { id: 'banking', title: 'Banking' },
+  { id: 'vnpay', title: 'Vnpay' },
 ]
 const OrderPayment = () => {
   const [formData, setFormData] = useState({
@@ -237,7 +237,7 @@ const OrderPayment = () => {
                     </div>
                   </fieldset>
                   {
-                    paymentMethod === 'banking' ? (
+                    paymentMethod === 'vnpay' ? (
                       <>
                         <div className="mt-10 border-t border-gray-200 pt-10">
                           <h3 className="text-base font-semibold leading-6 text-gray-900">Internet Banking</h3>

@@ -3,7 +3,9 @@ import { registerUserAction } from "../../../redux/slices/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import { useTranslation } from "react-i18next";
 const RegisterForm = () => {
+  const { t } = useTranslation();
   //dispatch
   const [formData, setFormData] = useState({
     fullName: "",
@@ -40,7 +42,7 @@ const RegisterForm = () => {
             <div className="w-full lg:w-2/6 px-4 mb-12 lg:mb-0">
               <div className="py-20 text-center">
                 <h3 className="mb-8 text-4xl md:text-5xl font-bold font-heading">
-                  Signing up with social is super quick
+                  {t('create_your_account')}
                 </h3>
                 {/* errr */}
                 {/* Error */}
@@ -76,7 +78,7 @@ const RegisterForm = () => {
                       // disable the button if loading is true
                       disabled={loading}
                       className="mt-12 md:mt-16 bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                      Register
+                      {t('register')}
                     </button>
                   )}
                 </form>

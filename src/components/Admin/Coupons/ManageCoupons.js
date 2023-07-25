@@ -11,8 +11,10 @@ import AddCouponModal from "./modal/AddCouponModal";
 import EditCouponModal from "./modal/EditCouponModal";
 import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
 import DeleteCouponModal from "./modal/DeleteCouponModal";
+import { useTranslation } from "react-i18next";
 
 export default function ManageCoupons() {
+  const { t } = useTranslation();
   //get coupons
   const { coupons, loading, error, isAdded, isUpdated, isDeleted } = useSelector(state => state.coupons);
   const [showAddCouponModal, setShowAddCouponModal] = useState(false);
@@ -65,7 +67,7 @@ export default function ManageCoupons() {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           {loading ? <Skeleton className="mt-2" width={200} height={30} /> : <h1 className="text-xl font-semibold text-gray-900">
-            Manage Coupons - {coupons?.coupons?.length} Coupons
+            {t('manage_coupon')} - {coupons?.coupons?.length} Coupons
           </h1>}
 
           <p className="mt-2 text-sm text-gray-700">
@@ -77,7 +79,7 @@ export default function ManageCoupons() {
             type="button"
             onClick={() => handleShowCouponModal()}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-            Add New Coupon
+            {t('add_new_coupon')}
           </button>
         </div>
       </div>
@@ -97,37 +99,37 @@ export default function ManageCoupons() {
                         <th
                           scope="col"
                           className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                          Code
+                          {t('code')}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          Percentage (%)
+                          {t('promotional_value')} (%)
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          Start Date
+                          {t('start_date')}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          End Date
+                          {t('end_date')}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          Days Left
+                          {t('status')}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          Edit
+                          {t('edit')}
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                          Delete
+                          {t('delete')}
                         </th>
                       </tr>
                     </thead>
@@ -149,7 +151,7 @@ export default function ManageCoupons() {
                             </td>
 
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {coupon?.daysLeft <= 0 ? "Expired" : `${coupon?.daysLeft} days left`}
+                              {coupon?.daysLeft <= 0 ? t('Expired') : `${coupon?.daysLeft} ${t('days_left')}`}
                             </td>
                             {/* edit icon */}
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

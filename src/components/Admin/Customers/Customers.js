@@ -11,6 +11,7 @@ import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAc
 import DeleteCustomer from "./modal/deleteCustomer";
 import AddCustomerModal from "./modal/AddCustomer";
 import { limitNumber } from "../../../utils/limitNumber";
+import { useTranslation } from "react-i18next";
 
 export default function ManageCustomers() {
   const [isShowEditUserModal, setIsShowEditUserModal] = useState(false);
@@ -26,6 +27,7 @@ export default function ManageCustomers() {
   const [user, setUser] = useState(" ");
   const [page, setPage] = useState(1);
   let totalPage = Math.ceil(count / limitNumber);
+  const { t } = useTranslation();
 
   // useEffect(() => {
   //   // if (results > 5) {
@@ -101,7 +103,7 @@ export default function ManageCustomers() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Manage Users</h1>
+          <h1 className="text-xl font-semibold text-gray-900">{t('manage_users')}</h1>
           <p className="mt-2 text-sm text-gray-700">
             A list of all the users in your account including their name, title,
             email and role.
@@ -112,7 +114,7 @@ export default function ManageCustomers() {
             type="button"
             onClick={handleAddCustomer}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-            Add user
+            {t('add_user')}
           </button>
         </div>
       </div>
@@ -120,7 +122,7 @@ export default function ManageCustomers() {
         <input
           type="search"
           name="search"
-          placeHolder="Search user"
+          placeHolder={t('search')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -146,32 +148,32 @@ export default function ManageCustomers() {
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Email
+                      {t('email')}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Gender
+                      {t('gender')}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Phone number
+                      {t('phone_number')}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Role
+                      {t('role')}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Edit
+                      {t('edit')}
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Delete
+                      {t('delete')}
                     </th>
 
                   </tr>

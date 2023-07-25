@@ -7,11 +7,13 @@ import { updateUserAction, updateUserProfileAction } from '../../../../redux/sli
 import { PhotoIcon } from '@heroicons/react/20/solid';
 import { dataURItoFile, fileName, getEncodedDataFromDataURI } from '../../../../utils/handleFileImage';
 import DatePicker from "react-datepicker";
+import { useTranslation } from 'react-i18next';
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditProfileModal({ isShowEditProfileModal, setIsShowEditProfileModal, user }) {
     console.log(user);
+    const { t } = useTranslation();
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
     const [selectedImage, setSelectedImage] = useState(user?.photo ?? '');
@@ -99,7 +101,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Edit Profile</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">{t('edit_profile')}</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -109,7 +111,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                     <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                User Name
+                                                                {t('username')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -122,7 +124,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                         </div>
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Email
+                                                                {t('email')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -135,7 +137,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                         </div>
                                                         <div className="col-span-full">
                                                             <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
-                                                                Avatar
+                                                                {t('avatar')}
                                                             </label>
                                                             <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                                                                 <div className="text-center">
@@ -165,7 +167,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                         </div>
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Phone number
+                                                                {t('phone_number')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -178,9 +180,9 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                         </div>
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Date of birth
+                                                                {t('date_of_birth')}
                                                             </label>
-                                                            <div className="mt-1">
+                                                            <div className="mt-1 w-full">
                                                                 <DatePicker
                                                                     dateFormat="dd/MM/yyyy"
                                                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -192,7 +194,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
 
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Address
+                                                                {t('address')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -205,7 +207,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                         </div>
                                                         <div className="sm:col-span-3">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Select gender
+                                                                {t('gender')}
                                                             </label>
                                                             <select
                                                                 name="gender"
@@ -213,10 +215,10 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                                                 onChange={handleOnChange}
                                                                 className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
                                                                 defaultValue="user">
-                                                                <option>-- Select gender --</option>
+                                                                <option>-- {t('select_gender')} --</option>
                                                                 {genders?.map((gender, index) => (
                                                                     <option key={index} value={gender}>
-                                                                        {gender}
+                                                                        {t(gender)}
                                                                     </option>
                                                                 ))}
                                                             </select>
@@ -228,13 +230,13 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
                                                 <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowEditProfileModal(!isShowEditProfileModal)}
                                                     ref={cancelButtonRef}>
-                                                    Cancel
+                                                    {t('cancel')}
                                                 </button>
                                                 <button
                                                     type="submit"
                                                     className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 >
-                                                    Save
+                                                    {t('save')}
                                                 </button>
                                             </div>
                                         </form>

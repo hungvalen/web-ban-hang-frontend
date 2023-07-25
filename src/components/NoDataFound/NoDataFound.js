@@ -1,6 +1,6 @@
 import React from "react";
 
-const NoDataFound = () => {
+const NoDataFound = ({ message }) => {
   return (
     <div
       style={{
@@ -9,7 +9,7 @@ const NoDataFound = () => {
         alignItems: "center",
       }}
     >
-      <h1 className="text-xl">No Data Found.</h1>
+      <h1 className="text-xl">{message != null ? '' : 'No Data Found.'}</h1>
     </div>
   );
 };

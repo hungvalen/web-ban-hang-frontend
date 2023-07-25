@@ -11,6 +11,17 @@ import Skeleton from "react-loading-skeleton";
 import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 import { getUserProfileAction } from "../../redux/slices/users/usersSlice";
 import CouponBanner from "./CouponBanner";
+import {
+    ArchiveBoxIcon,
+    ArrowRightCircleIcon,
+    ChevronDownIcon,
+    DocumentDuplicateIcon,
+    HeartIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    UserPlusIcon,
+} from '@heroicons/react/20/solid'
+import { useTranslation } from "react-i18next";
 
 const user = {
     name: 'Tom Cook',
@@ -35,6 +46,12 @@ function classNames(...classes) {
 }
 
 export default function Navigation() {
+    const { i18n } = useTranslation();
+    const { t } = useTranslation();
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+        localStorage.setItem('language', lng);
+    };
     const [selectedOption, setSelectedOption] = useState('');
     const navigate = useNavigate();
     const handleChange = (event) => {
@@ -153,14 +170,17 @@ export default function Navigation() {
                             <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
                                 {
                                     isLoggedIn ? <>
-                                        <button
+                                        {/* <button
                                             type="button"
                                             className="flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <span className="sr-only">View notifications</span>
                                             <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                        </button>
-
+                                        </button> */}
+                                        <div className="mx-auto">
+                                            <img width="32" height="32" src="https://img.icons8.com/color/48/great-britain-circular.png" alt="great-britain-circular" className="cursor-pointer inline-block" onClick={() => changeLanguage('en')} />
+                                            <img width="32" height="32" src="https://img.icons8.com/color/48/vietnam-circular.png" alt="vietnam-circular" className="cursor-pointer inline-block mr-3" onClick={() => changeLanguage('vi')} />
+                                        </div>
                                         {/* Profile dropdown */}
                                         <Menu as="div" className="relative mx-4 flex-shrink-0">
                                             <div>
@@ -202,7 +222,7 @@ export default function Navigation() {
                                                                         aria-hidden="true"
                                                                     />
                                                                 )}
-                                                                Profile
+                                                                {t('profile')}
                                                             </Link>
                                                         )}
                                                     </Menu.Item>
@@ -227,7 +247,7 @@ export default function Navigation() {
                                                                             aria-hidden="true"
                                                                         />
                                                                     )}
-                                                                    Dashboard
+                                                                    {t('dashboard_profile')}
                                                                 </Link>
                                                             )}
                                                         </Menu.Item>
@@ -253,7 +273,7 @@ export default function Navigation() {
                                                                         aria-hidden="true"
                                                                     />
                                                                 )}
-                                                                My order
+                                                                {t('my_order')}
                                                             </Link>
                                                         )}
                                                     </Menu.Item>
@@ -277,7 +297,7 @@ export default function Navigation() {
                                                                         aria-hidden="true"
                                                                     />
                                                                 )}
-                                                                Sign out
+                                                                {t('sign_out')}
                                                             </button>
                                                         )}
                                                     </Menu.Item>
@@ -301,19 +321,23 @@ export default function Navigation() {
                                             </Link>
                                         </div>
                                     </> : <>
+                                        <div className="mx-auto">
+                                            <img width="32" height="32" src="https://img.icons8.com/color/48/great-britain-circular.png" alt="great-britain-circular" className="cursor-pointer inline-block" onClick={() => changeLanguage('en')} />
+                                            <img width="32" height="32" src="https://img.icons8.com/color/48/vietnam-circular.png" alt="vietnam-circular" className="cursor-pointer inline-block mr-3" onClick={() => changeLanguage('vi')} />
+                                        </div>
                                         <Link
                                             to="/register"
                                             type="button"
                                             className="mr-4 rounded-md bg-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-rose-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500"
                                         >
-                                            Create an account
+                                            {t('create_an_account')}
                                         </Link>
                                         <Link
                                             to="/login"
                                             type="button"
                                             className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                                         >
-                                            Sign in
+                                            {t('sign_in')}
                                         </Link>
                                     </>
                                 }

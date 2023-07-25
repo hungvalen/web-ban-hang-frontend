@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import ManageCoupons from "./components/Admin/Coupons/ManageCoupons";
-import AddCoupon from "./components/Admin/Coupons/AddCoupon";
 import Login from "./components/Users/Forms/Login";
 import RegisterForm from "./components/Users/Forms/RegisterForm";
 import HomePage from "./components/HomePage/HomePage";
@@ -15,7 +14,6 @@ import AddCategory from "./components/Admin/Categories/modal/AddCategory";
 import AddBrand from "./components/Admin/Categories/AddBrand";
 import AddColor from "./components/Admin/Categories/AddColor";
 import AllCategories from "./components/HomePage/AllCategories";
-import UpdateCoupon from "./components/Admin/Coupons/UpdateCoupon";
 import Product from "./components/Users/Products/Product";
 import ShoppingCart from "./components/Users/Products/ShoppingCart";
 import ProductsFilters from "./components/Users/Products/ProductsFilters";
@@ -59,9 +57,7 @@ const App = () => {
             {/* products */} <Route path="" element={<OrdersList />} />
             <Route path="manage-products" element={<ManageStocks />} />
             {/* coupons */}
-            <Route path="add-coupon" element={<AddCoupon />} />
             <Route path="manage-coupon" element={<ManageCoupons />} />
-            <Route path="manage-coupon/edit/:code" element={<UpdateCoupon />} />
             {/* Category */}
             <Route path="manage-category" element={<ManageCategories />} />
             {/* brand category */}

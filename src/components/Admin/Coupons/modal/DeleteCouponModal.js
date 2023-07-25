@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { deleteProductAction } from '../../../../redux/slices/products/productSlices';
 import { deleteUserAction } from '../../../../redux/slices/users/usersSlice';
 import { deleteCouponAction } from '../../../../redux/slices/coupons/couponSlice';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteCouponModal({ showDeleteCouponModal, setShowDeleteCouponModal, coupon }) {
     const cancelButtonRef = useRef(null);
@@ -13,6 +14,7 @@ export default function DeleteCouponModal({ showDeleteCouponModal, setShowDelete
         dispatch(deleteCouponAction(coupon?._id))
         setShowDeleteCouponModal(false);
     }
+    const { t } = useTranslation();
     return (
         <Transition.Root show={showDeleteCouponModal ?? false} as={Fragment}>
             <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setShowDeleteCouponModal ?? false}>
@@ -47,12 +49,11 @@ export default function DeleteCouponModal({ showDeleteCouponModal, setShowDelete
                                         </div>
                                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                             <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                Delete coupon {coupon?.code}
+                                                {t('delete')} {t('code')} {coupon?.code}
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <p className="text-sm text-gray-500">
-                                                    Are you sure you want to delete this coupon? All of your data will be permanently
-                                                    removed. This action cannot be undone.
+                                                    {t('delete_coupon')}
                                                 </p>
                                             </div>
                                         </div>
@@ -64,7 +65,7 @@ export default function DeleteCouponModal({ showDeleteCouponModal, setShowDelete
                                         className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                                         onClick={handleDeleteCoupon}
                                     >
-                                        Delete
+                                        {t('delete')}
                                     </button>
                                     <button
                                         type="button"
@@ -72,7 +73,7 @@ export default function DeleteCouponModal({ showDeleteCouponModal, setShowDelete
                                         onClick={() => setShowDeleteCouponModal(false)}
                                         ref={cancelButtonRef}
                                     >
-                                        Cancel
+                                        {t('cancel')}
                                     </button>
                                 </div>
                             </Dialog.Panel>
