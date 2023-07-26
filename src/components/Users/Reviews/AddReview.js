@@ -117,6 +117,7 @@ import { StarIcon } from '@heroicons/react/20/solid';
 import { createReviewAction } from "../../../redux/slices/reviews/reviewSlice";
 
 import DatePicker from "react-datepicker";
+import { useTranslation } from 'react-i18next';
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
@@ -130,6 +131,8 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
     grey: "#a9a9a9"
 
   };
+  const { t } = useTranslation();
+
   const handleClick = value => {
     setCurrentValue(value)
   }
@@ -145,6 +148,7 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
   //---form data---
   const [formData, setFormData] = useState({
     message: "",
+    title:""
   });
   //onChange
   const handleOnChange = (e) => {
@@ -196,7 +200,7 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                     <form onSubmit={handleOnSubmit}>
                       <div className="space-y-6">
                         <div className="border-b border-gray-900/10 pb-2">
-                          <h2 className="text-base font-semibold leading-7 text-gray-900">Add review</h2>
+                          <h2 className="text-base font-semibold leading-7 text-gray-900">{t('add_review')}</h2>
                         </div>
 
                         <div className="border-b border-gray-900/10 pb-7">
@@ -219,7 +223,7 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                               <label
                                 htmlFor="location"
                                 className="block text-sm font-medium text-gray-700">
-                                Rating
+                                {t('rating')}
                               </label>
                               <div className="flex items-center justify-center">
                                 {stars.map((_, index) => {
@@ -259,12 +263,28 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                             </div>
                             <div className="sm:col-span-full">
                               <label className="block text-sm font-medium text-gray-700">
-                                Message
+                                {t('title')}
+                              </label>
+                              <div className="mt-1">
+                                <input
+                                  type="text"
+                                  name="title"
+                                  required
+                                  value={formData.title}
+                                  onChange={handleOnChange}
+                                  className="block w-full rounded-md p-2 border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                />
+                              </div>
+                            </div>
+                            <div className="sm:col-span-full">
+                              <label className="block text-sm font-medium text-gray-700">
+                                {t('message')}
                               </label>
                               <div className="mt-1">
                                 <textarea
                                   rows={4}
                                   name="message"
+                                  required
                                   value={formData.message}
                                   onChange={handleOnChange}
                                   className="block w-full rounded-md p-2 border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -279,13 +299,13 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                       <div className="mt-6 flex items-center justify-end gap-x-6">
                         <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setShowAddReviewModal(!showAddReviewModal)}
                           ref={cancelButtonRef}>
-                          Cancel
+                          {t('cancel')}
                         </button>
                         <button
                           type="submit"
                           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Save
+                          {t('save')}
                         </button>
                       </div>
                     </form>

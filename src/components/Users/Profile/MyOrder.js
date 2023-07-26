@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
@@ -9,6 +9,7 @@ import { formatPrice } from '../../../utils/formatCurrency'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import NoDataFound from '../../NoDataFound/NoDataFound'
+import { Tab } from '@headlessui/react'
 
 // const orders = [
 //     {
@@ -54,22 +55,45 @@ function classNames(...classes) {
 export default function MyOrder() {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    let error;
-    // let orders = [];
-
+    const { loading, profile } = useSelector(state => state.users)
+    let [categories, setCategories] = useState({
+        all_order: [],
+        order_pending: [],
+        order_inprogress: [],
+        order_instransit: [],
+        order_shipped: [],
+        order_cancel: [],
+    })
     useEffect(() => {
         dispatch(getUserProfileAction());
-    }, [dispatch])
-
-    const { loading, profile } = useSelector(state => state.users)
-    const orders = profile?.user?.orders;
-    console.log(orders);
+       
+    }, [dispatch,])
+    useEffect(() => {
+        if (profile && profile.user) {
+            const orders = profile.user.orders;
+    
+            const orders_pending = orders.filter(e => e.status === "pending");
+            const orders_processing = orders.filter(e => e.status === "processing");
+            const orders_shipped = orders.filter(e => e.status === "shipped");
+            const orders_intransit = orders.filter(e => e.status === "intransit");
+            const orders_cancel = orders.filter(e => e.status === "cancel");
+    
+            setCategories({
+                all_order: orders,
+                order_pending: orders_pending,
+                order_inprogress: orders_processing,
+                order_instransit: orders_intransit,
+                order_shipped: orders_shipped,
+                order_cancel: orders_cancel,
+            });
+        }
+    }, [profile]);
     return (
         <>
             {
                 loading ? <LoadingComponent /> :
                     <div className="bg-white">
-                        <div className="py-16 sm:py-24">
+                        <div className="py-8 sm:py-24">
                             <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
                                 <div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
                                     <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{t('order_history')}</h1>
@@ -79,7 +103,7 @@ export default function MyOrder() {
                                 </div>
                             </div>
 
-                            <div className="mt-16">
+                            <div className="mt-8">
 
                                 <h2 className="sr-only">Recent orders</h2>
                                 <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
@@ -101,7 +125,7 @@ export default function MyOrder() {
                                                     ))}
                                                 </select>
                                             </div>
-                                            <div className="hidden sm:block">
+                                            {/* <div className="hidden sm:block">
                                                 <div className="border-b border-gray-200">
                                                     <nav className="-mb-px flex space-x-8" aria-label="Tabs">
                                                         {tabs.map((tab) => (
@@ -131,155 +155,190 @@ export default function MyOrder() {
                                                         ))}
                                                     </nav>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        {orders != null && orders?.length > 0 ? orders?.map((order) => (
-                                            <div
-                                                key={order?._id}
-                                                className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
-                                            >
-                                                <h3 className="sr-only">
-                                                    Order placed on <time dateTime={order?.createdDatetime}>{order?.createdDate}</time>
-                                                </h3>
-
-                                                <div className="flex items-center border-b border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6">
-                                                    <dl className="grid flex-1 grid-cols-2 gap-x-6 text-sm sm:col-span-3 sm:grid-cols-3 lg:col-span-2">
-                                                        <div>
-                                                            <dt className="font-medium text-gray-900">Order number</dt>
-                                                            <dd className="mt-1 text-gray-500">{order?.orderNumber}</dd>
-                                                        </div>
-                                                        <div className="hidden sm:block">
-                                                            <dt className="font-medium text-gray-900">Date placed</dt>
-                                                            <dd className="mt-1 text-gray-500">
-                                                                <time dateTime={order?.createdAt}>{new Date(order?.createdAt).toLocaleDateString()}</time>
-                                                            </dd>
-                                                        </div>
-                                                        <div>
-                                                            <dt className="font-medium text-gray-900">Total amount</dt>
-                                                            <dd className="mt-1 font-medium text-gray-900">{formatPrice.format(order?.totalPrice)}</dd>
-                                                        </div>
-                                                    </dl>
-
-                                                    <Menu as="div" className="relative flex justify-end lg:hidden">
-                                                        <div className="flex items-center">
-                                                            <Menu.Button className="-m-2 flex items-center p-2 text-gray-400 hover:text-gray-500">
-                                                                <span className="sr-only">Options for order {order?.number}</span>
-                                                                <EllipsisVerticalIcon className="h-6 w-6" aria-hidden="true" />
-                                                            </Menu.Button>
-                                                        </div>
-
-                                                        <Transition
-                                                            as={Fragment}
-                                                            enter="transition ease-out duration-100"
-                                                            enterFrom="transform opacity-0 scale-95"
-                                                            enterTo="transform opacity-100 scale-100"
-                                                            leave="transition ease-in duration-75"
-                                                            leaveFrom="transform opacity-100 scale-100"
-                                                            leaveTo="transform opacity-0 scale-95"
+                                            </div> */}
+                                            <Tab.Group>
+                                                <Tab.List className="flex space-x-1 rounded-xl bg-gray-600 p-1">
+                                                    {Object.keys(categories).map((category) => (
+                                                        <Tab
+                                                            key={category}
+                                                            className={({ selected }) =>
+                                                                classNames(
+                                                                    'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-indigo-600',
+                                                                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
+                                                                    selected
+                                                                        ? 'bg-white shadow'
+                                                                        : 'text-white hover:bg-white/[0.12] hover:text-white'
+                                                                )
+                                                            }
                                                         >
-                                                            <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-bottom-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                                <div className="py-1">
-                                                                    <Menu.Item>
-                                                                        {({ active }) => (
-                                                                            <Link
-                                                                                to={`order-details/${order._id}`} className={classNames(
-                                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                    'block px-4 py-2 text-sm'
-                                                                                )}
+                                                            {t(category)}
+                                                        </Tab>
+                                                    ))}
+                                                </Tab.List>
+                                                <Tab.Panels className="mt-2">
+                                                    {Object.values(categories).map((orders, idx) => (
+                                                        <Tab.Panel
+                                                            key={idx}
+                                                            className={classNames(
+                                                                'rounded-xl bg-white p-3',
+                                                                'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2'
+                                                            )}
+                                                        >
+
+                                                            {orders != null && orders?.length > 0 ? orders?.map((order) => (
+                                                                <div
+                                                                    key={order?._id}
+                                                                    className="border-b border-t my-4 border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
+                                                                >
+                                                                    <h3 className="sr-only">
+                                                                        Order placed on <time dateTime={order?.createdDatetime}>{order?.createdDate}</time>
+                                                                    </h3>
+
+                                                                    <div className="flex items-center border-b gap-2 border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6">
+                                                                        <dl className="grid flex-1 grid-cols-2 gap-x-6 text-sm sm:col-span-3 sm:grid-cols-3 lg:col-span-2">
+                                                                            <div>
+                                                                                <dt className="font-medium text-gray-900">{t('order_number')}</dt>
+                                                                                <dd className="mt-1 text-gray-500">{order?.orderNumber}</dd>
+                                                                            </div>
+                                                                            <div className="hidden sm:block">
+                                                                                <dt className="font-medium text-gray-900">{t('order_place')}</dt>
+                                                                                <dd className="mt-1 text-gray-500">
+                                                                                    <time dateTime={order?.createdAt}>{new Date(order?.createdAt).toLocaleDateString()}</time>
+                                                                                </dd>
+                                                                            </div>
+                                                                            <div>
+                                                                                <dt className="font-medium text-gray-900">{t('total_amount')}</dt>
+                                                                                <dd className="mt-1 font-medium text-gray-900">{formatPrice.format(order?.totalPrice)}</dd>
+                                                                            </div>
+                                                                        </dl>
+
+                                                                        <Menu as="div" className="relative flex justify-end lg:hidden">
+                                                                            <div className="flex items-center">
+                                                                                <Menu.Button className="-m-2 flex items-center p-2 text-gray-400 hover:text-gray-500">
+                                                                                    <span className="sr-only">Options for order {order?.number}</span>
+                                                                                    <EllipsisVerticalIcon className="h-6 w-6" aria-hidden="true" />
+                                                                                </Menu.Button>
+                                                                            </div>
+
+                                                                            <Transition
+                                                                                as={Fragment}
+                                                                                enter="transition ease-out duration-100"
+                                                                                enterFrom="transform opacity-0 scale-95"
+                                                                                enterTo="transform opacity-100 scale-100"
+                                                                                leave="transition ease-in duration-75"
+                                                                                leaveFrom="transform opacity-100 scale-100"
+                                                                                leaveTo="transform opacity-0 scale-95"
                                                                             >
-                                                                                View
+                                                                                <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-bottom-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                                                    <div className="py-1">
+                                                                                        <Menu.Item>
+                                                                                            {({ active }) => (
+                                                                                                <Link
+                                                                                                    to={`order-details/${order._id}`} className={classNames(
+                                                                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                                                                        'block px-4 py-2 text-sm'
+                                                                                                    )}
+                                                                                                >
+                                                                                                    View
+                                                                                                </Link>
+                                                                                            )}
+                                                                                        </Menu.Item>
+                                                                                        <Menu.Item>
+                                                                                            {({ active }) => (
+                                                                                                <a
+                                                                                                    href={order?.invoiceHref}
+                                                                                                    className={classNames(
+                                                                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                                                                        'block px-4 py-2 text-sm'
+                                                                                                    )}
+                                                                                                >
+                                                                                                    Invoice
+                                                                                                </a>
+                                                                                            )}
+                                                                                        </Menu.Item>
+                                                                                    </div>
+                                                                                </Menu.Items>
+                                                                            </Transition>
+                                                                        </Menu>
+
+                                                                        <div className="hidden lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4">
+                                                                            <Link
+                                                                                state={{ orderDetails: order }}
+                                                                                to={`/order-details/${order._id}`}
+                                                                                className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                                            >
+                                                                                <span>{t('view_order')}</span>
+                                                                                <span className="sr-only">{order?.number}</span>
                                                                             </Link>
-                                                                        )}
-                                                                    </Menu.Item>
-                                                                    <Menu.Item>
-                                                                        {({ active }) => (
                                                                             <a
                                                                                 href={order?.invoiceHref}
-                                                                                className={classNames(
-                                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                    'block px-4 py-2 text-sm'
-                                                                                )}
+                                                                                className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                                                             >
-                                                                                Invoice
+                                                                                <span>{t('view_invoice')}</span>
+                                                                                <span className="sr-only">for order {order?.number}</span>
                                                                             </a>
-                                                                        )}
-                                                                    </Menu.Item>
-                                                                </div>
-                                                            </Menu.Items>
-                                                        </Transition>
-                                                    </Menu>
-
-                                                    <div className="hidden lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4">
-                                                        <Link
-                                                            state={{ orderDetails: order }}
-                                                            to={`/order-details/${order._id}`}
-                                                            className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                        >
-                                                            <span>View Order</span>
-                                                            <span className="sr-only">{order?.number}</span>
-                                                        </Link>
-                                                        <a
-                                                            href={order?.invoiceHref}
-                                                            className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                        >
-                                                            <span>View Invoice</span>
-                                                            <span className="sr-only">for order {order?.number}</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-
-                                                {/* Products */}
-                                                <h4 className="sr-only">Items</h4>
-                                                <ul role="list" className="divide-y divide-gray-200">
-                                                    {order?.orderItems?.map((product) => (
-                                                        <li key={product?._id} className="p-4 sm:p-6">
-                                                            <div className="flex items-center sm:items-start">
-                                                                <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40">
-                                                                    <img
-                                                                        src={product?.image}
-                                                                        alt={product?.name}
-                                                                        className="h-full w-full object-cover object-center"
-                                                                    />
-                                                                </div>
-                                                                <div className="ml-6 flex-1 text-sm">
-                                                                    <div className="font-medium text-gray-900 sm:flex sm:justify-between">
-                                                                        <h5>{product?.name}</h5>
-                                                                        <p className="mt-2 sm:mt-0">{product?.price}</p>
+                                                                        </div>
                                                                     </div>
-                                                                    <p className="hidden text-gray-500 sm:mt-2 sm:block">{product?.description}</p>
-                                                                </div>
-                                                            </div>
 
-                                                            <div className="mt-6 sm:flex sm:justify-between">
-                                                                <div className="flex items-center">
-                                                                    <CheckCircleIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
-                                                                    <p className="ml-2 text-sm font-medium text-gray-500">
-                                                                        Delivered on <time dateTime={order?.deliveredDatetime}>{order?.deliveredDate}</time>
-                                                                    </p>
-                                                                </div>
+                                                                    {/* Products */}
+                                                                    <h4 className="sr-only">Items</h4>
+                                                                    <ul role="list" className="divide-y divide-gray-200">
+                                                                        {order?.orderItems?.map((product) => (
+                                                                            <li key={product?._id} className="p-4 sm:p-6">
+                                                                                <div className="flex items-center sm:items-start">
+                                                                                    <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40">
+                                                                                        <img
+                                                                                            src={product?.image}
+                                                                                            alt={product?.name}
+                                                                                            className="h-full w-full object-cover object-center"
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div className="ml-6 flex-1 text-sm">
+                                                                                        <div className="font-medium text-gray-900 sm:flex sm:justify-between">
+                                                                                            <h5>{product?.name}</h5>
+                                                                                            <p className="mt-2 sm:mt-0">{formatPrice.format(product?.price)}</p>
+                                                                                        </div>
+                                                                                        <p className="hidden text-gray-500 sm:mt-2 sm:block">{product?.description}</p>
+                                                                                    </div>
+                                                                                </div>
 
-                                                                <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
-                                                                    <div className="flex flex-1 justify-center">
-                                                                        <Link
-                                                                            to={`/products/${product?._id}`}
-                                                                            // href={product?.href}
-                                                                            className="whitespace-nowrap text-indigo-600 hover:text-indigo-500"
-                                                                        >
-                                                                            View product
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="flex flex-1 justify-center pl-4">
-                                                                        <a href="#" className="whitespace-nowrap text-indigo-600 hover:text-indigo-500">
-                                                                            Buy again
-                                                                        </a>
-                                                                    </div>
+                                                                                <div className="mt-6 sm:flex sm:justify-between">
+                                                                                    <div className="flex items-center">
+                                                                                        <CheckCircleIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                                                                                        <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                            Delivered on <time dateTime={order?.deliveredDatetime}>{order?.deliveredDate}</time>
+                                                                                        </p>
+                                                                                    </div>
+
+                                                                                    <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+                                                                                        <div className="flex flex-1 justify-center">
+                                                                                            <Link
+                                                                                                to={`/products/${product?._id}`}
+                                                                                                // href={product?.href}
+                                                                                                className="whitespace-nowrap text-indigo-600 hover:text-indigo-500"
+                                                                                            >
+                                                                                                {t('view_product')}
+                                                                                            </Link>
+                                                                                        </div>
+                                                                                        <div className="flex flex-1 justify-center pl-4">
+                                                                                            <a href="#" className="whitespace-nowrap text-indigo-600 hover:text-indigo-500">
+                                                                                                Buy again
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
                                                                 </div>
-                                                            </div>
-                                                        </li>
+                                                            )) : <NoDataFound message={t('no_order')} />
+                                                            }
+                                                        </Tab.Panel>
                                                     ))}
-                                                </ul>
-                                            </div>
-                                        )) : <NoDataFound message={t('no_order')} />}
+                                                </Tab.Panels>
+                                            </Tab.Group>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

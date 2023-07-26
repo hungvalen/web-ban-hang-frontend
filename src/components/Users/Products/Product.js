@@ -17,6 +17,7 @@ import AddReview from "../Reviews/AddReview";
 import AddReviewModal from "../Reviews/AddReview";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import convertHtmlToPlainText from "../../../utils/convertHTMLToPlainText"
+import { useTranslation } from "react-i18next";
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -98,7 +99,7 @@ export default function Product() {
   const [selectedColor, setSelectedColor] = useState("");
   const [showAddReviewModal, setShowAddReviewModal] = useState(false);
   const { id } = useParams();
-
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchSingleProductAction(id
@@ -148,7 +149,6 @@ export default function Product() {
   const { cartItems } = useSelector(state => state?.carts)
 
   const { product: { product }, loading, error } = useSelector(state => state.product)
-  console.log(cartItems);
   const productExists = cartItems?.find((item) => item?._id === product?._id);
   const productPrice = formatPrice.format(+product?.product?.price)
   //Add product to cart
@@ -233,7 +233,7 @@ export default function Product() {
                 <div className="mt-4">
                   <>
                     <button type="button" className="text-sm font-medium text-blue-600 cursor-pointer" onClick={handleAddReview}>
-                      Leave a review
+                      {t('leave_a_review')}
                     </button>
                   </>
                 </div>
@@ -307,7 +307,7 @@ export default function Product() {
               <>
                 {/* Color picker */}
                 <div>
-                  <h2 className="text-sm font-medium text-gray-900">Color</h2>
+                  <h2 className="text-sm font-medium text-gray-900">{t('select_color')}</h2>
                   <div className="flex items-center space-x-3">
                     <RadioGroup value={selectedColor} onChange={setSelectedColor}>
                       <div className="mt-4 flex items-center space-x-3">
@@ -342,7 +342,7 @@ export default function Product() {
                 {/* Size picker */}
                 <div className="mt-8">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-medium text-gray-900">Size</h2>
+                    <h2 className="text-sm font-medium text-gray-900">{t('select_size')}</h2>
                   </div>
                   <RadioGroup
                     value={selectedSize}
@@ -375,7 +375,7 @@ export default function Product() {
                       style={{ cursor: "not-allowed" }}
                       disabled
                       className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-600 py-3 px-8 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                      Out of stock
+                      {t('out_of_stock')}
                     </button>
                   ) : (
                     <button
@@ -399,7 +399,7 @@ export default function Product() {
 
               {/* Product details */}
               <div className="mt-10">
-                <h2 className="text-sm font-medium text-gray-900">Description</h2>
+                <h2 className="text-sm font-medium text-gray-900">{t('product_desc')}</h2>
                 <div className="prose prose-sm mt-4 text-gray-500">
                   {
                     isHtmlText(product?.description) === true ? convertHtmlToPlainText(product?.description) : product?.description
@@ -442,11 +442,11 @@ export default function Product() {
             <h2
               id="reviews-heading"
               className="text-lg font-medium text-gray-900">
-              Recent reviews
+              {t('recent_reviews')}
             </h2>
 
             <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
-              {product?.product?.reviews?.length > 0 ? product?.product?.reviews.map((review) => (
+              {product?.reviews?.length > 0 ? product?.reviews.map((review) => (
                 <div
                   key={review._id}
                   className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8">
@@ -467,7 +467,7 @@ export default function Product() {
                         ))}
                       </div>
                       <p className="ml-3 text-sm text-gray-700">
-                        {review.rating}
+                        {review?.rating}
                         <span className="sr-only"> out of 5 stars</span>
                       </p>
                     </div>
@@ -494,7 +494,7 @@ export default function Product() {
                   </div>
                 </div>
 
-              )) : <p className="font-medium text-gray-900 ">No review found</p>}
+              )) : <p className="font-medium text-gray-900 ">{t('no_review_found')}</p>}
             </div>
             {
               showAddReviewModal && <AddReviewModal showAddReviewModal={showAddReviewModal} setShowAddReviewModal={setShowAddReviewModal} productId={product._id} />

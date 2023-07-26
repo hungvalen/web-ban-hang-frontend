@@ -235,7 +235,7 @@ const OrdersStatistics = () => {
             </dd>
           </div>
         </dl>
-        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-300" />
+        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-300" />
         <div className="flex gap-10">
           <div>
             <h1 className="font-semibold mt-2">Thống kê theo tháng</h1>

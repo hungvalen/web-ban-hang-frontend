@@ -64,17 +64,11 @@ export default function Navigation() {
         dispatch(fetchCategoriesAction())
     }, [dispatch])
 
-    useEffect(() => {
-        dispatch(getUserProfileAction());
-    }, [dispatch])
-
-    let { profile, loading: loadingProfile } = useSelector((state) => state.users);
-    console.log("check profile", profile);
     // get login user from localstorage
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const isLoggedIn = userInfo?.token ? true : false;
     const isAdmin = userInfo?.userFound?.isAdmin ? true : false;
-
+    console.log(userInfo);
     const handleLogout = () => {
         localStorage.removeItem("userInfo");
         window.location.href = "/";
@@ -145,11 +139,11 @@ export default function Navigation() {
                                                 <button
                                                     onClick={handleSearchProduct}
                                                     type="submit"
-                                                    class="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                    <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                                     </svg>
-                                                    <span class="sr-only">Search</span>
+                                                    <span className="sr-only">Search</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -186,7 +180,7 @@ export default function Navigation() {
                                             <div>
                                                 <Menu.Button className="flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                     <span className="sr-only">Open user menu</span>
-                                                    <img className="h-8 w-8 rounded-full" src={profile?.user?.photo} alt="" />
+                                                    <img className="h-8 w-8 rounded-full" src={userInfo?.userFound?.photo} alt="" />
                                                 </Menu.Button>
                                             </div>
                                             <Transition
@@ -384,13 +378,13 @@ export default function Navigation() {
                             <div className="flex items-center px-4">
                                 <div className="flex-shrink-0">
                                     {
-                                        loadingProfile ? <Skeleton /> : <img className="h-10 w-10 rounded-full" src={profile?.photo} alt="" />
+                                        <img className="h-10 w-10 rounded-full" src={userInfo?.userFound?.photo} alt="" />
 
                                     }
                                 </div>
                                 <div className="ml-3">
-                                    <div className="text-base font-medium text-white">{user.name}</div>
-                                    <div className="text-sm font-medium text-gray-400">{user.email}</div>
+                                    <div className="text-base font-medium text-white">{user?.name}</div>
+                                    <div className="text-sm font-medium text-gray-400">{user?.email}</div>
                                 </div>
                                 <button
                                     type="button"
