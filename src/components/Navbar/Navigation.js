@@ -133,7 +133,7 @@ export default function Navigation() {
                                                     id="search"
                                                     name="search"
                                                     className="block w-full rounded-lg bg-white py-1.5 pl-40 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                    placeholder="Search"
+                                                    placeholder={t('search')}
                                                     type="search"
                                                 />
                                                 <button

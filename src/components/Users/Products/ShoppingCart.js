@@ -11,6 +11,7 @@ import { cartItemsFromLocalStorageAction, changeOrderItemQty, removeOrderItemQty
 import { formatPrice } from "../../../utils/formatCurrency";
 import { fetchCouponsAction, fetchSingleCouponAction } from "../../../redux/slices/coupons/couponSlice";
 import SweetAlert from "../../Playground/SweetAlert";
+import { useTranslation } from "react-i18next";
 
 const ShoppingCart = () => {
   const [couponCode, setCouponCode] = useState();
@@ -21,6 +22,7 @@ const ShoppingCart = () => {
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction())
   }, [dispatch])
+  const { t } = useTranslation();
 
   // add to cart handler
   const changeOrderItemQtyHandler = (productID, qty) => {
@@ -43,11 +45,13 @@ const ShoppingCart = () => {
   }
   // calculate total price
   let sumTotalPrice = 0;
+  let couponPrice = 0;
   sumTotalPrice = cartItems?.reduce((acc, item) => acc + item?.totalPrice, 0);
-
+  let totalPrice = cartItems?.reduce((acc, item) => acc + item?.totalPrice, 0);
   // check if coupon is applied
   if (coupon) {
     sumTotalPrice = sumTotalPrice - (sumTotalPrice * coupon?.coupon?.discount) / 100
+    couponPrice = totalPrice - sumTotalPrice;
   }
   // let cartItems;
   // let changeOrderItemQtyHandler;
@@ -62,7 +66,7 @@ const ShoppingCart = () => {
           cartItems?.length > 0 ?
             <>
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Shopping Cart
+                {t('shopping_cart')}
               </h1>
               <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
 
@@ -150,31 +154,32 @@ const ShoppingCart = () => {
                   <h2
                     id="summary-heading"
                     className="text-lg font-medium text-gray-900">
-                    Order summary
+                    {t('order_summary')}
                   </h2>
 
                   <dl className="mt-6 space-y-4">
                     <div className="flex items-center justify-between">
-                      <dt className="text-sm text-gray-600">Subtotal</dt>
+                      <dt className="text-sm text-gray-600">{t('subtotal')}</dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        {formatPrice.format(sumTotalPrice)}
+                        {formatPrice.format(totalPrice)}
                         {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
                       </dd>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-sm text-gray-600">{t('discount')}</dt>
+                      <dd className="text-sm font-medium text-gray-900">
+                        {formatPrice.format(couponPrice.toFixed(2))}
+                        {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
+                      </dd>
+                    </div>
+                   
                     {/* <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                      <dt className="flex items-center text-sm text-gray-600">
-                        <span>Shipping estimate</span>
-                        <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
-                          <span className="sr-only">Learn more about how shipping is calculated</span>
-                          <QuestionMarkCircleIcon className="h-5 w-5" aria-hidden="true" />
-                        </a>
-                      </dt>
-                      <dd className="text-sm font-medium text-gray-900">$5.00</dd>
+                      
                     </div> */}
                     <div className="flex items-center justify-between border-t border-gray-200"></div>
                     {/* add coupon */}
                     <dt className="flex items-center text-sm text-gray-600">
-                      <span>Have coupon code? </span>
+                      <span>{t('have_coupon_code')}</span>
                     </dt>
 
                     {/* success */}
@@ -193,18 +198,18 @@ const ShoppingCart = () => {
                         <button
                           disabled
                           className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-gray-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          Loading Please Wait...
+                          {t('loading_please_wait')}
                         </button>
                       ) : (
                         <button className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          Apply coupon
+                          {t('apply_coupon')}
                         </button>
                       )}
                     </form>
 
                     <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                       <dt className="text-base font-medium text-gray-900">
-                        Order total
+                        {t('order_total')}
                       </dt>
 
                       <dd className=" text-xl font-medium text-gray-900">
@@ -220,11 +225,13 @@ const ShoppingCart = () => {
                       to="/order-payment"
                       state={
                         {
-                          sumTotalPrice
+                          sumTotalPrice,
+                          totalPrice,
+                          couponPrice
                         }
                       }
                       className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                      Proceed to Checkout
+                      {t('proceed_to_checkout')}
                     </Link>
                   </div>
                 </section>
@@ -238,14 +245,14 @@ const ShoppingCart = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                   </svg>
                 </p>
-                <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Your shopping cart is empty</h1>
-                <p className="mt-6 text-base leading-7 text-gray-600">Looks like you haven't added anything to your cart yet.</p>
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">{t('cart_empty')}</h1>
+                <p className="mt-6 text-base leading-7 text-gray-600">{t('cart_empty_desc')}</p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
                   <Link
                     to="/"
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Go back home
+                    {t('go_back_home')}
                   </Link>
 
                 </div>

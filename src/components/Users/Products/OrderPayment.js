@@ -10,6 +10,7 @@ import { getUserProfileAction } from '../../../redux/slices/users/usersSlice';
 import { placeOrderAction } from '../../../redux/slices/orders/ordersSlice';
 import { fetchShippingUnitAction } from '../../../redux/slices/shipping-unit/shippingUnitSlice';
 import { resetSuccessAction } from '../../../redux/slices/globalActions/globalAction';
+import { useTranslation } from 'react-i18next';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -23,12 +24,11 @@ const deliveryMethods = [
 const paymentMethods = [
   { id: 'cod', title: 'Thanh toán khi nhận hàng' },
   { id: 'credit card', title: 'Credit card' },
-  { id: 'vnpay', title: 'Vnpay' },
+  { id: 'zalopay', title: 'Zalopay' },
 ]
 const OrderPayment = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     address: "",
     city: "",
     country: "",
@@ -38,9 +38,8 @@ const OrderPayment = () => {
     province: "",
     district: "",
     ward: "",
-    region: "",
-    postalCode: "",
     phone: "",
+    message:""
   });
   //onchange
   const onChange = (e) => {
@@ -48,12 +47,13 @@ const OrderPayment = () => {
   };
   const navigate = useNavigate();
   const location = useLocation();
-  const { sumTotalPrice } = location.state;
+  const { sumTotalPrice, totalPrice, couponPrice } = location.state;
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0])
   const { isAdded } = useSelector(state => state.orders)
   const [paymentMethod, setPaymentMethod] = useState();
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction());
     dispatch(fetchShippingUnitAction())
@@ -105,7 +105,11 @@ const OrderPayment = () => {
     setPaymentMethod(e.target.value)
   }
   const { loading: loadingOrder, error: errorOrder, order } = useSelector(state => state.orders);
-
+  const handleSelectDeliveryMethod = (deliveryMethod) => {
+    setSelectedDeliveryMethod({
+      ...deliveryMethod,
+      price: deliveryMethod.price })
+  };
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
@@ -137,7 +141,7 @@ const OrderPayment = () => {
                 {/* shipping Address */}
                 <AddShippingAddress formData={formData} setFormData={setFormData} onChange={onChange} />
                 <div className="border-t border-gray-200 pt-10">
-                  <h2 className="text-lg font-medium text-gray-900">Shipping unit</h2>
+                  <h2 className="text-lg font-medium text-gray-900">{t('shipping_unit')}</h2>
                   {loadingShippingUnit ? <div className="mt-3">Loading ...</div> :
                     shippingUnits?.shippingUnit?.map((item) => {
                       return (<RadioGroup value={selected} onChange={setSelected}>
@@ -190,7 +194,7 @@ const OrderPayment = () => {
                 </div>
                 {/* Payment */}
                 <div className="mt-10 border-t border-gray-200 pt-10">
-                  <h2 className="text-lg font-medium text-gray-900">Payment</h2>
+                  <h2 className="text-lg font-medium text-gray-900">{t('payment_method')}</h2>
 
                   <fieldset className="mt-4">
                     <legend className="sr-only">Payment type</legend>
@@ -237,7 +241,7 @@ const OrderPayment = () => {
                     </div>
                   </fieldset>
                   {
-                    paymentMethod === 'vnpay' ? (
+                    paymentMethod === 'zalopay' ? (
                       <>
                         <div className="mt-10 border-t border-gray-200 pt-10">
                           <h3 className="text-base font-semibold leading-6 text-gray-900">Internet Banking</h3>
@@ -290,7 +294,7 @@ const OrderPayment = () => {
                   {
                     paymentMethod === 'cod' ? (
                       <div className="mt-10 border-t border-gray-200 pt-10">
-                        <RadioGroup value={selectedDeliveryMethod} onChange={setSelectedDeliveryMethod}>
+                        <RadioGroup value={selectedDeliveryMethod} onChange={handleSelectDeliveryMethod}>
                           <RadioGroup.Label className="text-lg font-medium text-gray-900">Delivery method</RadioGroup.Label>
 
                           <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
@@ -454,24 +458,28 @@ const OrderPayment = () => {
                   ))}
                 </ul>
                 <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
+                <div className="flex items-center justify-between">
+                    <dt className="text-sm">{t('subtotal')}</dt>
+                    <dd className="text-sm font-medium text-gray-900">{formatPrice.format(+totalPrice)}</dd>
+                  </div>
                   <div className="flex items-center justify-between ">
                     <dt className="flex items-center text-sm text-gray-600">
-                      <span>Shipping estimate</span>
-                      <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                      <span>{t('shipping_estimate')}</span>
+                      {/* <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
                         <span className="sr-only">Learn more about how shipping is calculated</span>
                         <QuestionMarkCircleIcon className="h-5 w-5" aria-hidden="true" />
-                      </a>
+                      </a> */}
                     </dt>
-                    <dd className="text-sm font-medium text-gray-900">{formatPrice.format(+selectedDeliveryMethod.price)}</dd>
+                    <dd className="text-sm font-medium text-gray-900">{formatPrice.format(+selectedDeliveryMethod?.price)}</dd>
                   </div>
-                  {/* <div className="flex items-center justify-between">
-                    <dt className="text-sm">Taxes</dt>
-                    <dd className="text-sm font-medium text-gray-900"></dd>
-                  </div> */}
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm">{t('discount')}</dt>
+                    <dd className="text-sm font-medium text-gray-900">{couponPrice > 0 && couponPrice !==  null? `-${formatPrice.format(+couponPrice)}` : 0}</dd>
+                  </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
-                    <dt className="text-base font-medium">Sub Total</dt>
+                    <dt className="text-base font-medium">{t('order_total')}</dt>
                     <dd className="text-base font-medium text-gray-900">
-                      {formatPrice.format(sumTotalPrice + selectedDeliveryMethod.price)}
+                      {formatPrice.format(+sumTotalPrice + selectedDeliveryMethod?.price)}
                     </dd>
                   </div>
                 </dl>
@@ -485,7 +493,7 @@ const OrderPayment = () => {
                     className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                     {/* Confirm Payment - ${calculateTotalDiscountedPrice()}
                      */}
-                    Confirm Payment
+                    {t('confirm_payment')}
                   </button>}
 
                 </div>

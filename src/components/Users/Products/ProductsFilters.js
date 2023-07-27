@@ -26,6 +26,8 @@ import { fetchBrandAction } from "../../../redux/slices/brand/brandSlice";
 import { fetchColorAction } from "../../../redux/slices/color/colorSlice";
 import { limitNumber } from "../../../utils/limitNumber";
 import Pagination from "../../pagination/Pagination";
+import { useTranslation } from "react-i18next";
+import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlice";
 // const sortOptions = [
 //   { name: "Most Popular", value: '', href: "#", current: true },
 //   { name: "Best Rating", value: 'highest-rated', href: "#", current: false },
@@ -33,12 +35,7 @@ import Pagination from "../../pagination/Pagination";
 //   { name: "Price: Low to High", value: 'low-to-high-price', href: "#", current: false },
 //   { name: "Price: High to Low", value: 'high-to-low-price', href: "#", current: false },
 // ];
-const sortOptions = [
-  { id: 1, name: 'Best Rating', value: 'highest-rated' },
-  { id: 2, name: 'Newest', value: 'newest' },
-  { id: 3, name: 'Price: Low to High', value: 'low-to-high-price' },
-  { id: 4, name: 'Price: High to Low', value: 'high-to-low-price' },
-]
+
 const allPrice = [
   {
     amount: "0 - 50",
@@ -76,6 +73,14 @@ function classNames(...classes) {
 
 const sizeCategories = ["S", "M", "L", "XL", "XXL"];
 const ProductsFilters = () => {
+  const { t } = useTranslation();
+
+  const sortOptions = [
+    { id: 1, name: t('highest-rated'), value: 'highest-rated' },
+    { id: 2, name: t('newest'), value: 'newest' },
+    { id: 3, name: t('low-to-high-price'), value: 'low-to-high-price' },
+    { id: 4, name: t('high-to-low-price'), value: 'high-to-low-price' },
+  ]
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -86,9 +91,12 @@ const ProductsFilters = () => {
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("");
   const [size, setSize] = useState("");
+  const [categoryValue, setCategoryValue] = useState("");
   const [page, setPage] = useState(1);
   const limit = 5;
   const [sortValue, setSortValue] = useState(sortOptions[0]);
+  const [priceFrom, setPriceFrom] = useState(0)
+  const [priceTo, setPriceTo] = useState(0)
   // const handleSortOption = (value) => {
   //   setSortValue(value)
   // }
@@ -115,13 +123,16 @@ const ProductsFilters = () => {
     if (sortValue) {
       query.sort = sortValue?.value
     }
+    if (categoryValue) {
+      query.category = categoryValue
+    }
     const queryParams = new URLSearchParams(query).toString();
     if (queryParams) {
       productUrl = `${productUrl}?${queryParams}`;
     }
 
-    dispatch(fetchAllProductAction({ url: productUrl, page, limit,name:'' }));
-  }, [dispatch, brand, size, category, price, color, params, page, limit, sortValue]);
+    dispatch(fetchAllProductAction({ url: productUrl, page, limit, name: '' }));
+  }, [dispatch, brand, size, category, price, color, params, page, limit, sortValue, categoryValue]);
 
   // useEffect(() => {
   //   let categoryUrl = `${baseURL}/products?category=${category}`;
@@ -151,14 +162,26 @@ const ProductsFilters = () => {
   useEffect(() => {
     dispatch(fetchColorAction());
   }, [dispatch])
+  useEffect(() => {
+    dispatch(fetchCategoriesAction());
+  }, [dispatch])
 
 
   let colorsLoading;
   let colorsError;
   let { colors } = useSelector((state) => state.color.colors);
   let { brands: { brands } } = useSelector((state) => state.brand);
+  let { categories: { categories } } = useSelector(state => state.category)
+  console.log(categories)
 
-  console.log(brands);
+  const handleFilterPrice = () => {
+    if (priceFrom > priceTo) {
+      setPrice(`${priceTo} - ${priceFrom}`)
+    }
+    else {
+      setPrice(`${priceFrom} - ${priceTo}`)
+    }
+  }
   return (
     <div className="bg-white">
       <div>
@@ -423,6 +446,7 @@ const ProductsFilters = () => {
                                   </label>
                                 </div>
                               ))}
+
                             </div>
                           </Disclosure.Panel>
                         </>
@@ -602,14 +626,14 @@ const ProductsFilters = () => {
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              Product Filters
+              {t('product_filter')}
             </h1>
             {/* sort */}
             <div className="flex items-center">
               <Listbox value={sortValue} onChange={setSortValue}>
                 {({ open }) => (
                   <>
-                    <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900 mr-2">Sort</Listbox.Label>
+                    <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900 mr-2">{t('sort')}</Listbox.Label>
                     <div className="relative mt-2">
                       <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <span className="block truncate">{sortValue?.name}</span>
@@ -683,7 +707,83 @@ const ProductsFilters = () => {
               {/* Desktop  Filters */}
               <form className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
+                {/* categories Desktop section */}
+                <Disclosure
+                  as="div"
+                  key="disclosure_categories_desktop"
+                  className="border-t border-gray-200 px-4 py-6">
+                  {({ open }) => (
+                    <>
+                      <h3 className="-mx-2 -my-3 flow-root">
+                        <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            {t('categories')}
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </Disclosure.Button>
+                      </h3>
+                      <Disclosure.Panel className="pt-6">
+                        {/* <div className="space-y-6">
+                          {sizeCategories.map((option, index) => (
+                            <div key={index} className="flex items-center">
+                              <input
+                                type="radio"
+                                name="size"
+                                onClick={() => setSize(option)}
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label className="ml-3 min-w-0 flex-1 text-gray-500">
+                                {option}
+                              </label>
+                            </div>
+                          ))}
+                        </div> */}
+                        <fieldset>
+                          <legend className="sr-only">Notifications</legend>
+                          <div className="space-y-5">
+                            {
+                              categories?.map((item) => (
+                                <div className="relative flex items-start">
+                                  <div className="flex h-6 items-center">
+                                    <input
+                                      id="comments"
+                                      aria-describedby="comments-description"
+                                      name="comments"
+                                      type="radio"
+                                      value={item?.name}
+                                      onChange={(e) => setCategoryValue(e.target.value)}
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-sm leading-6">
+                                    <label htmlFor="comments" className="font-medium text-gray-900">
+                                      {item?.name}
+                                    </label>{' '}
+                                  </div>
+                                </div>
+                              ))
+                            }
 
+
+                          </div>
+                        </fieldset>
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
+                {/* end categories section */}
                 {/* colors categories Desktop section */}
                 <Disclosure
                   as="div"
@@ -694,7 +794,7 @@ const ProductsFilters = () => {
                       <h3 className="-mx-2 -my-3 flow-root">
                         <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                           <span className="font-medium text-gray-900">
-                            Colors Categories
+                            {t('color_categories')}
                           </span>
                           <span className="ml-6 flex items-center">
                             {open ? (
@@ -762,7 +862,7 @@ const ProductsFilters = () => {
                       <h3 className="-mx-2 -my-3 flow-root">
                         <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                           <span className="font-medium text-gray-900">
-                            Price
+                            {t('price')}
                           </span>
                           <span className="ml-6 flex items-center">
                             {open ? (
@@ -794,6 +894,18 @@ const ProductsFilters = () => {
                               </label>
                             </div>
                           ))}
+                          <div className="flex items-center justify-between ">
+                            <input value={priceFrom} onChange={(e) => setPriceFrom(e.target.value)} pattern="[0-9]*" type="number" className="w-28 h-8 px-2 rounded border text-left text-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" placeholder="0" />
+                            -
+                            <input value={priceTo} onChange={(e) => setPriceTo(e.target.value)} pattern="[0-9]*" type="number" className="w-28 h-8 px-2 rounded border text-left text-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" placeholder="0" />
+                          </div>
+                          <button
+                            type="button"
+                            className=" mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                            onClick={() => handleFilterPrice()}
+                          >
+                            {t('apply_coupon')}
+                          </button>
                         </div>
                       </Disclosure.Panel>
                     </>
@@ -811,7 +923,7 @@ const ProductsFilters = () => {
                       <h3 className="-mx-2 -my-3 flow-root">
                         <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                           <span className="font-medium text-gray-900">
-                            Brand
+                            {t('brand')}
                           </span>
                           <span className="ml-6 flex items-center">
                             {open ? (
@@ -860,7 +972,7 @@ const ProductsFilters = () => {
                       <h3 className="-mx-2 -my-3 flow-root">
                         <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                           <span className="font-medium text-gray-900">
-                            Size
+                            {t('size')}
                           </span>
                           <span className="ml-6 flex items-center">
                             {open ? (

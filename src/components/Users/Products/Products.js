@@ -4,15 +4,16 @@ import { formatPrice } from "../../../utils/formatCurrency";
 import { useSelector } from "react-redux";
 import { defaultImage } from "../../../utils/defaultImage";
 import Pagination from "../../pagination/Pagination";
-
+import { StarIcon } from "@heroicons/react/24/solid";
+import { useTranslation } from "react-i18next";
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 const Products = ({ products, page,
   totalPage,
   setPage,
   count, }) => {
-  console.log(products, page,
-    totalPage,
-    setPage,
-    count,)
+    const { t } = useTranslation();
   return (
     <section aria-labelledby="product-heading" className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
       {/* <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:col-span-3 lg:gap-x-8">
@@ -83,21 +84,46 @@ const Products = ({ products, page,
               <img
                 src={product?.images[0] ?? defaultImage}
                 alt={product?.name}
-                className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+                className="h-36 w-36 object-cover object-center sm:h-full sm:w-full"
               />
             </div>
             <div className="flex flex-1 flex-col space-y-2 p-4">
-              <h3 className="text-sm font-medium text-gray-900">
-                <Link to={`/products/${product?._id}`}>
-                  <span aria-hidden="true" className="absolute inset-0" />
-                  {product?.name}
-                </Link>
-              </h3>
-              <p className="text-sm text-gray-500">{product?.description}</p>
-              <div className="flex flex-1 flex-col justify-end">
-                <p className="text-sm italic text-gray-500">{product?.colors?.length === 1 ? product?.colors[0] : `${product?.colors?.length} colors`}</p>
-                <p className="text-base font-medium text-gray-900">{formatPrice.format(product?.price)}</p>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-900">
+                  <Link to={`/products/${product?._id}`}>
+                    <span aria-hidden="true" className="absolute inset-0" />
+                    {product?.name}
+                  </Link>
+                </h3>
+                {
+                  product?.averageRating > 0 ? <div className="flex items-center">
+                    <p className="text-sm text-gray-700">
+                      {product?.averageRating} 
+                    </p>
+                    <div className="ml-1 flex items-center">
+                      <StarIcon
+                        // key={rating}
+                        className="text-yellow-400 h-5 w-5 flex-shrink-0"
+
+                        aria-hidden="true"
+                      />
+
+                    </div>
+                  </div> : <></>
+                }
+
               </div>
+              {/* <p className="text-sm text-gray-500">{product?.description}</p> */}
+              <div className="flex items-center">
+                <div className="mt-3 flex flex-1 flex-col justify-end">
+                  <p className="text-sm italic text-gray-500">{product?.colors?.length === 1 ? product?.colors[0] : `${product?.colors?.length} colors`}</p>
+                  <p className="text-base font-medium text-gray-900">{formatPrice.format(product?.price)}</p>
+
+                </div>
+                <p className="text-sm text-gray-700"> | {t('sold')}{product?.totalSold}</p>
+              </div>
+             
+
             </div>
           </div>
         ))}

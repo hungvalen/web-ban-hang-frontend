@@ -39,9 +39,9 @@ export const placeOrderAction = createAsyncThunk(
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
-            dispatch(navigateToOrderSuccess());
-            return data;
-            // return window.open(data.url);
+            // dispatch(navigateToOrderSuccess());
+            // return data;
+            return window.open(data);
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
             return rejectWithValue(error.response.data);
