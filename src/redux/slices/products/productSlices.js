@@ -4,6 +4,7 @@ import axios from "axios";
 import { Swal } from "sweetalert2"
 import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import SweetAlert from "../../../components/Playground/SweetAlert";
+import { useTransition } from "react";
 // initialState
 const initialState = {
     products: [],
@@ -67,6 +68,7 @@ export const updateProductAction = createAsyncThunk(
         try {
             const { name, description, category, sizes, brand, colors, price, files, totalQty, id } = payload;
             console.log(payload)
+            // const { t } = useTransition();
 
             // make request
 

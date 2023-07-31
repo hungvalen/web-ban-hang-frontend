@@ -356,7 +356,7 @@ const usersSlice = createSlice({
         builder.addCase(loginUserAction.fulfilled, (state, action) => {
             state.userAuth.userInfo = action.payload;
             state.userAuth.loading = false;
-            SweetAlert({ icon: "success", title: "Success", message: "Login successful" });
+            // SweetAlert({ icon: "success", title: "Success", message: "Login successful" });
         });
         builder.addCase(loginUserAction.rejected, (state, action) => {
             state.userAuth.error = action.payload;
