@@ -1,47 +1,59 @@
 .popup-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-  }
-  .flex{
-    display: flex;
-  }
-  .popup {
-    position: fixed;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    z-index: 999999;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.2s ease;
-    right:20px;
-    bottom:80px;
-    height:365px;
-    width:300px;
-  }
-  
-  .popup.show {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .open-btn {
-    /* background-color: grey;
+  position: fixed;
+  bottom  : 20px;
+  right   : 20px;
+}
+
+.flex {
+  display: flex;
+}
+
+.popup {
+  position           : fixed;
+  background-color   : #fff;
+  box-shadow         : 0 0 10px rgba(0, 0, 0, 0.2);
+  /* padding         : 20px; */
+  z-index            : 999999;
+  visibility         : hidden;
+  opacity            : 0;
+  transition         : visibility 0s, opacity 0.2s ease;
+  right              : 20px;
+  bottom             : 80px;
+  height             : 410px;
+  width              : 300px;
+  overflow           : hidden;
+}
+
+.popup.show {
+  visibility: visible;
+  opacity   : 1;
+}
+
+.open-btn {
+  /* background-color: grey;
     color: #fff;
     padding: 30px 45px;
     border: none;
     /* border-radius: 50%; */
-    cursor: pointer; 
+  cursor: pointer;
 
-  }
-  
-  .close-btn {
-    background-color: #dc3545;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
+}
+
+.close-btn {
+  background-color: #dc3545;
+  color           : #fff;
+  padding         : 5px 10px;
+  border          : none;
+  cursor          : pointer;
+  margin-top      : 10px;
+}
+
+.break_all {
+  word-break: break-all;
+
+}
+
+.whitespace_pre_wrap {
+  white-space: pre-wrap;
+}
+

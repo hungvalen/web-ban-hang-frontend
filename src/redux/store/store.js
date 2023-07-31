@@ -11,6 +11,7 @@ import { orderReducer } from "../slices/orders/ordersSlice";
 import { reviewReducer } from "../slices/reviews/reviewSlice";
 import { shippingUnitReducer } from "../slices/shipping-unit/shippingUnitSlice";
 import { PaymentMethodReducer } from "../slices/payment-method/paymentMethodSlice";
+import { chatReducer } from "../slices/chat/chatSlice";
 
 // store
 const store = configureStore({
@@ -27,6 +28,7 @@ const store = configureStore({
         address: addressReducer,
         orders: orderReducer,
         reviews: reviewReducer,
+        chat:chatReducer
     }
 });
 

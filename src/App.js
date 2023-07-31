@@ -97,7 +97,7 @@ const App = () => {
       <Route path="/my-order" element={<MyOrder />} />
     {/* </Route> */}
   </Routes>
-  <ChatPopup/>
+  {/* <ChatPopup/> */}
 
 </BrowserRouter>
   </>
