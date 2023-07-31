@@ -36,6 +36,7 @@ import ManageShippingUnit from "./components/Admin/ShippingUnit/ManageShippingUn
 import ManagePaymentMethod from "./components/Admin/PaymentMethod/ManagePaymentMethod";
 import UserChatComponent from "./components/Chat/UserChatComponent";
 import ChatPopup from "./components/Chat/UserChatComponent";
+import ManageReviews from "./components/Admin/Reviews/ManageReviews";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -73,6 +74,8 @@ const App = () => {
         {/* Shipping unut */}
         <Route path="shipping-unit" element={<ManageShippingUnit />} />
         <Route path="payment-method" element={<ManagePaymentMethod />} />
+        {/* Reviews */}
+        <Route path="manage-reviews" element={<ManageReviews />} />
 
       </Route>
       {/* public links */}

@@ -150,5 +150,14 @@
     "newest":"Newest",
     "low-to-high-price":"Price: Low to High",
     "high-to-low-price":"Price: High to Low",
-    "order":"Order"
+    "order":"Order",
+    "manage-review":"Manage review",
+    "search_review":"Search review",
+    "number_of_start":"Number of stars",
+    "product_review":"Product",
+    "update_status_review":"Update status sucessfully",
+    "details":"Details",
+    "details_review":"Details review",
+    "close":"Close",
+    "feedback":"Feedback"
 }

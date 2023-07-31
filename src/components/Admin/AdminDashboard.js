@@ -8,6 +8,7 @@ import { IoColorFilterOutline } from "react-icons/io5"
 import { TbBrandItch } from "react-icons/tb"
 import { HiOutlineCurrencyDollar } from "react-icons/hi"
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai"
+import {MdRateReview} from "react-icons/md"
 import {
   Bars3CenterLeftIcon,
   BellIcon,
@@ -127,6 +128,13 @@ export default function AdminDashboard() {
       name: t('manage_brands'),
       href: "all-brands",
       icon: TbBrandItch,
+    },
+  ];
+  const reviewsLinks = [
+    {
+      name: t('manage-review'),
+      href: "manage-reviews",
+      icon: MdRateReview,
     },
   ];
   return (
@@ -322,6 +330,23 @@ export default function AdminDashboard() {
                         ))}
                       </div>
                     </div>
+                    {/* reviews links mobile */}
+                    <div className="mt-3 pt-3">
+                      <div className="space-y-1 px-2">
+                        {reviewsLinks.map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                            <item.icon
+                              className="mr-4 h-6 w-6 text-cyan-200"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                     {/* shipping unit links mobile */}
                     <div className="mt-3 pt-3">
                       <div className="space-y-1 px-2">
@@ -503,6 +528,23 @@ export default function AdminDashboard() {
               <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {brandsLinks.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                      <item.icon
+                        className="mr-4 h-6 w-6 text-cyan-200"
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              {/* reviews links desktop */}
+              <div className="mt-3 pt-3">
+                <div className="space-y-1 px-2">
+                  {reviewsLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}

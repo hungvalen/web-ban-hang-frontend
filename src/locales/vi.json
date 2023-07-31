@@ -150,5 +150,15 @@
   "newest":"Hàng mới",
   "low-to-high-price":"Giá thấp đến cao",
   "high-to-low-price":"Giá cao đến thấp",
-  "order":"Đơn hàng"
+  "order":"Đơn hàng",
+  "manage-review":"Quản lý đánh giá",
+  "search_review":"Tìm kiếm đánh giá",
+  "reviewers":"Người đánh giá",
+  "number_of_start":"Số sao",
+  "product_review":"Sản phẩm",
+  "update_status_review":"Cập nhật trạng thái thành công",
+  "details":"Chi tiết",
+  "details_review":"Đánh giá chi tiết",
+  "close":"Đóng",
+  "feedback":"Nhận xét"
 }
