@@ -108,7 +108,7 @@
     "order_instransit": "Đang vận chuyển",
     "order_shipped": "Đã giao",
     "order_cancel": "Đã hủy",
-    "product_update_successfully": "Product updated successfully"
+    "product_update_successfully": "Product updated successfully",
     "order_number":"Order number",
     "order_place":"Date placed",
     "total_amount":"Total amount",
@@ -160,5 +160,6 @@
     "details":"Details",
     "details_review":"Details review",
     "close":"Close",
-    "feedback":"Feedback"
+    "feedback":"Feedback",
+    "review":"Review"
 }

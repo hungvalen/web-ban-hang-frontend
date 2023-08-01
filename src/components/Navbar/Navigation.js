@@ -4,7 +4,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Bars3Icon, BellIcon, ShoppingCartIcon, XMarkIcon, UserIcon, ArrowRightOnRectangleIcon, TruckIcon, WindowIcon } from '@heroicons/react/24/outline'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategoriesAction } from "../../redux/slices/categories/categoriesSlice";
 import Skeleton from "react-loading-skeleton";
@@ -84,7 +84,7 @@ export default function Navigation() {
                     <CouponBanner />
                     <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-700 lg:px-8">
                         <div className="relative flex h-16 justify-between">
-                            <div className="relative z-10 flex px-2 lg:px-0">
+                            <div className="relative z-1 flex px-2 lg:px-0">
                                 <Link to="/" className="flex flex-shrink-0 items-center">
                                     <img
                                         className="block h-32 pt-2  w-auto"

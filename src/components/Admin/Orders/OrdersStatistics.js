@@ -141,7 +141,7 @@ const OrdersStatistics = () => {
             </dt>
             <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
               {
-                loading ? <Skeleton width={100} height={30} /> : <p className="text-2xl font-semibold text-gray-900">{statistics[3]}</p>
+                loading ? <Skeleton width={100} height={30} /> : <p className="text-2xl font-semibold text-gray-900">{statistics[3]?.toFixed(2)}</p>
               }
 
               <div className="absolute inset-x-0 bottom-0 bg-white border px-4 py-4 sm:px-6">

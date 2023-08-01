@@ -33,3 +33,8 @@
 .react-datepicker-wrapper {
     width: 100%;
 }
+@media (min-height: 500px) {
+    .sidebar-height{
+        height: calc(100% - 64px);
+    }
+}

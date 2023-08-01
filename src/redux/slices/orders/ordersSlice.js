@@ -11,6 +11,7 @@ const initialState = {
     isUpdated: false,
     isDeleted: false,
     orders: [],
+    ordersUser:[],
     order: null,
     stats: null
 }
@@ -60,6 +61,25 @@ export const fetchOrdersAction = createAsyncThunk("orders/list", async ({ page, 
             }
         }
         const { data } = await axiosClient.get(`${baseURL}/orders?page=${page}&limit=${limit}&query=${query}`, config);
+        return data;
+    } catch (error) {
+        console.log(error);
+        SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+        // return rejectWithValue(error?.response?.data);
+    }
+})
+// fetch order by user action
+export const fetchOrdersByUserAction = createAsyncThunk("orders/user", async ({ page, limit, status,id }, { rejectWithValue, getState, dispatch }) => {
+    try {
+
+        // make request
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        const { data } = await axiosClient.get(`${baseURL}/orders/user/${id}?page=${page}&limit=${limit}&status=${status}`, config);
         return data;
     } catch (error) {
         console.log(error);
@@ -171,6 +191,22 @@ const ordersSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
             state.orders = null;
+        }
+        )
+        // fetch orders user
+        builder.addCase(fetchOrdersByUserAction.pending, (state, action) => {
+            state.loading = true;
+        }
+        )
+        builder.addCase(fetchOrdersByUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.ordersUser = action.payload;
+        }
+        )
+        builder.addCase(fetchOrdersByUserAction.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.ordersUser = null;
         }
         )
 

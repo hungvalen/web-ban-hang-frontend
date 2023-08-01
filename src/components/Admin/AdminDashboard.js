@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   const dashboardLinks = [
     {
       name: t('dashboard'),
-      href: "",
+      href: "/",
       icon: AiOutlineHome,
       current: true,
     },
