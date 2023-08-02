@@ -218,12 +218,12 @@ export default function Product() {
                       aria-hidden="true"
                       className="ml-4 text-sm text-gray-300"></div>
                     <div className="ml-4 flex">
-                      <a
-                        href="#"
+                      <span
+                        // href="#"
                         className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                         {/* {productDetails?.product?.totalReviews}  */}
                         total reviews
-                      </a>
+                      </span>
                     </div>
                   </div>
                 }
@@ -339,7 +339,14 @@ export default function Product() {
                   </div>
                 </div>
 
-                {/* Size picker */}
+                {/* in stock */}
+                <div className="mt-8">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-medium text-gray-900">{t('instock')}: {product?.qtyLeft <= 0 ? t('out_of_stock') : product?.qtyLeft}</h2>
+                  </div>
+                  
+                </div>
+                {/* In stock */}
                 <div className="mt-8">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-medium text-gray-900">{t('select_size')}</h2>

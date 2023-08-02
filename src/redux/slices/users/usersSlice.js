@@ -43,10 +43,10 @@ export const loginUserAction = createAsyncThunk(
 // register action
 export const registerUserAction = createAsyncThunk(
     "users/register",
-    async ({ fullName, email, password }, { rejectWithValue, getState, dispatch }) => {
+    async ({ fullName, email,phone, password }, { rejectWithValue, getState, dispatch }) => {
         try {
             // make the http request
-            const { data } = await axios.post(`${baseURL}/users/register`, { fullName, email, password });
+            const { data } = await axios.post(`${baseURL}/users/register`, { fullName, email, phone,password });
             return data;
         } catch (error) {
             return rejectWithValue(error?.response?.data);

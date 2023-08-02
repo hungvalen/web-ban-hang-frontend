@@ -161,5 +161,10 @@
     "details_review":"Details review",
     "close":"Close",
     "feedback":"Feedback",
-    "review":"Review"
+    "review":"Review",
+    "already_an_account":"Already have an account?",
+    "sign_up":"Sign up",
+    "read_and_agree":"Agree to the terms and conditions",
+    "instock":"In stock"
+
 }

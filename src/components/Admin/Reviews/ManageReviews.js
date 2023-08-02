@@ -48,15 +48,15 @@ export default function ManageReviews() {
 
    
 
-    useEffect(() => {
-        if (isUpdated) {
-            dispatch(fetchBrandAction({
-                page, limit
-            }));
-            dispatch(resetSuccessAction());
+    // useEffect(() => {
+    //     if (isUpdated) {
+    //         dispatch(fetchBrandAction({
+    //             page, limit
+    //         }));
+    //         dispatch(resetSuccessAction());
 
-        }
-    }, [isUpdated, dispatch, page, limit])
+    //     }
+    // }, [isUpdated, dispatch, page, limit])
 
     useEffect(() => {
         if (isDeleted) {

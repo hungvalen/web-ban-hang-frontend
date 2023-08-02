@@ -162,5 +162,9 @@
   "details_review":"Đánh giá chi tiết",
   "close":"Đóng",
   "feedback":"Nhận xét",
-  "review":"Đánh giá"
+  "review":"Đánh giá",
+  "already_an_account":"Bạn đã có tài khoản?",
+  "sign_up":"Đăng ký",
+  "read_and_agree":"Đồng ý với các điều khoản và điều kiện",
+  "instock":"Trong kho"
 }

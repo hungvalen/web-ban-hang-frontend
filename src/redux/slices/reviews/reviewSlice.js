@@ -4,6 +4,7 @@ import axios from "axios";
 import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import SweetAlert from "../../../components/Playground/SweetAlert";
 import { useTranslation } from "../../../hooks/useTranslation";
+import axiosClient from "../../../utils/axiosClient";
 // initialState
 const initialState = {
     error: null,
@@ -54,10 +55,9 @@ export const fetchReviewsAction = createAsyncThunk("review/fetch", async ({ page
                 Authorization: `Bearer ${token}`,
             }
         }
-        const { data } = await axios.get(`${baseURL}/reviews?page=${page}&limit=${limit}&query=${query}`, config);
+        const { data } = await axiosClient.get(`${baseURL}/reviews?page=${page}&limit=${limit}&query=${query}`, config);
         return data;
     } catch (error) {
-        console.log(error);
         SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
         return rejectWithValue(error?.response?.data);
     }
@@ -72,7 +72,27 @@ export const updateStatusReviewsAction = createAsyncThunk("review/update", async
                 Authorization: `Bearer ${token}`,
             }
         }
-        const { data } = await axios.put(`${baseURL}/reviews/${id}`,{status} ,config);
+        const { data } = await axiosClient.put(`${baseURL}/reviews/${id}`,{status} ,config);
+        SweetAlert({ icon: "success", title: "Success", message: t});
+
+        return data;
+    } catch (error) {
+        console.log(error);
+        SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+        return rejectWithValue(error?.response?.data);
+    }
+})
+// delete review action
+export const deleteReviewsAction = createAsyncThunk("review/delete", async ({id,t}, { rejectWithValue, getState, dispatch }) => {
+    try {
+        // make request
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        const { data } = await axiosClient.delete(`${baseURL}/reviews/${id}` ,config);
         SweetAlert({ icon: "success", title: "Success", message: t});
 
         return data;
@@ -133,10 +153,25 @@ const reviewsSlice = createSlice({
             state.error = action.payload;
             state.isUpdated = false;
         })
+        // delete review
+        builder.addCase(deleteReviewsAction.pending, (state, action) => {
+            state.loading = true;
+        })
+        builder.addCase(deleteReviewsAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isDeleted = true;
+        })
+
+        builder.addCase(deleteReviewsAction.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.isDeleted = false;
+        })
 
         // reset success and error
         builder.addCase(resetSuccessAction.pending, (state, action) => {
             state.isAdded = false;
+            state.isDeleted = false;
         })
         builder.addCase(resetErrorAction.pending, (state, action) => {
             state.error = null;
