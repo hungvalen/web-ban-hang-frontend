@@ -13,6 +13,7 @@ import { fetchReviewsAction, updateStatusReviewsAction } from "../../../redux/sl
 
 import { Switch } from '@headlessui/react'
 import ReviewDetails from "./ReviewsDetails";
+import DeleteReview from "./DeleteReview";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -20,6 +21,7 @@ function classNames(...classes) {
 export default function ManageReviews() {
     const [enabledSwitches, setEnabledSwitches] = useState([]);
     const [showReviewsDetails, setShowReviewsDetails] = useState(false);
+    const [showDeleteReview, setShowDeleteReview] = useState(false);
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const { reviews, loading, error, isDeleted, isUpdated } = useSelector(state => state.reviews)
@@ -27,18 +29,11 @@ export default function ManageReviews() {
     let count = reviews?.count;
     let results = reviews?.results;
     let totalPage = query !== '' ? Math.ceil(results / limitNumber) : Math.ceil(count / limitNumber);
-    const [isShowEditBrandModal, setIsShowEditBrandModal] = useState(false);
-    const [isShowAddBrandModal, setIsShowAddBrandModal] = useState(false);
-    const [isShowDeleteBrandModal, setIsShowDeleteBrandModal] = useState(false);
-    const [brand, setBrand] = useState('');
+
     const [page, setPage] = useState(1);
 
     const limit = 5;
-    //delete brand handler
-    const deleteBrandHandler = (item) => {
-        setIsShowDeleteBrandModal(!isShowDeleteBrandModal)
-        setBrand(item);
-    };
+
     useEffect(() => {
 
         dispatch(fetchReviewsAction({
@@ -46,26 +41,14 @@ export default function ManageReviews() {
         }))
     }, [dispatch, page, limit, query])
 
-   
-
-    // useEffect(() => {
-    //     if (isUpdated) {
-    //         dispatch(fetchBrandAction({
-    //             page, limit
-    //         }));
-    //         dispatch(resetSuccessAction());
-
-    //     }
-    // }, [isUpdated, dispatch, page, limit])
-
     useEffect(() => {
         if (isDeleted) {
-            dispatch(fetchBrandAction({
-                page, limit
+            dispatch(fetchReviewsAction({
+                page, limit, query
             }));
             dispatch(resetSuccessAction());
         }
-    }, [isDeleted, dispatch, page, limit])
+    }, [isDeleted, dispatch, page, limit, query])
 
     useEffect(() => {
         // Khởi tạo mảng enabledSwitches với giá trị mặc định cho mỗi đánh giá
@@ -85,11 +68,15 @@ export default function ManageReviews() {
             t: t('update_status_review')
         }));
     };
-    const [reviewDetails,setReviewsDetails] = useState();
+    const [reviewDetails, setReviewsDetails] = useState();
     const handleShowReviewDetails = (review) => {
         setShowReviewsDetails(!showReviewsDetails);
         setReviewsDetails(review);
     }
+    const deleteReviewHandler = (item) => {
+        setShowDeleteReview(!showDeleteReview)
+        setReviewsDetails(item);
+    };
     return (
         <div className="px-4 sm:px-6 lg:px-8 mt-3">
             <div className="sm:flex sm:items-center mb-2">
@@ -221,7 +208,7 @@ export default function ManageReviews() {
                                                 {/* delete icon */}
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                                                     <button
-                                                        onClick={() => deleteBrandHandler(brand)}
+                                                        onClick={() => deleteReviewHandler(review)}
                                                         className="text-rose-600 hover:text-indigo-900">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
@@ -254,7 +241,10 @@ export default function ManageReviews() {
             )}
 
             {
-                showReviewsDetails && <ReviewDetails showReviewsDetails={showReviewsDetails} setShowReviewsDetails={setShowReviewsDetails} review={reviewDetails}/> 
+                showReviewsDetails && <ReviewDetails showReviewsDetails={showReviewsDetails} setShowReviewsDetails={setShowReviewsDetails} review={reviewDetails} />
+            }
+            {
+                showDeleteReview && <DeleteReview showDeleteReview={showDeleteReview} setShowDeleteReview={setShowDeleteReview} review={reviewDetails} />
             }
         </div>
     );

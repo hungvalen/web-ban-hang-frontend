@@ -46,6 +46,7 @@
   "delete_product": "Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này sẽ xóa sản phẩm này vĩnh viễn. Bạn không thể hoàn tác hành động này.",
   "delete_coupon": "Bạn có chắc chắn muốn xóa mã giảm giá này? Thao tác này sẽ xóa mã này vĩnh viễn. Bạn không thể hoàn tác hành động này.",
   "delete_category": "Bạn có chắc chắn muốn xóa thể loại này? Thao tác này sẽ xóa thể loại này vĩnh viễn. Bạn không thể hoàn tác hành động này.",
+  "delete_review": "Bạn có chắc chắn muốn xóa đánh giá này? Thao tác này sẽ xóa đánh giá này vĩnh viễn. Bạn không thể hoàn tác hành động này.",
   "user": "Người dùng",
   "admin": "Quản trị viên",
   "staff": "Nhân viên",
@@ -166,5 +167,6 @@
   "already_an_account":"Bạn đã có tài khoản?",
   "sign_up":"Đăng ký",
   "read_and_agree":"Đồng ý với các điều khoản và điều kiện",
-  "instock":"Trong kho"
+  "instock":"Trong kho",
+  "not_registered_yet":"Chưa đăng ký"
 }
