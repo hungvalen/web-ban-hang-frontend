@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom'
 import formatDate from '../../../utils/formatDate'
 import capitalizeFirstLetter from '../../../utils/capitalizeFirstLetter'
 import { useTranslation } from 'react-i18next'
+import { convertHtmlToPlainText, isHtmlText } from '../../../utils/convertHTMLToPlainText'
+import { formatPrice } from '../../../utils/formatCurrency'
 
 const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP']
 const navigation = {
@@ -150,16 +152,16 @@ export default function OrderDetails() {
     const [orderStep, setOrderStep] = useState(0);
     useEffect(() => {
         if (orderDetails?.status === 'pending') {
-            setOrderStep(1)
+            setOrderStep(0)
         }
         else if (orderDetails?.status === 'processing') {
+            setOrderStep(1)
+        }
+        else if (orderDetails?.status === 'intransit') {
             setOrderStep(2)
         }
         else if (orderDetails?.status === 'shipped') {
             setOrderStep(3)
-        }
-        else if (orderDetails?.status === 'delivered') {
-            setOrderStep(4)
         }
     }, [orderDetails?.status])
     return (
@@ -216,21 +218,23 @@ export default function OrderDetails() {
                                                 <a href={order?.href}>{order?.name}</a>
                                             </h3>
                                             <p className="mt-2 text-sm font-medium text-gray-900">${order?.price}</p>
-                                            <p className="mt-3 text-sm text-gray-500">{order?.description}</p>
+                                            <p className="mt-3 text-sm text-gray-500">{
+                                                isHtmlText(order?.description) === true ? convertHtmlToPlainText(order?.description) : order?.description
+                                            }</p>
                                         </div>
                                     </div>
 
                                     <div className="mt-6 lg:col-span-5 lg:mt-0">
-                                        <dl className="grid grid-cols-2 gap-x-6 text-sm">
+                                        <dl className="grid grid-cols-1 gap-x-6 text-sm">
                                             <div>
-                                                <dt className="font-medium text-gray-900">Delivery address</dt>
+                                                <dt className="font-medium text-gray-900">{t('delivery_address')}</dt>
                                                 <dd className="mt-3 text-gray-500">
-                                                    <span className="block">{`${orderDetails?.shippingAddress?.address}, ${orderDetails?.shippingAddress?.ward}, ${orderDetails?.shippingAddress?.district}, ${orderDetails?.shippingAddress?.province} `}</span>
+                                                    <span className="block">{`${orderDetails?.shippingAddress?.address} - ${orderDetails?.shippingAddress?.ward}, ${orderDetails?.shippingAddress?.district}, ${orderDetails?.shippingAddress?.province} `}</span>
                                                     {/* <span className="block">{order?.address}</span>
                                                     <span className="block">{order?.address}</span> */}
                                                 </dd>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <dt className="font-medium text-gray-900">Shipping updates</dt>
                                                 <dd className="mt-3 space-y-3 text-gray-500">
                                                     <p>{order?.email}</p>
@@ -239,7 +243,7 @@ export default function OrderDetails() {
                                                         Edit
                                                     </button>
                                                 </dd>
-                                            </div>
+                                            </div> */}
                                         </dl>
                                     </div>
                                 </div>
@@ -257,15 +261,19 @@ export default function OrderDetails() {
                                             />
                                         </div>
                                         <div className="mt-6 hidden grid-cols-4 text-sm font-medium text-gray-600 sm:grid">
-                                            <div className="text-indigo-600">Order placed</div>
-                                            <div className={classNames(orderStep > 0 ? 'text-indigo-600' : '', 'text-center')}>
-                                                Processing
+                                            <div className="text-indigo-600">                                                {t('pending')}
                                             </div>
+                                            {/* <div className={classNames(orderStep > 0 ? 'text-indigo-600' : '', 'text-center')}>
+                                                {t('pending')}
+                                            </div> */}
                                             <div className={classNames(orderStep > 1 ? 'text-indigo-600' : '', 'text-center')}>
-                                                Shipped
+                                                {t('processing')}
                                             </div>
-                                            <div className={classNames(orderStep > 2 ? 'text-indigo-600' : '', 'text-right')}>
-                                                Delivered
+                                            <div className={classNames(orderStep > 2 ? 'text-indigo-600' : '', 'text-center')}>
+                                                {t('intransit')}
+                                            </div>
+                                            <div className={classNames(orderStep > 3 ? 'text-indigo-600' : '', 'text-right')}>
+                                                {t('shipped')}
                                             </div>
                                         </div>
                                     </div>
@@ -292,20 +300,23 @@ export default function OrderDetails() {
                                 </dd>
                             </div>
                             <div>
-                                <dt className="font-medium text-gray-900">Payment information</dt>
+                                <dt className="font-medium text-gray-900">{t('payment_method')}</dt>
                                 <dd className="-ml-4 -mt-1 flex flex-wrap">
                                     <div className="ml-4 mt-4 flex-shrink-0">
                                         {
-                                            orderDetails?.paymentMethod === "cod" ? <img width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-cash-on-delivery-cyber-monday-flaticons-lineal-color-flat-icons.png" alt="external-cash-on-delivery-cyber-monday-flaticons-lineal-color-flat-icons"/>
-                                            : orderDetails?.paymentMethod === "zalopay" ? <img alt="" className="h-10 w-10" src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png"/> :   <svg aria-hidden="true" width={36} height={24} viewBox="0 0 36 24" className="h-6 w-auto">
-                                            <rect width={36} height={24} rx={4} fill="#224DBA" />
-                                            <path
-                                                d="M10.925 15.673H8.874l-1.538-6c-.073-.276-.228-.52-.456-.635A6.575 6.575 0 005 8.403v-.231h3.304c.456 0 .798.347.855.75l.798 4.328 2.05-5.078h1.994l-3.076 7.5zm4.216 0h-1.937L14.8 8.172h1.937l-1.595 7.5zm4.101-5.422c.057-.404.399-.635.798-.635a3.54 3.54 0 011.88.346l.342-1.615A4.808 4.808 0 0020.496 8c-1.88 0-3.248 1.039-3.248 2.481 0 1.097.969 1.673 1.653 2.02.74.346 1.025.577.968.923 0 .519-.57.75-1.139.75a4.795 4.795 0 01-1.994-.462l-.342 1.616a5.48 5.48 0 002.108.404c2.108.057 3.418-.981 3.418-2.539 0-1.962-2.678-2.077-2.678-2.942zm9.457 5.422L27.16 8.172h-1.652a.858.858 0 00-.798.577l-2.848 6.924h1.994l.398-1.096h2.45l.228 1.096h1.766zm-2.905-5.482l.57 2.827h-1.596l1.026-2.827z"
-                                                fill="#fff"
-                                            />
-                                        </svg>
+                                            orderDetails?.paymentMethod === "cod" ? <div className="flex gap-2 items-center">
+                                            <img width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-cash-on-delivery-cyber-monday-flaticons-lineal-color-flat-icons.png" alt="external-cash-on-delivery-cyber-monday-flaticons-lineal-color-flat-icons" />
+                                            <p className="text-sm text-gray-700">{t('cod')}</p>
+                                            </div> 
+                                                : orderDetails?.paymentMethod === "zalopay" ? <img alt="" className="h-10 w-10" src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png" /> : <svg aria-hidden="true" width={36} height={24} viewBox="0 0 36 24" className="h-6 w-auto">
+                                                    <rect width={36} height={24} rx={4} fill="#224DBA" />
+                                                    <path
+                                                        d="M10.925 15.673H8.874l-1.538-6c-.073-.276-.228-.52-.456-.635A6.575 6.575 0 005 8.403v-.231h3.304c.456 0 .798.347.855.75l.798 4.328 2.05-5.078h1.994l-3.076 7.5zm4.216 0h-1.937L14.8 8.172h1.937l-1.595 7.5zm4.101-5.422c.057-.404.399-.635.798-.635a3.54 3.54 0 011.88.346l.342-1.615A4.808 4.808 0 0020.496 8c-1.88 0-3.248 1.039-3.248 2.481 0 1.097.969 1.673 1.653 2.02.74.346 1.025.577.968.923 0 .519-.57.75-1.139.75a4.795 4.795 0 01-1.994-.462l-.342 1.616a5.48 5.48 0 002.108.404c2.108.057 3.418-.981 3.418-2.539 0-1.962-2.678-2.077-2.678-2.942zm9.457 5.422L27.16 8.172h-1.652a.858.858 0 00-.798.577l-2.848 6.924h1.994l.398-1.096h2.45l.228 1.096h1.766zm-2.905-5.482l.57 2.827h-1.596l1.026-2.827z"
+                                                        fill="#fff"
+                                                    />
+                                                </svg>
                                         }
-                                      
+
                                         <p className="sr-only">Visa</p>
                                     </div>
                                     {/* <div className="ml-4 mt-4">
@@ -319,19 +330,19 @@ export default function OrderDetails() {
                         <dl className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-5 lg:mt-0">
                             <div className="flex items-center justify-between pb-4">
                                 <dt className="text-gray-600">Subtotal</dt>
-                                <dd className="font-medium text-gray-900">$72</dd>
+                                <dd className="font-medium text-gray-900">{formatPrice.format(orderDetails?.totalPrice - orderDetails?.shipfee)}</dd>
                             </div>
                             <div className="flex items-center justify-between py-4">
                                 <dt className="text-gray-600">Shipping</dt>
-                                <dd className="font-medium text-gray-900">$5</dd>
+                                <dd className="font-medium text-gray-900">{formatPrice.format(orderDetails?.shipfee)}</dd>
                             </div>
-                            <div className="flex items-center justify-between py-4">
+                            {/* <div className="flex items-center justify-between py-4">
                                 <dt className="text-gray-600">Tax</dt>
                                 <dd className="font-medium text-gray-900">$6.16</dd>
-                            </div>
+                            </div> */}
                             <div className="flex items-center justify-between pt-4">
                                 <dt className="font-medium text-gray-900">Order total</dt>
-                                <dd className="font-medium text-indigo-600">$83.16</dd>
+                                <dd className="font-medium text-indigo-600">{formatPrice.format(orderDetails?.totalPrice)}</dd>
                             </div>
                         </dl>
                     </div>

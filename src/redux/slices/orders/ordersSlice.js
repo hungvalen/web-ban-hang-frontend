@@ -20,7 +20,7 @@ const initialState = {
 export const placeOrderAction = createAsyncThunk(
     "order/place-order", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { orderItems, shippingAddress, totalPrice, shippingUnit, paymentMethod } = payload;
+            const { orderItems, shippingAddress, totalPrice, shippingUnit, paymentMethod,shipfee } = payload;
             // make request
             // token
             const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -36,7 +36,8 @@ export const placeOrderAction = createAsyncThunk(
                     shippingAddress,
                     totalPrice,
                     shippingUnit,
-                    paymentMethod
+                    paymentMethod,
+                    shipfee
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });

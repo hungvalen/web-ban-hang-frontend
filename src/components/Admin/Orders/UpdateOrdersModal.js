@@ -5,6 +5,8 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { updateOrderAction } from '../../../redux/slices/orders/ordersSlice';
+import { ShoppingCartIcon } from '@heroicons/react/20/solid';
+import { useTranslation } from 'react-i18next';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateModel, orderDetails }) {
@@ -21,6 +23,7 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
     dispatch(updateOrderAction({ id: orderDetails?._id, status: order.status }));
     setOpenUpdateModel(false);
   }
+  const {t} = useTranslation()
   return (
     <>
       <Transition.Root show={openUpdateOrderModal ?? false} as={Fragment}>
@@ -51,18 +54,18 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left  transition-all lg:max-w-xl sm:my-8 sm:w-full sm:max-w-lg">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <ShoppingCartIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
                       </div>
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                          Update Order
+                         {t('update_status_order')}
                         </Dialog.Title>
-                        <div className="mt-2">
+                        {/* <div className="mt-2">
                           <p className="text-sm text-gray-500">
                             Are you sure you want to update this order?
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -82,10 +85,10 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                           value={order.status}
                           className="mt-1 block w-full rounded-md border-2 border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           defaultValue="">
-                          <option value="pending">Pending</option>
-                          <option value="processing">Processing</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
+                          <option value="pending">{t('pending')}</option>
+                          <option value="processing">{t('processing')}</option>
+                          <option value="shipped">{t('shipped')}</option>
+                          <option value="intransit">{t('intransit')}</option>
                         </select>
                       </>
                     </div>
@@ -96,7 +99,7 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                       className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                       onClick={() => updateOrderStatus()}
                     >
-                      Update
+                      {t('update')}
                     </button>
                     <button
                       type="button"
@@ -104,7 +107,7 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                       onClick={() => setOpenUpdateModel(false)}
                       ref={cancelButtonRef}
                     >
-                      Cancel
+                      {t('cancel')}
                     </button>
                   </div>
                 </Dialog.Panel>

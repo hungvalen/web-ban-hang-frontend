@@ -87,6 +87,8 @@ const OrderPayment = () => {
   // place order action
   // get shipping address
   const shippingAddress = user?.shippingAddress;
+  const totalPriceIncludeFee = sumTotalPrice + selectedDeliveryMethod?.price;
+
   //create order submit handler
   const createOrderSubmitHandler = (e) => {
     e.preventDefault();
@@ -95,9 +97,10 @@ const OrderPayment = () => {
         ...formData
       },
       orderItems: cartItems,
-      totalPrice: sumTotalPrice,
+      totalPrice: totalPriceIncludeFee,
       shippingUnit: selected,
-      paymentMethod: paymentMethod
+      paymentMethod: paymentMethod,
+      shipfee:selectedDeliveryMethod?.price
     }))
     localStorage.removeItem('cartItems');
   };
@@ -240,7 +243,7 @@ const OrderPayment = () => {
 
                     </div>
                   </fieldset>
-                  {
+                  {/* {
                     paymentMethod === 'zalopay' ? (
                       <>
                         <div className="mt-10 border-t border-gray-200 pt-10">
@@ -290,7 +293,7 @@ const OrderPayment = () => {
                         </div>
                       </>
                     ) : ''
-                  }
+                  } */}
                   {
                     paymentMethod === 'cod' ? (
                       <div className="mt-10 border-t border-gray-200 pt-10">

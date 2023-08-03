@@ -16,7 +16,7 @@ import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/
 import AddReview from "../Reviews/AddReview";
 import AddReviewModal from "../Reviews/AddReview";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
-import convertHtmlToPlainText from "../../../utils/convertHTMLToPlainText"
+import {convertHtmlToPlainText, isHtmlText} from "../../../utils/convertHTMLToPlainText"
 import { useTranslation } from "react-i18next";
 const product = {
   name: "Basic Tee",
@@ -166,10 +166,7 @@ export default function Product() {
   // Get cart items
 
   // let cartItems = [];
-  function isHtmlText(text) {
-    const htmlRegex = /<[a-z][\s\S]*>/i;
-    return htmlRegex.test(text);
-  }
+
   return (
     <>
       {loading ? <LoadingComponent /> : <div className="bg-white">
@@ -388,7 +385,8 @@ export default function Product() {
                     <button
                       onClick={() => addToCartHandler()}
                       className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                      Add to cart
+                      {/* Add to cart */}
+                      {t('add_to_cart')}
                     </button>
                   )
                 }

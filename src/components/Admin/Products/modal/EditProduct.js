@@ -169,8 +169,10 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
         dispatch(updateProductAction({
             ...formData,
             id: product._id,
-            colors: product?.colors.length > 0 ? product?.colors : colorOption?.map((color) => color?.value),
-            sizes: product?.sizes.length > 0 ? product?.sizes : sizeOption?.map((size) => size?.value),
+            // colors: product?.colors.length > 0 ? product?.colors : colorOption?.map((color) => color?.value),
+            // sizes: product?.sizes.length > 0 ? product?.sizes : sizeOption?.map((size) => size?.value),
+            colors: colorOption?.map((color) => color?.value),
+            sizes: sizeOption?.map((size) => size?.value),
             files: fileArr
         }))
         // reset form data

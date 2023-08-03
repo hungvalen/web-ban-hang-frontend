@@ -8,6 +8,8 @@ import LoadingComponent from '../../LoadingComp/LoadingComponent';
 import { resetSuccessAction } from '../../../redux/slices/globalActions/globalAction';
 import Pagination from '../../pagination/Pagination';
 import { limitNumber } from '../../../utils/limitNumber';
+import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../../../utils/formatCurrency';
 const ManageOrders = () => {
   const [openUpdateOrderModal, setOpenUpdateModel] = useState(false);
   const [orderDetails, setOrderDetails] = useState('');
@@ -19,7 +21,7 @@ const ManageOrders = () => {
   let totalPage = Math.ceil(count / limitNumber);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
-
+  const { t } = useTranslation()
   useEffect(() => {
     dispatch(fetchOrdersAction({
       page,
@@ -51,7 +53,7 @@ const ManageOrders = () => {
 
         <div className="flex items-center justify-between mt-3">
           <h3 className="text-lg font-medium leading-6 text-gray-900 mt-5">
-            Manage Oders
+            {t('manage_orders')}
           </h3>
           <div className="flex items-center justify-end">
             <input
@@ -71,7 +73,7 @@ const ManageOrders = () => {
                 <th
                   scope="col"
                   className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                  Order ID
+                  {t('order_id')}
                 </th>
                 <th
                   scope="col"
@@ -81,28 +83,33 @@ const ManageOrders = () => {
                 <th
                   scope="col"
                   className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
-                  Payment Method
+                  {/* Payment Method */}
+                  {t('payment_method')}
                 </th>
                 <th
                   scope="col"
                   className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                  Oder Date
+                  {t('order_date')}
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                  Delivery Date
+                  {t('total_amount')}
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                  Status
+                  {t('status')}
                 </th>
-
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                  Total
+                  Chi tiết
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  Hành động
                 </th>
                 {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span className="sr-only">Edit</span>
@@ -133,16 +140,29 @@ const ManageOrders = () => {
                         }
                       </td>
                       <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                        {order?.paymentMethod}
+                        {t(order?.paymentMethod)}
                       </td>
                       <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                         {new Date(order?.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
-                        {new Date(order?.deliveredAt)?.toLocaleDateString() ?? 'Unknown'}
+                        {formatPrice.format(order?.totalPrice)}
+                        {/* {new Date(order?.deliveredAt)?.toLocaleDateString() ?? 'Unknown'} */}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
-                        {order?.status ?? 'Unknown'}
+                        {t(order?.status) ?? 'Unknown'}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        <button
+                          type="button"
+                          className="text-indigo-600 hover:text-indigo-900"
+                        // onClick={() => handleEditCoupon(coupon)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                          </svg>
+                        </button>
                       </td>
                       <td className="px-3 py-4 text-sm font-medium sm:pr-6">
                         {

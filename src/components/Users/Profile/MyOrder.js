@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import { EllipsisVerticalIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, ClockIcon, Cog6ToothIcon, TruckIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserProfileAction } from '../../../redux/slices/users/usersSlice'
 import LoadingComponent from '../../LoadingComp/LoadingComponent'
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import NoDataFound from '../../NoDataFound/NoDataFound'
 import { Tab } from '@headlessui/react'
+import { convertHtmlToPlainText, isHtmlText } from '../../../utils/convertHTMLToPlainText'
 
 // const orders = [
 //     {
@@ -58,7 +59,7 @@ export default function MyOrder() {
     const { loading, profile } = useSelector(state => state.users)
     let [categories, setCategories] = useState({
         all_order: [],
-        order_pending: [],
+        pending: [],
         order_inprogress: [],
         order_instransit: [],
         order_shipped: [],
@@ -66,21 +67,21 @@ export default function MyOrder() {
     })
     useEffect(() => {
         dispatch(getUserProfileAction());
-       
+
     }, [dispatch,])
     useEffect(() => {
         if (profile && profile.user) {
             const orders = profile.user.orders;
-    
+
             const orders_pending = orders.filter(e => e.status === "pending");
             const orders_processing = orders.filter(e => e.status === "processing");
             const orders_shipped = orders.filter(e => e.status === "shipped");
             const orders_intransit = orders.filter(e => e.status === "intransit");
             const orders_cancel = orders.filter(e => e.status === "cancel");
-    
+
             setCategories({
                 all_order: orders,
-                order_pending: orders_pending,
+                pending: orders_pending,
                 order_inprogress: orders_processing,
                 order_instransit: orders_intransit,
                 order_shipped: orders_shipped,
@@ -298,17 +299,43 @@ export default function MyOrder() {
                                                                                             <h5>{product?.name}</h5>
                                                                                             <p className="mt-2 sm:mt-0">{formatPrice.format(product?.price)}</p>
                                                                                         </div>
-                                                                                        <p className="hidden text-gray-500 sm:mt-2 sm:block">{product?.description}</p>
+                                                                                        <p className="hidden text-gray-500 sm:mt-2 sm:block">{isHtmlText(product?.description) === true ? convertHtmlToPlainText(product?.description) : product?.description
+                                                                                        }</p>
                                                                                     </div>
                                                                                 </div>
 
                                                                                 <div className="mt-6 sm:flex sm:justify-between">
-                                                                                    <div className="flex items-center">
-                                                                                        <CheckCircleIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
-                                                                                        <p className="ml-2 text-sm font-medium text-gray-500">
-                                                                                            Delivered on <time dateTime={order?.deliveredDatetime}>{order?.deliveredDate}</time>
-                                                                                        </p>
-                                                                                    </div>
+                                                                                    {
+                                                                                        order?.status === 'shipped' ? <div className="flex items-center">
+                                                                                            <CheckCircleIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                                                                                            <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                                {t('order_delivered_info')}
+                                                                                                {/* Delivered on <time dateTime={order?.deliveredDatetime}>{order?.deliveredDate}</time> */}
+                                                                                            </p>
+                                                                                        </div> : order?.status === 'pending' ? <div className="flex items-center">
+                                                                                            <ClockIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                                                                                            <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                            {t('order_pending_info')}
+                                                                                            </p>
+                                                                                        </div> : order?.status === 'processing' ? <div className="flex items-center">
+                                                                                            <Cog6ToothIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                                                                                            <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                            {t('order_processing_info')}
+                                                                                            </p>
+                                                                                        </div> : order?.status === 'intransit' ? <div className="flex items-center">
+                                                                                            <TruckIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                                                                                            <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                            {t('order_intrasit_info')}
+                                                                                            </p>
+                                                                                        </div> : <div className="flex items-center">
+                                                                                            <XCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                                                                            <p className="ml-2 text-sm font-medium text-gray-500">
+                                                                                            {t('order_canceled_info')}
+                                                                                            </p>
+                                                                                        </div>
+
+                                                                                    }
+
 
                                                                                     <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
                                                                                         <div className="flex flex-1 justify-center">
@@ -320,11 +347,11 @@ export default function MyOrder() {
                                                                                                 {t('view_product')}
                                                                                             </Link>
                                                                                         </div>
-                                                                                        <div className="flex flex-1 justify-center pl-4">
+                                                                                        {/* <div className="flex flex-1 justify-center pl-4">
                                                                                             <a href="#" className="whitespace-nowrap text-indigo-600 hover:text-indigo-500">
                                                                                                 Buy again
                                                                                             </a>
-                                                                                        </div>
+                                                                                        </div> */}
                                                                                     </div>
                                                                                 </div>
                                                                             </li>
