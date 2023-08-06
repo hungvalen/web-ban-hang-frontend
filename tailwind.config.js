@@ -8,8 +8,13 @@ module.exports = {
     extend: {
       spacing: {
         '76': '300px',
+        '592': '592px',
+        '280': '280px'
       }
     }
   },
-  plugins: []
+  plugins: [
+    // require('@tailwindcss/forms'),
+    // require('@tailwindcss/aspect-ratio'),
+  ]
 }

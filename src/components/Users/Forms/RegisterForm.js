@@ -64,7 +64,7 @@ const RegisterForm = () => {
     }
     if (isValidForm) {
       dispatch(registerUserAction({ fullName, email, phone, password }));
-      setFormData({ email: '', password: '', fullName: '', phone: '' });
+      // setFormData({ email: '', password: '', fullName: '', phone: '' });
       setErrorInput({ emailError: '', passwordError: '', fullNameError: '', phoneError: '' });
     }
   };

@@ -171,7 +171,7 @@ export default function ManageStocks() {
                           <div className="flex items-center">
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
-                                className="h-10 w-10 rounded-full"
+                                className="h-10 w-10 rounded-full object-cover"
                                 src={product?.images[0] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCzs32Uq8r3JrGXjvogJmoMb7h-KW0YU79hg&usqp=CAU'}
                                 alt={product?.name}
                               />

@@ -11,14 +11,15 @@ import { placeOrderAction } from '../../../redux/slices/orders/ordersSlice';
 import { fetchShippingUnitAction } from '../../../redux/slices/shipping-unit/shippingUnitSlice';
 import { resetSuccessAction } from '../../../redux/slices/globalActions/globalAction';
 import { useTranslation } from 'react-i18next';
+import SweetAlert from '../../Playground/SweetAlert';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
 const deliveryMethods = [
-  { id: 1, title: 'Standard', turnaround: '4–10 business days', price: 5 },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: 16 },
+  { id: 1, title: 'Tiêu chuẩn', turnaround: '4–10 ngày', price: 1.5 },
+  { id: 2, title: 'Nhanh chóng', turnaround: '2–5 ngày', price: 3 },
 ]
 
 const paymentMethods = [
@@ -39,8 +40,10 @@ const OrderPayment = () => {
     district: "",
     ward: "",
     phone: "",
-    message:""
+    message: ""
   });
+
+
   //onchange
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -92,17 +95,27 @@ const OrderPayment = () => {
   //create order submit handler
   const createOrderSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(placeOrderAction({
-      shippingAddress: {
-        ...formData
-      },
-      orderItems: cartItems,
-      totalPrice: totalPriceIncludeFee,
-      shippingUnit: selected,
-      paymentMethod: paymentMethod,
-      shipfee:selectedDeliveryMethod?.price
-    }))
-    localStorage.removeItem('cartItems');
+    if (!formData.phone.trim() || !formData.fullName.trim() || !formData.address.trim()) {
+      SweetAlert({ icon: "error", title: "Error", message: "Quý khách vui lòng nhập đầy đủ thông tin địa chỉ nhận hàng" })
+
+    }
+    else if (!selected) {
+
+    }
+    else {
+      dispatch(placeOrderAction({
+        shippingAddress: {
+          ...formData
+        },
+        orderItems: cartItems,
+        totalPrice: totalPriceIncludeFee,
+        shippingUnit: selected,
+        paymentMethod: paymentMethod,
+        shipfee: selectedDeliveryMethod?.price
+      }))
+      localStorage.removeItem('cartItems');
+    }
+
   };
   const handleOnChange = (e) => {
     setPaymentMethod(e.target.value)
@@ -111,8 +124,10 @@ const OrderPayment = () => {
   const handleSelectDeliveryMethod = (deliveryMethod) => {
     setSelectedDeliveryMethod({
       ...deliveryMethod,
-      price: deliveryMethod.price })
+      price: deliveryMethod.price
+    })
   };
+
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
@@ -229,7 +244,6 @@ const OrderPayment = () => {
                             id={paymentMethod.id}
                             name="payment-type"
                             type="radio"
-                            defaultCheck
                             value={paymentMethod.id}
                             onChange={handleOnChange}
                             className="p-2 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
@@ -298,7 +312,7 @@ const OrderPayment = () => {
                     paymentMethod === 'cod' ? (
                       <div className="mt-10 border-t border-gray-200 pt-10">
                         <RadioGroup value={selectedDeliveryMethod} onChange={handleSelectDeliveryMethod}>
-                          <RadioGroup.Label className="text-lg font-medium text-gray-900">Delivery method</RadioGroup.Label>
+                          <RadioGroup.Label className="text-lg font-medium text-gray-900">Thời gian vận chuyển</RadioGroup.Label>
 
                           <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                             {deliveryMethods.map((deliveryMethod) => (
@@ -420,7 +434,7 @@ const OrderPayment = () => {
             {/* Order summary */}
             <div className="mt-10 lg:mt-0">
               <h2 className="text-lg font-medium text-gray-900">
-                Order summary
+                {t('order_summary')}
               </h2>
 
               <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -453,7 +467,7 @@ const OrderPayment = () => {
 
                         <div className="flex flex-1 items-end justify-between pt-2">
                           <p className="mt-1 text-sm font-medium text-gray-900">
-                            $ {product?.price} X {product?.qty} = {product?.totalPrice}
+                            $ {product?.price} X {product?.qty} = {formatPrice.format(+totalPrice)}
                           </p>
                         </div>
                       </div>
@@ -461,7 +475,7 @@ const OrderPayment = () => {
                   ))}
                 </ul>
                 <dl className="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
-                <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <dt className="text-sm">{t('subtotal')}</dt>
                     <dd className="text-sm font-medium text-gray-900">{formatPrice.format(+totalPrice)}</dd>
                   </div>
@@ -477,7 +491,7 @@ const OrderPayment = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-sm">{t('discount')}</dt>
-                    <dd className="text-sm font-medium text-gray-900">{couponPrice > 0 && couponPrice !==  null? `-${formatPrice.format(+couponPrice)}` : 0}</dd>
+                    <dd className="text-sm font-medium text-gray-900">{couponPrice > 0 && couponPrice !== null ? `-${formatPrice.format(+couponPrice)}` : 0}</dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                     <dt className="text-base font-medium">{t('order_total')}</dt>

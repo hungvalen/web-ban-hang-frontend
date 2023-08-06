@@ -127,7 +127,8 @@ export const getListUsersAction = createAsyncThunk(
 export const updateUserProfileAction = createAsyncThunk(
     "user/profile-update",
     async (payload, { rejectWithValue, getState, dispatch }) => {
-        const { fullName, email, phone, file, address, dateOfBirth, bio } = payload;
+        
+        const { fullName, email, phone, file, address, dateOfBirth,gender, bio } = payload;
         try {
             const token = getState()?.users?.userAuth?.userInfo?.token;
             const config = {
@@ -144,6 +145,7 @@ export const updateUserProfileAction = createAsyncThunk(
             formData.append("file", file);
             formData.append("address", address);
             formData.append("dateOfBirth", dateOfBirth);
+            formData.append("gender", gender);
             formData.append("bio", bio);
 
             // make the http request

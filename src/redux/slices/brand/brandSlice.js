@@ -19,7 +19,7 @@ const initialState = {
 export const createBrandAction = createAsyncThunk(
     "brand/create", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { name } = payload;
+            const { name,description, file } = payload;
             // make request
 
             // token
@@ -29,10 +29,12 @@ export const createBrandAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`
                 }
             }
-            const { data } = await axiosClient.post(`${baseURL}/brands`, {
-                name,
-            }, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Brand created successfully" });
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("file", file);
+            const { data } = await axiosClient.post(`${baseURL}/brands`, formData, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Tạo mới thương hiệu thành công" });
 
             return data;
         } catch (error) {
@@ -45,7 +47,7 @@ export const createBrandAction = createAsyncThunk(
 export const editBrandAction = createAsyncThunk(
     "brand/edit", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { name, id } = payload;
+            const { name,description, file, id } = payload;
             // make request
 
             // token
@@ -55,10 +57,12 @@ export const editBrandAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`
                 }
             }
-            const { data } = await axiosClient.put(`${baseURL}/brands/${id}`, {
-                name,
-            }, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Brand updated successfully" });
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("file", file);
+            const { data } = await axiosClient.put(`${baseURL}/brands/${id}`, formData, config)
+            SweetAlert({ icon: "success", title: "Success", message: "Chỉnh sửa thương hiệu thành công" });
 
             return data;
         } catch (error) {
@@ -69,11 +73,8 @@ export const editBrandAction = createAsyncThunk(
     })
 // delete brand action
 export const deleteBrandAction = createAsyncThunk(
-    "brand/delete", async (payload, { rejectWithValue, getState, dispatch }) => {
+    "brand/delete", async (id, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { id } = payload;
-            // make request
-
             // token
             const token = getState()?.users?.userAuth?.userInfo?.token;
             const config = {
@@ -82,7 +83,7 @@ export const deleteBrandAction = createAsyncThunk(
                 }
             }
             const { data } = await axiosClient.delete(`${baseURL}/brands/${id}`, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Brand deleted successfully" });
+            SweetAlert({ icon: "success", title: "Success", message: "Xóa thương hiệu thành công" });
 
             return data;
         } catch (error) {

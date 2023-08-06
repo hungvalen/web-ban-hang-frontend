@@ -51,37 +51,37 @@ export default function ManageBrands() {
     useEffect(() => {
         if (isAdded) {
             dispatch(fetchBrandAction({
-                page, limit
+                page, limit, query
             }));
             dispatch(resetSuccessAction());
         }
 
-    }, [isAdded, dispatch, page, limit])
+    }, [isAdded, dispatch, page, limit, query])
 
     useEffect(() => {
         if (isUpdated) {
             dispatch(fetchBrandAction({
-                page, limit
+                page, limit, query
             }));
             dispatch(resetSuccessAction());
 
         }
-    }, [isUpdated, dispatch, page, limit])
+    }, [isUpdated, dispatch, page, limit, query])
 
     useEffect(() => {
         if (isDeleted) {
             dispatch(fetchBrandAction({
-                page, limit
+                page, limit, query
             }));
             dispatch(resetSuccessAction());
         }
-    }, [isDeleted, dispatch, page, limit])
+    }, [isDeleted, dispatch, page, limit, query])
     return (
         <div className="px-4 sm:px-6 lg:px-8 mt-3">
             <div className="sm:flex sm:items-center mb-2">
                 <div className="sm:flex-auto">
                     <h1 className="text-xl font-semibold text-gray-900">
-                        Manage supplier
+                        {t('manage_brands')}
                     </h1>
                     {/* <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title,
@@ -92,7 +92,7 @@ export default function ManageBrands() {
                         onClick={handleAddBrand}
                         type="button"
                         className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-                        Add New Brand
+                        {t('add_brand')}
                     </button>
                 </div>
             </div>
@@ -100,7 +100,7 @@ export default function ManageBrands() {
                 <input
                     type="search"
                     name="search"
-                    placeHolder="Search brand"
+                    placeHolder={t('search')}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     className="block appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -123,32 +123,42 @@ export default function ManageBrands() {
                                             <th
                                                 scope="col"
                                                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                                Name
+                                                {t('image')}
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                {t('name')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                No. Products
+                                                {t('no_products')}
+                                            </th>
+                                            {/* <th
+                                                scope="col"
+                                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                {t('added_by')}
+                                            </th> */}
+                                            <th
+                                                scope="col"
+                                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                {t('created_At')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Added By
+                                                {t('updated_At')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Created At
+                                                {t('edit')}
                                             </th>
                                             <th
                                                 scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Edit
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Delete
+                                                {t('delete')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -156,22 +166,32 @@ export default function ManageBrands() {
                                         {brands?.brands?.map((brand) => (
                                             <tr key={brand?._id}>
                                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                                    <img
+                                                        className="h-12 w-12 object-cover rounded-full"
+                                                        src={brand?.image ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCzs32Uq8r3JrGXjvogJmoMb7h-KW0YU79hg&usqp=CAU'}
+                                                        alt={brand?.name}
+                                                    />
+                                                </td>
+                                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                     <div className="font-medium text-gray-900">
                                                         {brand?.name}
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <div className="text-gray-900">
+                                                    <div className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
                                                         {brand?.products?.length}
                                                     </div>
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
                                                         {brand?.user?.fullName ?? 'admin'}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     {new Date(brand?.createdAt).toLocaleDateString()}
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                    {new Date(brand?.updatedAt).toLocaleDateString()}
                                                 </td>
                                                 {/* edit icon */}
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">

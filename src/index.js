@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store/store";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-toastify/dist/ReactToastify.css';
 import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -14,6 +15,7 @@ import { initReactI18next } from 'react-i18next';
 import enTranslation from './locales/en.json'
 import viTranslation from './locales/vi.json';
 import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer } from "react-toastify";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const storedLanguage = localStorage.getItem('language') || 'en'; // Get the language from Local Storage or use the default 'en'
 
@@ -33,7 +35,22 @@ root.render(
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <React.StrictMode>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <App />
+
+        {/* Same as */}
+        <ToastContainer />
       </React.StrictMode>
     </Provider>
 

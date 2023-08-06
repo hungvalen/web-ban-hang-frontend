@@ -257,22 +257,22 @@ export default function OrderDetails() {
                                         <div className="overflow-hidden rounded-full bg-gray-200">
                                             <div
                                                 className="h-2 rounded-full bg-indigo-600"
-                                                style={{ width: `calc((${orderStep} * 2 + 1) / 8 * 100%)` }}
+                                                style={{ width: `calc((${orderStep} * 2 + 1) / 4 * 100%)` }}
                                             />
                                         </div>
                                         <div className="mt-6 hidden grid-cols-4 text-sm font-medium text-gray-600 sm:grid">
-                                            <div className="text-indigo-600">                                                {t('pending')}
+                                            <div className="text-indigo-600"> {t('pending')}
                                             </div>
-                                            {/* <div className={classNames(orderStep > 0 ? 'text-indigo-600' : '', 'text-center')}>
+                                            {/* <div className={classNames(orderStep === 0 ? 'text-indigo-600' : '', 'text-center')}>
                                                 {t('pending')}
                                             </div> */}
-                                            <div className={classNames(orderStep > 1 ? 'text-indigo-600' : '', 'text-center')}>
+                                            <div className={classNames(orderStep > 0 ? 'text-indigo-600' : '', 'text-center')}>
                                                 {t('processing')}
                                             </div>
-                                            <div className={classNames(orderStep > 2 ? 'text-indigo-600' : '', 'text-center')}>
+                                            <div className={classNames(orderStep > 1 ? 'text-indigo-600' : '', 'text-center')}>
                                                 {t('intransit')}
                                             </div>
-                                            <div className={classNames(orderStep > 3 ? 'text-indigo-600' : '', 'text-right')}>
+                                            <div className={classNames(orderStep > 2 ? 'text-indigo-600' : '', 'text-right')}>
                                                 {t('shipped')}
                                             </div>
                                         </div>

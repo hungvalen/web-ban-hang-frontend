@@ -25,15 +25,15 @@ const ShoppingCart = () => {
   const { t } = useTranslation();
 
   // add to cart handler
-  const changeOrderItemQtyHandler = (productID, qty) => {
-    dispatch(changeOrderItemQty({ productID, qty }))
+  const changeOrderItemQtyHandler = (productID, qty, size, color) => {
+    dispatch(changeOrderItemQty({ productID, qty, size, color }))
     // get cart items from local storage after dispatching changeOrderItemQty
     dispatch(cartItemsFromLocalStorageAction())
 
   }
 
-  const removeOrderItemFromLocalStorageHandler = (productID) => {
-    dispatch(removeOrderItemQty({ productID }))
+  const removeOrderItemFromLocalStorageHandler = (productID, size, color) => {
+    dispatch(removeOrderItemQty({ productID, size, color }))
     // get cart items from local storage after dispatching removeOrderItemQty
     dispatch(cartItemsFromLocalStorageAction())
   }
@@ -93,10 +93,10 @@ const ShoppingCart = () => {
                             <div>
                               <div className="flex justify-between">
                                 <h3 className="text-sm">
-                                  <p
+                                  <Link to={`/products/${product?._id}`}
                                     className="font-medium text-gray-700 hover:text-gray-800">
                                     {product.name}
-                                  </p>
+                                  </Link>
                                 </h3>
                               </div>
                               <div className="mt-1 flex text-sm">
@@ -118,7 +118,7 @@ const ShoppingCart = () => {
                               </label>
                               <select
                                 value={product?.qty}
-                                onChange={(e) => changeOrderItemQtyHandler(product?._id, e.target.value)}
+                                onChange={(e) => changeOrderItemQtyHandler(product?._id, e.target.value, product?.size, product?.color)}
                                 className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                 {/* use the qty  */}
                                 {[...Array(product?.qtyLeft).keys()].map((x) => {
@@ -131,7 +131,7 @@ const ShoppingCart = () => {
                                 <button
                                   onClick={() =>
                                     removeOrderItemFromLocalStorageHandler(
-                                      product?._id
+                                      product?._id, product?.size, product?.color
                                     )
                                   }
                                   className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500">
@@ -172,7 +172,7 @@ const ShoppingCart = () => {
                         {/* $ {calculateTotalDiscountedPrice().toFixed(2)} */}
                       </dd>
                     </div>
-                   
+
                     {/* <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                       
                     </div> */}

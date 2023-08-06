@@ -32,7 +32,7 @@ export const createCouponAction = createAsyncThunk(
             const { data } = await axios.post(`${baseURL}/coupons`, {
                 code, discount, startDate, endDate
             }, config)
-            SweetAlert({ icon: "success", title: "Success", message: 'Coupon add successfully' });
+            SweetAlert({ icon: "success", title: "Success", message: 'Thêm mới mã giảm giá  thành công' });
 
             return data;
         } catch (error) {
@@ -59,7 +59,7 @@ export const updateCouponAction = createAsyncThunk(
             const { data } = await axios.put(`${baseURL}/coupons/update/${id}`, {
                 code, discount, startDate, endDate
             }, config)
-            SweetAlert({ icon: "success", title: "Success", message: 'Coupon update successfully' });
+            SweetAlert({ icon: "success", title: "Success", message: 'Cập nhật mã giảm giá  thành công' });
 
             return data;
         } catch (error) {

@@ -12,7 +12,7 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
     const { t } = useTranslation();
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
-    const roles = ["user", "admin", "staff"];
+    const roles = ["user", "admin"];
     const genders = ["male", "female", "other"];
 
     const [roleOption, setRoleOption] = useState([]);
@@ -36,7 +36,7 @@ export default function EditCustomer({ isShowEditUserModal, setIsShowEditUserMod
         phoneNumber: user?.phone,
         role: user?.role,
         address: user?.address,
-        dateOfBirth: new Date(user?.dateOfBirth),
+        dateOfBirth: new Date(user?.dateOfBirth) ?? '',
         gender: user?.gender,
         password: user?.password,
     });

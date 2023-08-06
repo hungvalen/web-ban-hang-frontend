@@ -184,6 +184,7 @@ const AddShippingAddress = (props) => {
               <input
                 type="text"
                 name="fullName"
+                required
                 onChange={onChange}
                 value={formData.fullName}
                 autoComplete="given-name"
@@ -199,12 +200,13 @@ const AddShippingAddress = (props) => {
             </label>
             <div className="mt-1">
               <select
+                required
                 name="provinceId"
                 value={formData.provinceId}
                 onChange={onChange}
                 className="mt-1 block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
               >
-                <option>-- Vui lòng chọn tỉnh/thành phố --</option>
+                <option value="">-- Vui lòng chọn tỉnh/thành phố --</option>
                 {provinces?.results?.map((province) => (
                   <option key={province?.province_id} value={province?.province_id}>
                     {province?.province_name}
@@ -222,6 +224,7 @@ const AddShippingAddress = (props) => {
             <div className="mt-1">
               <select
                 name="districtId"
+                required
                 value={formData.districtId}
                 onChange={onChange}
                 className="mt-1 block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
@@ -246,11 +249,12 @@ const AddShippingAddress = (props) => {
             <div className="mt-1">
               <select
                 name="wardId"
+                required
                 value={formData.wardId}
                 onChange={onChange}
                 className="mt-1 block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
               >
-                <option>-- Vui lòng chọn huyện/ thị xã --</option>
+                <option value="">-- Vui lòng chọn huyện/ thị xã --</option>
                 {wards?.results?.map((ward) => (
                   <option key={ward?.ward_id} value={ward?.ward_id}>
                     {ward?.ward_name}
@@ -272,6 +276,7 @@ const AddShippingAddress = (props) => {
                 type="text"
                 name="phone"
                 id="phone"
+                required
                 onChange={onChange}
                 value={formData.phone}
                 autoComplete="tel"
@@ -289,6 +294,7 @@ const AddShippingAddress = (props) => {
               <input
                 type="text"
                 name="address"
+                required
                 onChange={onChange}
                 value={formData.address}
                 autoComplete="street-address"

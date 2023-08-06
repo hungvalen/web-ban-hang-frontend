@@ -34,6 +34,13 @@ const Login = () => {
   //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    const isValidEmail = isEmailValid(email);
+
+
+    // else {
+    //   setErrorInput({ ...errorInput, emailError: '' });
+
+    // }
     // Kiểm tra tất cả các trường cần thiết
     let isValidForm = true;
     if (!email.trim() || !password.trim()) {
@@ -42,13 +49,18 @@ const Login = () => {
         passwordError: !password.trim() ? 'Vui lòng nhập mật khẩu.' : '',
       });
       return;
-    } else {
+    }
+    else if (!isValidEmail) {
+      setErrorInput({ ...errorInput, emailError: 'Địa chỉ email không hợp lệ.' });
+    }
+    else {
       setErrorInput({});
       isValidForm = true;
     }
+
     if (isValidForm) {
       dispatch(loginUserAction({ email, password }));
-      setFormData({ email: '', password: '', });
+      // setFormData({ email: '', password: '', });
       setErrorInput({ emailError: '', passwordError: '', });
     }
   };
@@ -116,7 +128,7 @@ const Login = () => {
                         id="email"
                         name="email"
                         type="email"
-                        autoComplete="email"
+                        // autoComplete="email"
                         // required
                         value={email}
                         onChange={handleEmailChange}

@@ -82,7 +82,7 @@ const CustomerProfile = () => {
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">{t('date_of_birth')}</dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{new Date(profile?.user?.dateOfBirth).toLocaleDateString()}</dd>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{profile?.user?.dateOfBirth ? new Date(profile?.user?.dateOfBirth ?? '').toLocaleDateString() : ''}</dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">{t('address')}</dt>
@@ -94,12 +94,12 @@ const CustomerProfile = () => {
                       {t(profile?.user?.gender)}
                     </dd>
                   </div>
-                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">{t('about')}</dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {profile?.user?.bio}
                     </dd>
-                  </div>
+                  </div> */}
 
                 </dl>
               </div>

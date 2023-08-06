@@ -1,20 +1,34 @@
-import { useState, Fragment, useRef } from "react";
+import { useState, Fragment, useRef, useTransition } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, Transition } from '@headlessui/react'
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { createBrandAction } from "../../../../../redux/slices/brand/brandSlice";
+import { useTranslation } from "react-i18next";
 export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }) {
     const cancelButtonRef = useRef(null)
-
+    const { t } = useTranslation()
     const [formData, setFormData] = useState({
         name: "",
-        email: "",
         description: ""
     });
     const dispatch = useDispatch()
     // files
+    const [file, setFile] = useState(null);
+    const [fileErr, setFileErr] = useState([]);
+    const fileHandleChange = (event) => {
 
+        const newFile = event.target.files[0]
+        // validation
+
+        if (newFile.size > 1000000) {
+            setFileErr(`${newFile.name} is too large, please pick a smaller file`)
+        }
+        if (!newFile.type.startsWith("image/")) {
+            setFileErr(`${newFile.name} is not a valid format`)
+        }
+        setFile(newFile);
+    }
     //---onChange---
     const handleOnChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,12 +38,16 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
     const handleOnSubmit = (e) => {
         e.preventDefault();
         dispatch(createBrandAction({
-            ...formData
+            ...formData,
+            file: file
 
         }))
         setFormData({ name: "" });
         setIsShowAddBrandModal(!isShowAddBrandModal);
     };
+    const removeImage = () => {
+        setFile();
+    }
     return (
         <>
             <Transition.Root show={isShowAddBrandModal ?? false} as={Fragment}>
@@ -63,7 +81,7 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                         <form onSubmit={handleOnSubmit}>
                                             <div className="space-y-6">
                                                 <div className="border-b border-gray-900/10 pb-2">
-                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">Add Supplier</h2>
+                                                    <h2 className="text-base font-semibold leading-7 text-gray-900">{t('add_brand')}</h2>
                                                 </div>
 
                                                 <div className="border-b border-gray-900/10 pb-7">
@@ -71,9 +89,9 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                                     {/* <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p> */}
 
                                                     <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                                        <div className="sm:col-span-3">
+                                                        <div className="sm:col-span-full">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Name
+                                                                {t('name')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <input
@@ -85,24 +103,10 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="sm:col-span-3">
-                                                            <label className="block text-sm font-medium text-gray-700">
-                                                                Email
-                                                            </label>
-                                                            <div className="mt-1">
-                                                                <input
-                                                                    required
-                                                                    type="email"
-                                                                    name="email"
-                                                                    value={formData?.email}
-                                                                    onChange={handleOnChange}
-                                                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                                />
-                                                            </div>
-                                                        </div>
+
                                                         <div className="sm:col-span-full">
                                                             <label className="block text-sm font-medium text-gray-700">
-                                                                Description
+                                                                {t('description')}
                                                             </label>
                                                             <div className="mt-1">
                                                                 <textarea
@@ -114,7 +118,63 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                                                 />
                                                             </div>
                                                         </div>
+                                                        <div className="sm:col-span-6 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                                                            <label
+                                                                htmlFor="cover-photo"
+                                                                className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                                                {t('upload_images')}
+                                                            </label>
+                                                            <div className="mt-1 sm:col-span-2 sm:mt-0">
+                                                                <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                                                                    <div className="space-y-1 text-center">
+                                                                        <svg
+                                                                            className="mx-auto h-12 w-12 text-gray-400"
+                                                                            stroke="currentColor"
+                                                                            fill="none"
+                                                                            viewBox="0 0 48 48"
+                                                                            aria-hidden="true">
+                                                                            <path
+                                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                                strokeWidth={2}
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                            />
+                                                                        </svg>
+                                                                        <div className="flex text-sm text-gray-600">
+                                                                            <label
+                                                                                htmlFor="file-upload"
+                                                                                className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                                                                                <span>Upload files</span>
+                                                                                <input
+                                                                                    multiple
+                                                                                    onChange={fileHandleChange}
+                                                                                    type="file"
+                                                                                    name="files"
 
+                                                                                />
+                                                                            </label>
+                                                                        </div>
+                                                                        <p className="text-xs text-gray-500">
+                                                                            PNG, JPG, GIF {t('upto')} 10MB
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="sm:col-span-6">
+                                                            <div className="flex items-center justify-center flex-wrap gap-2 mt-2">
+                                                                {
+                                                                    file != null && (
+                                                                        <div className="overflow-hidden relative">
+                                                                            <XCircleIcon onClick={() => { removeImage() }} className="h-10 w-10 absolute right-1 top-1 text-white cursor-pointer" />
+                                                                            {/* <i onClick={() => { removeImage(file.name) }} className="mdi mdi-close absolute right-1 hover:text-white cursor-pointer"></i> */}
+                                                                            <img src={URL.createObjectURL(file)} alt="" className="w-full border border-gray p-2 object-cover object-center  rounded-md" />
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            </div>
+
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -123,13 +183,13 @@ export default function AddBrand({ isShowAddBrandModal, setIsShowAddBrandModal }
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
                                                 <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => setIsShowAddBrandModal(!isShowAddBrandModal)}
                                                     ref={cancelButtonRef}>
-                                                    Cancel
+                                                    {t('cancel')}
                                                 </button>
                                                 <button
                                                     type="submit"
                                                     className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 >
-                                                    Save
+                                                    {t('save')}
                                                 </button>
                                             </div>
                                         </form>

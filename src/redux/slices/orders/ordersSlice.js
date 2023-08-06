@@ -11,7 +11,7 @@ const initialState = {
     isUpdated: false,
     isDeleted: false,
     orders: [],
-    ordersUser:[],
+    ordersUser: [],
     order: null,
     stats: null
 }
@@ -20,7 +20,7 @@ const initialState = {
 export const placeOrderAction = createAsyncThunk(
     "order/place-order", async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
-            const { orderItems, shippingAddress, totalPrice, shippingUnit, paymentMethod,shipfee } = payload;
+            const { orderItems, shippingAddress, totalPrice, shippingUnit, paymentMethod, shipfee } = payload;
             // make request
             // token
             const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -41,9 +41,18 @@ export const placeOrderAction = createAsyncThunk(
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
-            // dispatch(navigateToOrderSuccess());
-            // return data;
-            return window.open(data);
+            if (data?.url !== '') {
+                dispatch(navigateToOrder(data?.url));
+                dispatch(navigateToOrderSuccess());
+                // return window.open(data?.url);
+            }
+            else {
+                dispatch(navigateToOrderSuccess());
+                return data;
+
+            }
+            dispatch(navigateToOrderSuccess());
+
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
             return rejectWithValue(error.response.data);
@@ -70,7 +79,7 @@ export const fetchOrdersAction = createAsyncThunk("orders/list", async ({ page, 
     }
 })
 // fetch order by user action
-export const fetchOrdersByUserAction = createAsyncThunk("orders/user", async ({ page, limit, status,id }, { rejectWithValue, getState, dispatch }) => {
+export const fetchOrdersByUserAction = createAsyncThunk("orders/user", async ({ page, limit, status, id }, { rejectWithValue, getState, dispatch }) => {
     try {
 
         // make request
@@ -150,6 +159,13 @@ export const updateOrderAction = createAsyncThunk("orders/update-order", async (
         return rejectWithValue(error?.response?.data);
     }
 })
+
+export const navigateToOrder = (order) => {
+    // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
+    // Ví dụ: sử dụng window.location.href hoặc history.push()
+    window.open(order)
+    window.location.href = "success"
+};
 export const navigateToOrderSuccess = () => {
     // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
     // Ví dụ: sử dụng window.location.href hoặc history.push()

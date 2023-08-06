@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { deleteBrandAction } from '../../../../../redux/slices/brand/brandSlice';
 
 export default function DeleteBrandModal({ isShowDeleteBrandModal, setIsShowDeleteBrandModal, brand }) {
+    console.log('check brand', brand);
     const cancelButtonRef = useRef(null);
     const dispatch = useDispatch();
     const handleDeleteCategory = () => {

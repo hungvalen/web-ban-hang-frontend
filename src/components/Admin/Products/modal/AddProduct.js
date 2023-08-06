@@ -100,10 +100,12 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
   const { categories } = useSelector(state => state.category.categories)
   const { product, isAdded, error, loading } = useSelector(state => state.product)
   const handleSizeChange = (sizes) => {
+    setErrorInput({ ...errorInput, sizeError: sizes?.length > 0 ? '' : 'Vui lòng chọn kích cỡ' });
     setSizeOption(sizes);
   }
 
   const handleColorChangeOption = (colors) => {
+    setErrorInput({ ...errorInput, colorError: colors?.length > 0 ? '' : 'Vui lòng chọn màu sắc.' });
     setColorOption(colors);
   }
 
@@ -128,48 +130,132 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
-    address: "",
-    district: "",
-    phone: ""
+    description: "",
+    category: "",
+    sizes: "",
+    brand: "",
+    colors: "",
+    images: "",
+    price: "",
+    totalQty: "",
   });
+  const [errorInput, setErrorInput] = useState({
+    nameError: '',
+    descriptionError: '',
+    categoryError: '',
+    colorError: '',
+    imagesError: '',
+    priceError: '',
+    totalQtyError: '',
+    sizeError: '',
+    brandError: '',
+  });
+
+  const { nameError,
+    descriptionError,
+    categoryError,
+    colorError,
+    imagesError,
+    priceError,
+    totalQtyError,
+    sizeError,
+    brandError, } = errorInput
+  const { name, description, category, brand, color, images, price, totalQty } = formData;
 
   //onChange
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const handleProductNameChange = (event) => {
+    const input = event.target.value;
 
+    setErrorInput({ ...errorInput, nameError: input.trim() ? '' : 'Vui lòng nhập tên sản phẩm.' });
+    setFormData({ ...formData, name: input });
+  }
+  const handleCategoryChange = (event) => {
+    const input = event.target.value;
 
+    setErrorInput({ ...errorInput, categoryError: input.trim() ? '' : 'Vui lòng chọn thể loại.' });
+    setFormData({ ...formData, category: input });
+  }
+  const handleBrandChange = (event) => {
+    const input = event.target.value;
+
+    setErrorInput({ ...errorInput, brandError: input.trim() ? '' : 'Vui lòng chọn thương hiệu' });
+    setFormData({ ...formData, brand: input });
+  }
+
+  const handlePriceChange = (event) => {
+    const input = event.target.value;
+
+    setErrorInput({ ...errorInput, priceError: input.trim() ? '' : 'Vui lòng nhập giá sản phẩm.' });
+    setFormData({ ...formData, price: input });
+  }
+  const handleTotalQtyChange = (event) => {
+    const input = event.target.value;
+
+    setErrorInput({ ...errorInput, totalQtyError: input.trim() ? '' : 'Vui lòng nhập số lượng sản phẩm' });
+    setFormData({ ...formData, totalQty: input });
+  }
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProductAction({
-      ...formData,
-      files,
-      colors: colorOption?.map((color) => color?.value),
-      sizes: sizeOption?.map((size) => size?.value)
-    }))
-    dispatch(resetSuccessAction());
+    let isValidForm = true;
+    if (!name.trim() || !description.trim() || !category.trim() || !price.trim() || !totalQty.trim() || !brand.trim() || colorOption.length === 0 || sizeOption.length === 0 || files?.length === 0) {
+      setErrorInput({
+        nameError: !name.trim() ? 'Vui lòng nhập tên sản phẩm.' : '',
+        descriptionError: !description.trim() ? 'Vui lòng nhập mô tả.' : '',
+        categoryError: !category.trim() ? 'Vui lòng chọn thể loại.' : '',
+        colorError: colorOption.length === 0 ? 'Vui lòng chọn màu sắc.' : '',
+        sizeError: sizeOption.length === 0 ? 'Vui lòng chọn kích cỡ' : '',
+        imagesError: files?.length === 0 ? 'Vui lòng tải hình ảnh.' : '',
+        priceError: !price.trim() ? 'Vui lòng nhập giá sản phẩm.' : '',
+        totalQtyError: !totalQty.trim() ? 'Vui lòng nhập số lượng sản phẩm' : '',
+        brandError: !brand.trim() ? 'Vui lòng chọn thương hiệu' : '',
+      });
+      return;
+    }
+    else {
+      setErrorInput({});
+      isValidForm = true;
+    }
+
+    if (isValidForm) {
+      dispatch(createProductAction({
+        ...formData,
+        files,
+        colors: colorOption?.map((color) => color?.value),
+        sizes: sizeOption?.map((size) => size?.value)
+      }))
+      dispatch(resetSuccessAction());
+      // setFormData({ email: '', password: '', });
+      setFormData({
+        name: "",
+        description: "",
+        category: "",
+        sizes: "",
+        brand: "",
+        colors: "",
+        images: "",
+        price: "",
+        totalQty: "",
+      });
+      setFileErrs([]);
+      setIsShowAddProductModal(false);
+    }
+
     // navigate("/admin/manage-products");
     // console.log(fileErrs)
     // reset form data
-    setFormData({
-      name: "",
-      description: "",
-      category: "",
-      sizes: "",
-      brand: "",
-      colors: "",
-      images: "",
-      price: "",
-      totalQty: "",
-    });
-    setFileErrs([]);
-    setIsShowAddProductModal(false);
+
+
 
   };
 
   const handleEditorChange = (data) => {
     setFormData({ ...formData, description: data })
+    setErrorInput({ ...errorInput, descriptionError: data.trim() ? '' : 'Vui lòng nhập mô tả.' });
+
   }
   return (
     <>
@@ -223,11 +309,13 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               <div className="mt-1">
                                 <input
                                   name="name"
-                                  value={formData?.name}
-                                  onChange={handleOnChange}
+                                  value={name}
+                                  onChange={handleProductNameChange}
                                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 />
                               </div>
+                              {nameError && <p className="text-red-500 text-sm mt-1 leading-6">{nameError}</p>}
+
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
@@ -238,7 +326,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                 isMulti
                                 name="sizes"
                                 options={sizeOptionsConverted}
-                                className="basic-multi-select"
+                                className="basic-multi-select mt-1"
                                 classNamePrefix="select"
                                 isClearable={true}
                                 isLoading={false}
@@ -246,6 +334,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                 closeMenuOnSelect={false}
                                 onChange={(item) => handleSizeChange(item)}
                               />
+                              {sizeError && <p className="text-red-500 text-sm mt-1 leading-6">{sizeError}</p>}
+
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
@@ -253,8 +343,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               </label>
                               <select
                                 name="category"
-                                value={formData.category}
-                                onChange={handleOnChange}
+                                value={category}
+                                onChange={handleCategoryChange}
                                 className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
                                 defaultValue="Canada">
                                 <option>-- Select Category --</option>
@@ -264,6 +354,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                   </option>
                                 ))}
                               </select>
+                              {categoryError && <p className="text-red-500 text-sm mt-1 leading-6">{categoryError}</p>}
+
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
@@ -271,8 +363,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               </label>
                               <select
                                 name="brand"
-                                value={formData.brand}
-                                onChange={handleOnChange}
+                                value={brand}
+                                onChange={handleBrandChange}
                                 className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
                                 defaultValue="Canada">
                                 <option>-- Select Brand --</option>
@@ -282,6 +374,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                   </option>
                                 ))}
                               </select>
+                              {brandError && <p className="text-red-500 text-sm mt-1 leading-6">{brandError}</p>}
+
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
@@ -292,7 +386,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                 isMulti
                                 name="colors"
                                 options={colorOptionsCoverted}
-                                className="basic-multi-select"
+                                className="basic-multi-select mt-1"
                                 classNamePrefix="select"
                                 isClearable={true}
                                 isLoading={false}
@@ -300,6 +394,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                 closeMenuOnSelect={false}
                                 onChange={(item) => handleColorChangeOption(item)}
                               />
+                              {colorError && <p className="text-red-500 text-sm mt-1 leading-6">{colorError}</p>}
+
                             </div>
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium text-gray-700">
@@ -308,12 +404,14 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               <div className="mt-1">
                                 <input
                                   name="price"
-                                  value={formData.price}
-                                  onChange={handleOnChange}
+                                  value={price}
+                                  onChange={handlePriceChange}
                                   type="number"
                                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 />
                               </div>
+                              {priceError && <p className="text-red-500 text-sm mt-1 leading-6">{priceError}</p>}
+
                             </div>
                             <div className="sm:col-span-6 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
                               <label
@@ -365,8 +463,6 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                     <img src={file} alt="" className="h-56 w-56 rounded-md object-cover object-center" />
                                   </div>)
                                 })
-
-
                                 }
                               </div>
 
@@ -378,12 +474,14 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                               <div className="mt-1">
                                 <input
                                   name="totalQty"
-                                  value={formData.totalQty}
-                                  onChange={handleOnChange}
+                                  value={totalQty}
+                                  onChange={handleTotalQtyChange}
                                   type="number"
                                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 />
                               </div>
+                              {totalQtyError && <p className="text-red-500 text-sm mt-1 leading-6">{totalQtyError}</p>}
+
                             </div>
                             <div className="sm:col-span-6">
                               <label
@@ -399,8 +497,10 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                   onChange={handleOnChange}
                                   className="block w-full rounded-md border-gray-300 border px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 /> */}
-                                <Editor value={formData.description} onChange={handleEditorChange} />
+                                <Editor value={description} onChange={handleEditorChange} />
+
                               </div>
+                              {descriptionError && <p className="text-red-500 text-sm mt-1 leading-6">{descriptionError}</p>}
                             </div>
 
                           </div>

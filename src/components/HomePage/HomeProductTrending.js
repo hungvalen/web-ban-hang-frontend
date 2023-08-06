@@ -7,6 +7,7 @@ import LoadingComponent from "../LoadingComp/LoadingComponent";
 import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 import { formatPrice } from "../../utils/formatCurrency";
 import { defaultImage } from "../../utils/defaultImage";
+import { useTranslation } from "react-i18next";
 
 const HomeProductTrending = () => {
   let productUrl = `${baseURL}/products?`
@@ -18,27 +19,27 @@ const HomeProductTrending = () => {
       url: productUrl,
       page: 1,
       limit: 12,
-      name:''
+      name: ''
     }));
   }, [dispatch, page, limit])
-
+  const { t } = useTranslation()
   const { products, loading, error } = useSelector(state => state.product)
   return (
     <>
       <section aria-labelledby="trending-heading">
-        <div className="mx-auto max-w-7xl py-24 px-4 sm:px-6 sm:py-32 lg:px-8 lg:pt-32">
+        <div className="aspect-h-1 mx-auto max-w-7xl py-24 px-4 sm:px-6 sm:py-32 lg:px-8 lg:pt-32">
           <div className="md:flex md:items-center md:justify-between">
             <h2
               id="favorites-heading"
               className="text-2xl font-bold tracking-tight text-gray-900">
-              Trending Products
+              {t('trending_products')}
             </h2>
-            <a
-              href="#"
+            <Link
+              to="/products-filters?category="
               className="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 md:block">
-              Shop the collection
+              {t('view_all')}
               <span aria-hidden="true"> &rarr;</span>
-            </a>
+            </Link>
           </div>
 
           {/* <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">

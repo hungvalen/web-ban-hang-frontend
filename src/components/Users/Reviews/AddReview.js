@@ -261,7 +261,7 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                                 <option value="5">5 </option>
                               </select> */}
                             </div>
-                            <div className="sm:col-span-full">
+                            {/* <div className="sm:col-span-full">
                               <label className="block text-sm font-medium text-gray-700">
                                 {t('title')}
                               </label>
@@ -275,7 +275,7 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
                                   className="block w-full rounded-md p-2 border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 />
                               </div>
-                            </div>
+                            </div> */}
                             <div className="sm:col-span-full">
                               <label className="block text-sm font-medium text-gray-700">
                                 {t('message')}

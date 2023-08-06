@@ -24,7 +24,7 @@ export default function EditProfileModal({ isShowEditProfileModal, setIsShowEdit
         email: user?.email ?? "",
         phone: user?.phone ?? '',
         address: user?.address ?? '',
-        dateOfBirth: new Date(user?.dateOfBirth ?? ""),
+        dateOfBirth: user?.dateOfBirth ? new Date(user?.dateOfBirth ?? "") : '',
         gender: user?.gender ?? "",
         bio: user?.bio ?? "",
         file: user?.photo ?? ""

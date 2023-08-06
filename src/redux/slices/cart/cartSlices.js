@@ -30,12 +30,13 @@ export const cartItemsFromLocalStorageAction = createAsyncThunk(
     })
 
 export const changeOrderItemQty = createAsyncThunk(
-    "cart/change-item-qty", async ({ productID, qty }) => {
+    "cart/change-item-qty", async ({ productID, qty, size, color }) => {
         const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
         const newCartItems = cartItems?.map(item => {
-            if (item?._id?.toString() === productID?.toString()) {
-                const newPrice = item?.price * qty;
-                item.qty = +qty;
+            if (item?._id?.toString() === productID?.toString() && item.size === size && item.color === color) {
+                const newQty = +qty
+                const newPrice = item?.price * newQty;
+                item.qty = newQty;
                 item.totalPrice = newPrice;
                 // console.log("newPrice", newPrice)
             }
@@ -45,9 +46,18 @@ export const changeOrderItemQty = createAsyncThunk(
     })
 
 export const removeOrderItemQty = createAsyncThunk(
-    "cart/removeOrderItem", async ({ productID }) => {
+    "cart/removeOrderItem", async ({ productID,size,color }) => {
         const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
-        const newItems = cartItems?.filter(item => item?._id?.toString() !== productID?.toString());
+        const newItems = cartItems?.filter(item => {
+            if (
+                (item._id.toString() === productID.toString() &&
+                (item.size !== size || item.color !== color)) ||
+                (item._id.toString() !== productID.toString() )
+            ) {
+                return true; // Keep the item in the cart
+            }
+            return false; // Remove the item from the cart
+        });
         localStorage.setItem("cartItems", JSON.stringify(newItems));
     })
 

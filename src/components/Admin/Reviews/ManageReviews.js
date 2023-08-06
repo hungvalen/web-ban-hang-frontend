@@ -14,6 +14,7 @@ import { fetchReviewsAction, updateStatusReviewsAction } from "../../../redux/sl
 import { Switch } from '@headlessui/react'
 import ReviewDetails from "./ReviewsDetails";
 import DeleteReview from "./DeleteReview";
+import { StarIcon } from "@heroicons/react/24/solid";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -161,7 +162,20 @@ export default function ManageReviews() {
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     <div className="text-gray-900">
-                                                        {review?.rating}
+                                                        {/* {review?.rating} */}
+                                                        <div className="flex">
+
+                                                            {[0, 1, 2, 3, 4].map((rating) => (
+                                                                <StarIcon
+                                                                    key={rating}
+                                                                    className={classNames(
+                                                                        +review?.rating > rating ? 'text-yellow-400' : 'text-gray-300',
+                                                                        'h-5 w-5 flex-shrink-0'
+                                                                    )}
+                                                                    aria-hidden="true"
+                                                                />
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

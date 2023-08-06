@@ -28,7 +28,7 @@ export default function AddCustomerModal({ isShowAddUserModal, setIsShowAddUserM
     const { t } = useTranslation();
     const cancelButtonRef = useRef(null)
     const dispatch = useDispatch();
-    const roles = ["user", "admin", "staff"];
+    const roles = ["user", "admin"];
     const genders = ["male", "female", "other"];
     const [roleOption, setRoleOption] = useState([]);
     const handleRoleChange = (sizes) => {

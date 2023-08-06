@@ -4,11 +4,11 @@ import {
   CurrencyDollarIcon,
   GlobeAmericasIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/20/solid";
+import { CheckCircleIcon, StarIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSingleProductAction } from "../../../redux/slices/products/productSlices";
-import { addOrderToCartAction, cartItemsFromLocalStorageAction } from "../../../redux/slices/cart/cartSlices";
+import { addOrderToCartAction, cartItemsFromLocalStorageAction, changeOrderItemQty } from "../../../redux/slices/cart/cartSlices";
 import SweetAlert from "../../Playground/SweetAlert";
 import Skeleton from "react-loading-skeleton";
 import { formatPrice } from "../../../utils/formatCurrency";
@@ -16,8 +16,12 @@ import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/
 import AddReview from "../Reviews/AddReview";
 import AddReviewModal from "../Reviews/AddReview";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
-import {convertHtmlToPlainText, isHtmlText} from "../../../utils/convertHTMLToPlainText"
+import { convertHtmlToPlainText, isHtmlText } from "../../../utils/convertHTMLToPlainText"
 import { useTranslation } from "react-i18next";
+import { ToastContainer, toast } from 'react-toastify';
+import { resetSuccessAction } from "../../../redux/slices/globalActions/globalAction";
+import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
+import { getUserProfileAction } from "../../../redux/slices/users/usersSlice";
 const product = {
   name: "Basic Tee",
   price: "$35",
@@ -98,6 +102,7 @@ export default function Product() {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [showAddReviewModal, setShowAddReviewModal] = useState(false);
+  const [productQty, setProductQty] = useState(null);
   const { id } = useParams();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -106,44 +111,103 @@ export default function Product() {
     ))
 
   }, [id])
+  const { isAdded } = useSelector(state => state.reviews)
 
+  useEffect(() => {
+    if (isAdded) {
+      dispatch(fetchSingleProductAction(id
+      ))
+
+      dispatch(resetSuccessAction())
+    }
+  }, [id, isAdded])
   useEffect(() => {
     dispatch(cartItemsFromLocalStorageAction())
   }, [])
+  const user = JSON.parse(localStorage.getItem('userInfo'));
+  useEffect(() => {
+    if (user) {
+      dispatch(getUserProfileAction());
+    }
+  }, [dispatch])
 
   const handleAddReview = () => {
     setShowAddReviewModal(!showAddReviewModal)
   }
 
+  const { profile } = useSelector(state => state?.users)
+  console.log('check profile', profile)
   //Add to cart handler
   const addToCartHandler = () => {
     // check if product is in cart
-    if (productExists) {
-      return SweetAlert({ icon: "error", title: "Error", message: 'Product already in cart' });
-    }
+    // if (productExists) {
+    //   return SweetAlert({ icon: "error", title: "Error", message: 'Product already in cart' });
+    // }
     // check if color/size selected
     if (selectedColor === "") {
-      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product color' });
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Vui lòng chọn màu sắc' });
 
     }
     if (selectedSize === "") {
-      return SweetAlert({ icon: "error", title: "Oops...", message: 'Please select product size' });
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Vui lòng chọn kích cỡ' });
 
     }
-    dispatch(addOrderToCartAction({
-      _id: product?._id,
-      name: product?.name,
-      qty: 1,
-      price: product?.price,
-      description: product?.description,
-      color: selectedColor,
-      size: selectedSize,
-      image: product?.images?.length > 0 ? product?.images[0] : '',
-      totalPrice: product?.price,
-      qtyLeft: product?.qtyLeft
-    }))
-    SweetAlert({ icon: "success", title: "Success", message: 'Product added to cart successfully' });
-    return dispatch(cartItemsFromLocalStorageAction())
+    // Check if product is in cart
+    const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
+    const productExists = cartItems.some((item) => item._id === product._id && item.color === selectedColor && item.size === selectedSize);
+
+    if (productExists) {
+      // Product already in cart, update quantity
+      const updatedCartItems = cartItems.map((item) =>
+        item._id === product._id && item.color === selectedColor && item.size === selectedSize
+          ? { ...item, qty: Math.min(item.qty + 1, item.qtyLeft), totalPrice: product?.price * Math.min(item.qty + 1, item.qtyLeft) } // Increment quantity but not exceeding qtyLeft
+          : item
+      );
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      // SweetAlert({ icon: "success", title: "Success", message: 'Product quantity updated in cart' });
+      toast.success(t('add_to_cart_qty'));
+
+    } else {
+      // Product not in cart, add to cart
+      const newCartItem = {
+        _id: product._id,
+        name: product.name,
+        qty: productQty !== null ? productQty : 1,
+        price: product.price,
+        description: product.description,
+        color: selectedColor,
+        size: selectedSize,
+        image: product.images.length > 0 ? product.images[0] : '',
+        totalPrice: productQty !== null ? product.price * productQty : product.price,
+        qtyLeft: product.qtyLeft
+      };
+
+      if (newCartItem.qty > newCartItem.qtyLeft) {
+        newCartItem.qty = newCartItem.qtyLeft;
+      }
+
+      cartItems.push(newCartItem);
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      // SweetAlert({ icon: "success", title: "Success", message: 'Product added to cart successfully' });
+      toast.success(t('add_to_cart_message'));
+    }
+
+    // Reload cart items from localStorage
+    return dispatch(cartItemsFromLocalStorageAction());
+    // dispatch(addOrderToCartAction({
+    //   _id: product?._id,
+    //   name: product?.name,
+    //   qty: 1,
+    //   price: product?.price,
+    //   description: product?.description,
+    //   color: selectedColor,
+    //   size: selectedSize,
+    //   image: product?.images?.length > 0 ? product?.images[0] : '',
+    //   totalPrice: product?.price,
+    //   qtyLeft: product?.qtyLeft
+    // }))
+    // SweetAlert({ icon: "success", title: "Success", message: 'Product added to cart successfully' });
+    // return dispatch(cartItemsFromLocalStorageAction())
 
   };
   const { cartItems } = useSelector(state => state?.carts)
@@ -166,7 +230,9 @@ export default function Product() {
   // Get cart items
 
   // let cartItems = [];
-
+  const changeOrderItemQtyHandler = (e) => {
+    setProductQty(e)
+  }
   return (
     <>
       {loading ? <LoadingComponent /> : <div className="bg-white">
@@ -341,9 +407,26 @@ export default function Product() {
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-medium text-gray-900">{t('instock')}: {product?.qtyLeft <= 0 ? t('out_of_stock') : product?.qtyLeft}</h2>
                   </div>
-                  
+
                 </div>
-                {/* In stock */}
+                {/* quantity */}
+                <div className="mt-8">
+                  <div className="flex flex-col items-start">
+                    <h2 className="text-sm font-medium text-gray-900 mb-2">{t('quantity')}</h2>
+                    <select
+                      value={productQty}
+                      onChange={(e) => changeOrderItemQtyHandler(e.target.value)}
+                      className="max-w-full rounded-md border border-gray-300 py-1.5 px-3 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                      {/* use the qty  */}
+                      {[...Array(product?.qtyLeft).keys()].map((x) => {
+                        return <option key={x} value={x + 1}>{x + 1}</option>
+                      })}
+
+                    </select>
+                  </div>
+
+                </div>
+                {/* select size */}
                 <div className="mt-8">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-medium text-gray-900">{t('select_size')}</h2>
@@ -393,13 +476,14 @@ export default function Product() {
 
                 {/* proceed to check */}
 
-                {cartItems?.length > 0 && (
+                {/* {cartItems?.length > 0 && (
                   <Link
                     to="/shopping-cart"
                     className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-green-800 py-3 px-8 text-base font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Proceed to checkout
+                    {/* Proceed to checkout */}
+                {/* {t('proceed_to_checkout')}
                   </Link>
-                )}
+                )} */}
               </>
 
               {/* Product details */}
@@ -442,69 +526,131 @@ export default function Product() {
             </div>
           </div >
 
-          {/* Reviews */}
-          <section aria-labelledby="reviews-heading" className="mt-16 sm:mt-24">
-            <h2
-              id="reviews-heading"
-              className="text-lg font-medium text-gray-900">
-              {t('recent_reviews')}
-            </h2>
+          {/* review summary */}
+          <div className="bg-white  divide-y divide-gray-200 border-t border-b border-gray-200 mt-8">
+            <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-2 lg:py-8">
+              <div className="lg:col-span-4">
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900">{t('customer_review')}</h2>
 
-            <div className="mt-6 space-y-10 divide-y divide-gray-200 border-t border-b border-gray-200 pb-10">
-              {product?.reviews?.length > 0 ? product?.reviews.map((review) => (
-                <div
-                  key={review._id}
-                  className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8">
-                  <div className="lg:col-span-8 lg:col-start-5 xl:col-span-9 xl:col-start-4 xl:grid xl:grid-cols-3 xl:items-start xl:gap-x-8">
-                    <div className="flex items-center xl:col-span-1">
-                      <div className="flex items-center">
-                        {[0, 1, 2, 3, 4].map((rating) => (
-                          <StarIcon
-                            key={rating}
-                            className={classNames(
-                              review.rating > rating
-                                ? "text-yellow-400"
-                                : "text-gray-200",
-                              "h-5 w-5 flex-shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                        ))}
-                      </div>
-                      <p className="ml-3 text-sm text-gray-700">
-                        {review?.rating}
-                        <span className="sr-only"> out of 5 stars</span>
-                      </p>
+                <div className="mt-3 flex items-center">
+                  <div>
+                    <div className="flex items-center">
+                      {[0, 1, 2, 3, 4].map((rating) => (
+                        <StarIcon
+                          key={rating}
+                          className={classNames(
+                            +product?.averageRating > rating ? 'text-yellow-400' : 'text-gray-300',
+                            'h-5 w-5 flex-shrink-0'
+                          )}
+                          aria-hidden="true"
+                        />
+                      ))}
                     </div>
-
-                    <div className="mt-4 lg:mt-6 xl:col-span-2 xl:mt-0">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {review?.message}
-                      </h3>
-
-                      <div
-                        className="mt-3 space-y-6 text-sm text-gray-500"
-                        dangerouslySetInnerHTML={{ __html: review.content }}
-                      />
-                    </div>
+                    <p className="sr-only">{+product?.averageRating} out of 5 stars</p>
                   </div>
-
-                  <div className="mt-6 flex items-center text-sm lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex-col lg:items-start xl:col-span-3">
-                    <p className="font-medium text-gray-900">{review?.user?.fullName}</p>
-                    <time
-                      dateTime={review.createdAt}
-                      className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0">
-                      {new Date(review.createdAt).toLocaleDateString()}
-                    </time>
-                  </div>
+                  <p className="ml-2 text-sm text-gray-900">{t('based_on')} {product?.totalCount} đánh giá</p>
                 </div>
 
-              )) : <p className="font-medium text-gray-900 ">{t('no_review_found')}</p>}
+                <div className="mt-6">
+                  <h3 className="sr-only">Review data</h3>
+
+                  <dl className="space-y-3">
+                    {product?.counts.map((count) => (
+                      <div key={count.rating} className="flex items-center text-sm">
+                        <dt className="flex flex-1 items-center">
+                          <p className="w-3 font-medium text-gray-900">
+                            {count.rating}
+                            <span className="sr-only"> star reviews</span>
+                          </p>
+                          <div aria-hidden="true" className="ml-1 flex flex-1 items-center">
+                            <StarIcon
+                              className={classNames(
+                                count.count > 0 ? 'text-yellow-400' : 'text-gray-300',
+                                'h-5 w-5 flex-shrink-0'
+                              )}
+                              aria-hidden="true"
+                            />
+
+                            <div className="relative ml-3 flex-1">
+                              <div className="h-3 rounded-full border border-gray-200 bg-gray-100" />
+                              {count.count > 0 ? (
+                                <div
+                                  className="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"
+                                  style={{ width: `calc(${count.count} / ${product?.totalCount} * 100%)` }}
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                        </dt>
+                        <dd className="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">
+                          {Math.round((count.count / product?.totalCount) * 100)}%
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+
+                <div className="mt-10">
+                  <h3 className="text-lg font-medium text-gray-900">{t('share_your_though')}</h3>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {t('review_message')}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAddReview()}
+                    className="mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
+                  >
+                    {t('write_a_review')}
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-16 lg:col-span-7 lg:col-start-6 lg:mt-0">
+                <h3 className="sr-only">Recent reviews</h3>
+
+                <div className="flow-root">
+                  <div className="-my-12 divide-y divide-gray-200">
+                    {product?.reviews?.length > 0 && product?.reviews.map((review) => (
+                      <div key={review.id} className="py-12">
+                        <div className="flex items-center">
+                          <img src={review?.user?.photo} alt={`${review?.author}.`} className="h-12 w-12 rounded-full" />
+                          <div className="ml-4">
+                            <h4 className="text-sm font-bold text-gray-900">
+                              {review?.user?.fullName}
+                             
+                            </h4>
+                            <div className="mt-1 flex items-center">
+                              {[0, 1, 2, 3, 4].map((rating) => (
+                                <StarIcon
+                                  key={rating}
+                                  className={classNames(
+                                    review.rating > rating ? 'text-yellow-400' : 'text-gray-300',
+                                    'h-5 w-5 flex-shrink-0'
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ))}
+                            </div>
+                            <p className="sr-only">{review.rating} out of 5 stars</p>
+                          </div>
+                        </div>
+
+                        <div
+                          className="mt-4 space-y-6 text-base italic text-gray-600"
+                          dangerouslySetInnerHTML={{ __html: review.message }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            {
-              showAddReviewModal && <AddReviewModal showAddReviewModal={showAddReviewModal} setShowAddReviewModal={setShowAddReviewModal} productId={product._id} />
-            }
-          </section >
+          </div>
+
+          {
+            showAddReviewModal && <AddReviewModal showAddReviewModal={showAddReviewModal} setShowAddReviewModal={setShowAddReviewModal} productId={product._id} />
+          }
         </main >
       </div >}
     </>
