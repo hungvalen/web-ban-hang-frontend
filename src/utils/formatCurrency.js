@@ -1,5 +1,5 @@
 // Create our number formatter.
-export const formatPrice = new Intl.NumberFormat('en-US', {
+export const formatPrice = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'vnd',
 });

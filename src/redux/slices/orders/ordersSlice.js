@@ -4,6 +4,7 @@ import axios from "axios";
 import { resetErrorAction, resetSuccessAction } from "../globalActions/globalAction";
 import SweetAlert from "../../../components/Playground/SweetAlert";
 import axiosClient from "../../../utils/axiosClient";
+import { useDispatch } from "react-redux";
 // initialState
 const initialState = {
     error: null,
@@ -41,17 +42,26 @@ export const placeOrderAction = createAsyncThunk(
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
-            if (data?.url !== '') {
-                dispatch(navigateToOrder(data?.url));
-                dispatch(navigateToOrderSuccess());
-                // return window.open(data?.url);
-            }
-            else {
-                dispatch(navigateToOrderSuccess());
-                return data;
+            // if (data?.url !== '') {
+            //     dispatch(navigateToOrder(data?.url));
+            //     // dispatch(navigateToOrderSuccess());
+            //           localStorage.removeItem('cartItems');
+
+            //     // return window.open(data?.url);
+            // }
+            if (data) {
+                if(data?.hasOwnProperty('url')){
+                    dispatch(navigateToOrder(data?.url));
+
+                }
+                else{
+                    dispatch(navigateToOrderSuccess());
+                    return data;
+                }
 
             }
-            dispatch(navigateToOrderSuccess());
+           
+            // dispatch(navigateToOrderSuccess());
 
         } catch (error) {
             SweetAlert({ icon: "error", title: "Oops", message: error.response.data.message });
@@ -160,16 +170,24 @@ export const updateOrderAction = createAsyncThunk("orders/update-order", async (
     }
 })
 
-export const navigateToOrder = (order) => {
+export const navigateToOrder = async (order) => {
     // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
     // Ví dụ: sử dụng window.location.href hoặc history.push()
-    window.open(order)
+
+    const newTab = window.open(order)
+    await newTab.onload;
     window.location.href = "success"
+    // localStorage.removeItem('cartItems');
+
+    // window.location.href = "success"
+    // localStorage.removeItem('cartItems');
 };
 export const navigateToOrderSuccess = () => {
     // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
     // Ví dụ: sử dụng window.location.href hoặc history.push()
     window.location.href = "success"
+    // localStorage.removeItem('cartItems');
+
 };
 // slice
 const ordersSlice = createSlice({

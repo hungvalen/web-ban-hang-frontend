@@ -20,6 +20,17 @@ import { useTranslation } from 'react-i18next';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditProduct({ isShowEditProductModal, setIsShowEditProductModal, product }) {
+      //---form data---
+      const [formData, setFormData] = useState({
+        name: product?.name,
+        price: product?.price,
+        totalQty: product?.totalQty,
+        description: product?.description,
+        category: product.category,
+        sizes: product?.sizes,
+        brand: product?.brand,
+        colors: product?.colors,
+    });
     const { t } = useTranslation();
     const [params] = useSearchParams();
     let { products: { products }, loading, error, isUpdated } = useSelector(state => state.product);
@@ -86,7 +97,19 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
         });
     }
 
-
+    const handlePriceChange = (event) => {
+        const input = event.target.value;
+        const numericValue = parseFloat(input.replace(/[.,]/g, '')); // Chuyển thành số
+    
+        if(isNaN(numericValue) || input === ''){
+          setFormData({ ...formData, price: '' });
+    
+        }
+        else{
+          // Định dạng số thành chuỗi dưới dạng 1.000.000
+          setFormData({ ...formData, price: numericValue });
+        }
+      }
 
     const [selectedImage, setSelectedImage] = useState('');
     // Sizes
@@ -146,17 +169,7 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
     })
     const { brands } = useSelector(state => state.brand.brands)
 
-    //---form data---
-    const [formData, setFormData] = useState({
-        name: product?.name,
-        price: product?.price,
-        totalQty: product?.totalQty,
-        description: product?.description,
-        category: product.category,
-        sizes: product?.sizes,
-        brand: product?.brand,
-        colors: product?.colors,
-    });
+  
 
     //onChange
     const handleOnChange = (e) => {
@@ -351,9 +364,9 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
                                                             <div className="mt-1">
                                                                 <input
                                                                     name="price"
-                                                                    value={formData.price}
-                                                                    onChange={handleOnChange}
-                                                                    type="number"
+                                                                    value={formData.price === '' ? '' : new Intl.NumberFormat('en-US').format(formData.price)}
+                                                                    onChange={handlePriceChange}
+                                                                    type="text"
                                                                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                                 />
                                                             </div>

@@ -28,7 +28,11 @@ export const cartItemsFromLocalStorageAction = createAsyncThunk(
         return cartItems;
 
     })
-
+export const navigateToHomeScreen = () => {
+    // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
+    // Ví dụ: sử dụng window.location.href hoặc history.push()
+    window.location.href = "/"
+};
 export const changeOrderItemQty = createAsyncThunk(
     "cart/change-item-qty", async ({ productID, qty, size, color }) => {
         const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
@@ -46,13 +50,13 @@ export const changeOrderItemQty = createAsyncThunk(
     })
 
 export const removeOrderItemQty = createAsyncThunk(
-    "cart/removeOrderItem", async ({ productID,size,color }) => {
+    "cart/removeOrderItem", async ({ productID, size, color }) => {
         const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
         const newItems = cartItems?.filter(item => {
             if (
                 (item._id.toString() === productID.toString() &&
-                (item.size !== size || item.color !== color)) ||
-                (item._id.toString() !== productID.toString() )
+                    (item.size !== size || item.color !== color)) ||
+                (item._id.toString() !== productID.toString())
             ) {
                 return true; // Keep the item in the cart
             }

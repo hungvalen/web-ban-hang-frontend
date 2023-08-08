@@ -14,6 +14,7 @@ import DeleteProduct from "./modal/DeleteProduct";
 import { limitNumber } from "../../../utils/limitNumber";
 import AddProduct from "./modal/AddProduct";
 import { useTranslation } from "react-i18next";
+import { formatPrice } from "../../../utils/formatCurrency";
 
 export default function ManageStocks() {
   const [params] = useSearchParams();
@@ -217,7 +218,7 @@ export default function ManageStocks() {
                           {product?.qtyLeft <= 0 ? 0 : product?.qtyLeft}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.price}
+                          {formatPrice.format(product?.price)}
                         </td>
                         {/* edit */}
                         <td className="relative whitespace-nowrap py-4 px-3 text-sm font-medium sm:pr-6">

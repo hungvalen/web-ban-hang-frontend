@@ -155,7 +155,11 @@ export default function Product() {
     // Check if product is in cart
     const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
     const productExists = cartItems.some((item) => item._id === product._id && item.color === selectedColor && item.size === selectedSize);
+    const userLogin = localStorage.getItem("userInfo")
 
+    if(!userLogin){
+      return SweetAlert({ icon: "error", title: "Oops...", message: 'Vui lòng đăng nhập để sử dụng tính năng này' });
+    }
     if (productExists) {
       // Product already in cart, update quantity
       const updatedCartItems = cartItems.map((item) =>
@@ -410,7 +414,8 @@ export default function Product() {
 
                 </div>
                 {/* quantity */}
-                <div className="mt-8">
+                {
+                  product?.qtyLeft > 0 &&   <div className="mt-8">
                   <div className="flex flex-col items-start">
                     <h2 className="text-sm font-medium text-gray-900 mb-2">{t('quantity')}</h2>
                     <select
@@ -426,6 +431,8 @@ export default function Product() {
                   </div>
 
                 </div>
+                }
+              
                 {/* select size */}
                 <div className="mt-8">
                   <div className="flex items-center justify-between">

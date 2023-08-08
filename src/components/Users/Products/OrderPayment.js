@@ -3,7 +3,7 @@ import AddShippingAddress from '../Forms/AddShippingAddress';
 import { Dialog, Popover, RadioGroup, Tab, Transition } from '@headlessui/react'
 import { CheckCircleIcon, ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux';
-import { cartItemsFromLocalStorageAction } from '../../../redux/slices/cart/cartSlices';
+import { cartItemsFromLocalStorageAction, navigateToHomeScreen } from '../../../redux/slices/cart/cartSlices';
 import { formatPrice } from '../../../utils/formatCurrency';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getUserProfileAction } from '../../../redux/slices/users/usersSlice';
@@ -18,8 +18,8 @@ function classNames(...classes) {
 }
 
 const deliveryMethods = [
-  { id: 1, title: 'Tiêu chuẩn', turnaround: '4–10 ngày', price: 1.5 },
-  { id: 2, title: 'Nhanh chóng', turnaround: '2–5 ngày', price: 3 },
+  { id: 1, title: 'Tiêu chuẩn', turnaround: '4–10 ngày', price: 15000 },
+  { id: 2, title: 'Nhanh chóng', turnaround: '2–5 ngày', price: 30000 },
 ]
 
 const paymentMethods = [
@@ -113,7 +113,7 @@ const OrderPayment = () => {
         paymentMethod: paymentMethod,
         shipfee: selectedDeliveryMethod?.price
       }))
-      localStorage.removeItem('cartItems');
+      // localStorage.removeItem('cartItems');
     }
 
   };
@@ -128,6 +128,12 @@ const OrderPayment = () => {
     })
   };
 
+  const orderItems = localStorage.getItem('cartItems');
+  useEffect(() =>{
+    if(!orderItems){
+      dispatch(navigateToHomeScreen())
+    }
+  },[dispatch, orderItems])
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
@@ -440,8 +446,8 @@ const OrderPayment = () => {
               <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                 <h3 className="sr-only">Items in your cart</h3>
                 <ul role="list" className="divide-y divide-gray-200">
-                  {cartItems?.map((product) => (
-                    <li key={product._id} className="flex py-6 px-4 sm:px-6">
+                  {cartItems?.map((product,index) => (
+                    <li key={index} className="flex py-6 px-4 sm:px-6">
                       <div className="flex-shrink-0">
                         <img
                           src={product.image}
@@ -467,7 +473,7 @@ const OrderPayment = () => {
 
                         <div className="flex flex-1 items-end justify-between pt-2">
                           <p className="mt-1 text-sm font-medium text-gray-900">
-                            $ {product?.price} X {product?.qty} = {formatPrice.format(+totalPrice)}
+                             {formatPrice.format(+product?.price)} x {product?.qty} = {formatPrice.format(+totalPrice)}
                           </p>
                         </div>
                       </div>

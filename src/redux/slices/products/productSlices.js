@@ -99,7 +99,7 @@ export const updateProductAction = createAsyncThunk(
             })
             const { data } = await axios.put(`${baseURL}/products/${id}`,
                 formData, config)
-            SweetAlert({ icon: "success", title: "Success", message: "Product Update successfully" });
+            SweetAlert({ icon: "success", title: "Success", message: "Chỉnh sửa sản phẩm thành công" });
 
             return data;
         } catch (error) {

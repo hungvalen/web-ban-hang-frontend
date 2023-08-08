@@ -187,10 +187,20 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
 
   const handlePriceChange = (event) => {
     const input = event.target.value;
+    const numericValue = input.replace(/[.,]/g, '');
 
     setErrorInput({ ...errorInput, priceError: input.trim() ? '' : 'Vui lòng nhập giá sản phẩm.' });
-    setFormData({ ...formData, price: input });
+    if(isNaN(numericValue) || input === ''){
+      setFormData({ ...formData, price: '' });
+
+    }
+    else{
+      // Định dạng số thành chuỗi dưới dạng 1.000.000
+      const formattedValue = new Intl.NumberFormat('en-US').format(numericValue);
+      setFormData({ ...formData, price: formattedValue });
+    }
   }
+
   const handleTotalQtyChange = (event) => {
     const input = event.target.value;
 
@@ -241,7 +251,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
         totalQty: "",
       });
       setFileErrs([]);
-      setIsShowAddProductModal(false);
+      setIsShowAddProductModal(!isShowAddProductModal);
     }
 
     // navigate("/admin/manage-products");
@@ -406,7 +416,7 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                   name="price"
                                   value={price}
                                   onChange={handlePriceChange}
-                                  type="number"
+                                  type="text"
                                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 />
                               </div>
@@ -464,6 +474,8 @@ export default function AddProduct({ isShowAddProductModal, setIsShowAddProductM
                                   </div>)
                                 })
                                 }
+                                {imagesError && <p className="text-red-500 text-sm mt-1 leading-6">{imagesError}</p>}
+
                               </div>
 
                             </div>
