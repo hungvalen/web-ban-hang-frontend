@@ -273,6 +273,31 @@ export const resetPasswordUserAction = createAsyncThunk(
         }
     }
 );
+// verify user action
+export const verifyUserAction = createAsyncThunk(
+    "users/verify-account",
+    async ({token,expirationTime}, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const token = getState()?.users?.userAuth?.userInfo?.token;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // make the http request
+            const { data } = await axiosClient.get(`/users/confirm/${token}/${expirationTime}`);
+            // SweetAlert({ icon: "success", title: "Success", message: "Reset password successfully. Please check your email." });
+            // if (data) {
+            //     redirect(`/reset-password/${data?.resetToken}`)
+            // }
+            return data;
+        } catch (error) {
+            console.log(error);
+            SweetAlert({ icon: "error", title: "Oops", message: error?.response?.data?.message });
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 // forgot password user action
 export const forgotPasswordUserAction = createAsyncThunk(
     "users/forgot-password",
@@ -528,6 +553,19 @@ const usersSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
             state.user = null;
+        })
+        // change password 
+        builder.addCase(verifyUserAction.pending, (state, action) => {
+            state.loading = true;
+        });
+        builder.addCase(verifyUserAction.fulfilled, (state, action) => {
+            state.loading = false;
+            // state.user = action.payload;
+        });
+        builder.addCase(verifyUserAction.rejected, (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+            // state.user = null;
         })
 
         // reset success action

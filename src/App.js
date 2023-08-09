@@ -37,6 +37,7 @@ import ManagePaymentMethod from "./components/Admin/PaymentMethod/ManagePaymentM
 import UserChatComponent from "./components/Chat/UserChatComponent";
 import ChatPopup from "./components/Chat/UserChatComponent";
 import ManageReviews from "./components/Admin/Reviews/ManageReviews";
+import VerifyAccount from "./components/Users/VerifyAccount";
 const App = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const isAdmin = user?.userFound;
@@ -95,6 +96,7 @@ const App = () => {
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/reset-password/:token" element={<ForgotPassword />} />
+      <Route path="/confirm/:token/:expirationTime" element={<VerifyAccount />} />
       <Route path="/customer-profile" element={<CustomerProfile />} />
       <Route path="/order-details/:id" element={<OrderDetails />} />
       <Route path="/my-order" element={<MyOrder />} />
