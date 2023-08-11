@@ -10,8 +10,10 @@ import Pagination from '../../pagination/Pagination';
 import { limitNumber } from '../../../utils/limitNumber';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../../utils/formatCurrency';
+import AdminOrderDetails from './AdminOrderDetails';
 const ManageOrders = () => {
   const [openUpdateOrderModal, setOpenUpdateModel] = useState(false);
+  const [orderDetailsModal, setOrderDetailsModal] = useState(false);
   const [orderDetails, setOrderDetails] = useState('');
   const dispatch = useDispatch();
   const { orders, loading, error, isUpdated } = useSelector(state => state.orders);
@@ -28,7 +30,7 @@ const ManageOrders = () => {
       limit,
       query: query
     }));
-  }, [dispatch, page, query])
+  }, [dispatch, limit, page, query])
 
   useEffect(() => {
     if (isUpdated) {
@@ -39,10 +41,14 @@ const ManageOrders = () => {
       }));
       dispatch(resetSuccessAction());
     }
-  }, [isUpdated, dispatch])
+  }, [isUpdated, dispatch, page, limit])
 
   const handleUpdateOrderModal = (order) => {
     setOpenUpdateModel(!openUpdateOrderModal)
+    setOrderDetails(order)
+  }
+  const handleShowOrderModalDetails = (order) => {
+    setOrderDetailsModal(!orderDetailsModal)
     setOrderDetails(order)
   }
   return (
@@ -154,9 +160,8 @@ const ManageOrders = () => {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         <button
-                          type="button"
                           className="text-indigo-600 hover:text-indigo-900"
-                        // onClick={() => handleEditCoupon(coupon)}
+                          onClick={() => handleShowOrderModalDetails(order)}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -188,6 +193,13 @@ const ManageOrders = () => {
       {
         openUpdateOrderModal === true && (
           <UpdateOrderModal openUpdateOrderModal={openUpdateOrderModal} setOpenUpdateModel={setOpenUpdateModel} orderDetails={orderDetails} />
+
+        )
+      }
+      {
+        orderDetailsModal === true && (
+
+           <AdminOrderDetails orderDetailsModal={orderDetailsModal} setOrderDetailsModal={setOrderDetailsModal} orderDetails={orderDetails} />
 
         )
       }

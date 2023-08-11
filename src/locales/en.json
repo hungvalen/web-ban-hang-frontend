@@ -95,9 +95,9 @@
     "dashboard_profile": "Dashboard",
     "edit_profile": "Edit profile",
     "user_information": "User Information",
-    "full_name": "Họ và tên",
-    "Email address": "Địa chỉ email",
-    "About": "Giới thiệu",
+    "full_name": "Full name",
+    "Email address": "Email address",
+    "About": "About",
     "change_password": "Change password",
     "avatar": "Avatar",
     "current_password": "Current Password",
@@ -202,5 +202,10 @@
     "image": "Hình ảnh",
     "buy_now": "Buy now",
     "shop_by_category": "Shop by Category",
-    "view_all": "View all"
+    "view_all": "View all",
+    "order_details": "Order details",
+    "order_time": "Order time",
+    "wards/communes": "Wards/Communes",
+    "districts": "Districts",
+    "Province/City": "Province/City"
 }

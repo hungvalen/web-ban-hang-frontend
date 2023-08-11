@@ -206,5 +206,10 @@
   "buy_now": "Mua ngay",
   "shop_by_category": "Theo thể loại",
   "view_all":"Xem tất cả",
-  "trending_products":"Sản phẩm nổi bật"
+  "trending_products":"Sản phẩm nổi bật",
+  "order_details":"Chi tiết đơn hàng",
+  "order_time":"Thời gian đặt hàng",
+  "wards/communes":"Phường/Xã",
+  "districts":"Quận/Huyện",
+  "Province/City":"Tỉnh/Thành phố"
 }
