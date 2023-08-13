@@ -3,8 +3,10 @@ import { RadioGroup } from "@headlessui/react";
 import {
   CurrencyDollarIcon,
   GlobeAmericasIcon,
+  ReceiptRefundIcon,
+  CheckCircleIcon
 } from "@heroicons/react/24/outline";
-import { CheckCircleIcon, StarIcon } from "@heroicons/react/20/solid";
+import { StarIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSingleProductAction } from "../../../redux/slices/products/productSlices";
@@ -81,18 +83,7 @@ const product = {
   ],
 };
 
-const policies = [
-  {
-    name: "International delivery",
-    icon: GlobeAmericasIcon,
-    description: "Get your order in 2 years",
-  },
-  {
-    name: "Loyalty rewards",
-    icon: CurrencyDollarIcon,
-    description: "Don't look at other tees",
-  },
-];
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -106,6 +97,18 @@ export default function Product() {
   const { id } = useParams();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const policies = [
+    {
+      name: "International delivery",
+      icon: CheckCircleIcon,
+      description: "Hoàn tiền 111% nếu hàng giả",
+    },
+    {
+      name: "Loyalty rewards",
+      icon: ReceiptRefundIcon,
+      description: "Đổi trả trong 7 ngày nếu sản phẩm lỗi.",
+    },
+  ];
   useEffect(() => {
     dispatch(fetchSingleProductAction(id
     ))
@@ -157,7 +160,7 @@ export default function Product() {
     const productExists = cartItems.some((item) => item._id === product._id && item.color === selectedColor && item.size === selectedSize);
     const userLogin = localStorage.getItem("userInfo")
 
-    if(!userLogin){
+    if (!userLogin) {
       return SweetAlert({ icon: "error", title: "Oops...", message: 'Vui lòng đăng nhập để sử dụng tính năng này' });
     }
     if (productExists) {
@@ -244,7 +247,7 @@ export default function Product() {
           <div className="lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
             <div className="lg:col-span-5 lg:col-start-8">
               <div className="flex justify-between">
-                <h1 className="text-xl font-medium text-gray-900">
+                <h1 className="text-xl font-medium text-gray-900 w-3/4">
                   {
                     loading ? <Skeleton className="" width={200} height={30} /> : product?.name
                   }
@@ -415,24 +418,24 @@ export default function Product() {
                 </div>
                 {/* quantity */}
                 {
-                  product?.qtyLeft > 0 &&   <div className="mt-8">
-                  <div className="flex flex-col items-start">
-                    <h2 className="text-sm font-medium text-gray-900 mb-2">{t('quantity')}</h2>
-                    <select
-                      value={productQty}
-                      onChange={(e) => changeOrderItemQtyHandler(e.target.value)}
-                      className="max-w-full rounded-md border border-gray-300 py-1.5 px-3 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-                      {/* use the qty  */}
-                      {[...Array(product?.qtyLeft).keys()].map((x) => {
-                        return <option key={x} value={x + 1}>{x + 1}</option>
-                      })}
+                  product?.qtyLeft > 0 && <div className="mt-8">
+                    <div className="flex flex-col items-start">
+                      <h2 className="text-sm font-medium text-gray-900 mb-2">{t('quantity')}</h2>
+                      <select
+                        value={productQty}
+                        onChange={(e) => changeOrderItemQtyHandler(e.target.value)}
+                        className="max-w-full rounded-md border border-gray-300 py-1.5 px-3 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                        {/* use the qty  */}
+                        {[...Array(product?.qtyLeft).keys()].map((x) => {
+                          return <option key={x} value={x + 1}>{x + 1}</option>
+                        })}
 
-                    </select>
+                      </select>
+                    </div>
+
                   </div>
-
-                </div>
                 }
-              
+
                 {/* select size */}
                 <div className="mt-8">
                   <div className="flex items-center justify-between">
@@ -496,10 +499,10 @@ export default function Product() {
               {/* Product details */}
               <div className="mt-10">
                 <h2 className="text-sm font-medium text-gray-900">{t('product_desc')}</h2>
-                <div className="prose prose-sm mt-4 text-gray-500">
-                  {
+                <div className="prose prose-sm mt-4 text-gray-500" dangerouslySetInnerHTML={{ __html: product?.description }}>
+                  {/* {
                     isHtmlText(product?.description) === true ? convertHtmlToPlainText(product?.description) : product?.description
-                  }
+                  } */}
                 </div>
               </div>
 
@@ -520,10 +523,10 @@ export default function Product() {
                           aria-hidden="true"
                         />
                         <span className="mt-4 text-sm font-medium text-gray-900">
-                          {policy.name}
+                          {/* {policy.name} */}
                         </span>
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-500">
+                      <dd className="mt-1 text-sm text-gray-900">
                         {policy.description}
                       </dd>
                     </div>
@@ -625,7 +628,7 @@ export default function Product() {
                           <div className="ml-4">
                             <h4 className="text-sm font-bold text-gray-900">
                               {review?.user?.fullName}
-                             
+
                             </h4>
                             <div className="mt-1 flex items-center">
                               {[0, 1, 2, 3, 4].map((rating) => (

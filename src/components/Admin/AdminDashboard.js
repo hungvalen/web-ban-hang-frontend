@@ -508,7 +508,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               {/* colors links desktop */}
-              <div className="mt-3 pt-3">
+              {/* <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {colorsLinks.map((item) => (
                     <Link
@@ -523,7 +523,7 @@ export default function AdminDashboard() {
                     </Link>
                   ))}
                 </div>
-              </div>
+              </div> */}
               {/* brands links desktop */}
               <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">

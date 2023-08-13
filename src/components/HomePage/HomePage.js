@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import HomeCategories from "./HomeCategories";
 import HomeProductTrending from "./HomeProductTrending";
 import { useTranslation } from "react-i18next";
+import HomeBrand from "./HomeBrand";
 const collections = [
   {
     name: 'Desk and Office',
@@ -155,6 +156,7 @@ const categories = [
 ]
 export default function Example() {
   const { t } = useTranslation();
+
   return (
     <div className="bg-white">
       <main>
@@ -323,11 +325,12 @@ export default function Example() {
             </div>
           </div>
         </section> */}
-        <section aria-labelledby="collections-heading" className="bg-gray-100">
+        <HomeBrand/>
+        {/* <section aria-labelledby="collections-heading" className="bg-gray-100">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
               <h2 id="collections-heading" className="text-2xl font-bold text-gray-900">
-                Collections
+                {t('brand')}
               </h2>
 
               <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0">
@@ -352,7 +355,7 @@ export default function Example() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Sale and testimonials */}
         <div className="relative overflow-hidden">

@@ -8,7 +8,7 @@ import { formatPrice } from '../../../utils/formatCurrency';
 function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetails }) {
     console.log(orderDetails);
     const cancelButtonRef = useRef(null)
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
         <Transition.Root show={orderDetailsModal ?? false} as={Fragment}>
             <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOrderDetailsModal ?? false}>
@@ -37,73 +37,73 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left  transition-all lg:max-w-xl sm:my-8 sm:w-full sm:max-w-lg">
                                 <div className="overflow-hidden bg-white">
-                                    <div className="px-4 py-6 sm:px-6">
+                                    <div className="px-4 py-4 sm:px-6">
                                         <h3 className="text-base font-semibold leading-7 text-gray-900">{t('order_details')}</h3>
                                         {/* <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Personal details and application.</p> */}
                                     </div>
                                     <div className="border-t border-gray-100">
                                         <dl className="divide-y divide-gray-100">
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('order_number')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{orderDetails?.orderNumber}</dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('order_time')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{moment(orderDetails?.createdAt).format('DD/MM/YYYY HH:mm')}</dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('full_name')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{orderDetails?.user?.fullName}</dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('phone_number')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{orderDetails?.shippingAddress?.phone}</dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('address')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                   {orderDetails?.shippingAddress?.address}
+                                                    {orderDetails?.shippingAddress?.address}
                                                 </dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('wards/communes')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                   {orderDetails?.shippingAddress?.ward}
+                                                    {orderDetails?.shippingAddress?.ward}
                                                 </dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('districts')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                   {orderDetails?.shippingAddress?.district}
+                                                    {orderDetails?.shippingAddress?.district}
                                                 </dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-900">{t('Province/City')}</dt>
                                                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                   {orderDetails?.shippingAddress?.province}
+                                                    {orderDetails?.shippingAddress?.province}
                                                 </dd>
                                             </div>
-                                            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <div className="px-4 py-4 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium leading-6 text-gray-900">{t('product')}</dt>
                                                 <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                                     <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
                                                         {
                                                             orderDetails?.orderItems?.map((e) => {
                                                                 return (
-                                                                    <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                                                                    <div className="flex  w-0 flex-1 items-center">
-                                                                        {/* <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" /> */}
-                                                                        <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                                                                            <span className="truncate font-medium">{e?.name}</span>
-                                                                            <span className="flex-shrink-0 text-gray-400">{formatPrice.format(e?.price)}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    
-                                                                </li>
+                                                                    <li className="flex flex-col  justify-start py-4 pl-4 pr-5 text-sm leading-6">
+                                                                        <>
+                                                                            {/* <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" /> */}
+                                                                            <div className="ml-4 flex flex-col min-w-0 flex-1 gap-2">
+                                                                                <span className="truncate font-medium">{e?.name}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{formatPrice.format(e?.price)}</span>
+                                                                            </div>
+                                                                        </>
+
+                                                                    </li>
                                                                 )
                                                             })
                                                         }
-                                                     
+
                                                         {/* <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
                                                             <div className="flex w-0 flex-1 items-center">
                                                                 <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />

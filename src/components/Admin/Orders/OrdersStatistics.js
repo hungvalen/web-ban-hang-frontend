@@ -31,10 +31,35 @@ const OrdersStatistics = () => {
   });
   const colors = ['#8884d8', '#83a6ed', '#8dd1e1', '#82ca9d'];
   const RADIAN = Math.PI / 180;
-  const formatCurrency = (value) => `$${value}`;
+  const formatCurrency = (value, shorten) => {
+    if (value === 0) {
+      return '0'
+    }
+    if (shorten) {
+      let newValue = value;
+      let suffix = '';
+
+      if (value >= 1_000_000_000) {
+        newValue = value / 1_000_000_000;
+        suffix = 'B';
+      } else if (value >= 1_000_000) {
+        newValue = value / 1_000_000;
+        suffix = 'M';
+      } else if (value >= 1_000) {
+        newValue = value / 1_000;
+        suffix = 'K';
+      }
+
+
+      return `${newValue.toFixed(2)}${suffix}`;
+    }
+
+  };
   const formatMonth = (value) => {
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      // 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
     ];
     return monthNames[value - 1];
   };
@@ -261,7 +286,7 @@ const OrdersStatistics = () => {
         <div className="flex gap-10">
           <div>
             <h1 className="font-semibold mt-2">Thống kê theo tháng</h1>
-            <LineChart width={600} height={300} data={revenueByMonth} className='mt-5'>
+            <LineChart width={800} height={300} data={revenueByMonth} className='mt-5'>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" tickFormatter={formatMonth} />
               <YAxis tickFormatter={formatCurrency} />

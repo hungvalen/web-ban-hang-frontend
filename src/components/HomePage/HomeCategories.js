@@ -11,7 +11,7 @@ const HomeCategories = () => {
 
 
   const { categories } = useSelector(state => state.category.categories)
-  const categoriesToShow = categories?.slice(0, 4);
+  const categoriesToShow = categories;
   return (
     <>
       <div className="mt-4 flow-root">

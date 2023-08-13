@@ -44,14 +44,14 @@ export default function ManageStocks() {
       dispatch(fetchAllProductAction({ url: productUrl, page, limit, name: query }))
       dispatch(resetSuccessAction());
     }
-  }, [isUpdated, productUrl, page, limit, dispatch])
+  }, [isUpdated, productUrl, page, limit, dispatch, query])
 
   useEffect(() => {
     if (isDeleted) {
       dispatch(fetchAllProductAction({ url: productUrl, page, limit, name: query }))
       dispatch(resetSuccessAction());
     }
-  }, [isDeleted, productUrl, page, limit, dispatch])
+  }, [isDeleted, productUrl, page, limit, dispatch, query])
 
   const handleShowEditProductModal = (product, isView) => {
     setIsShowEditProductModal(!isShowEditProductModal)

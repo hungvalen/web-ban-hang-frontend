@@ -20,8 +20,8 @@ import { useTranslation } from 'react-i18next';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function EditProduct({ isShowEditProductModal, setIsShowEditProductModal, product }) {
-      //---form data---
-      const [formData, setFormData] = useState({
+    //---form data---
+    const [formData, setFormData] = useState({
         name: product?.name,
         price: product?.price,
         totalQty: product?.totalQty,
@@ -31,6 +31,8 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
         brand: product?.brand,
         colors: product?.colors,
     });
+
+    const { name, price, totalQty, description, category, brand, } = formData
     const { t } = useTranslation();
     const [params] = useSearchParams();
     let { products: { products }, loading, error, isUpdated } = useSelector(state => state.product);
@@ -100,16 +102,16 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
     const handlePriceChange = (event) => {
         const input = event.target.value;
         const numericValue = parseFloat(input.replace(/[.,]/g, '')); // Chuyển thành số
-    
-        if(isNaN(numericValue) || input === ''){
-          setFormData({ ...formData, price: '' });
-    
+
+        if (isNaN(numericValue) || input === '') {
+            setFormData({ ...formData, price: '' });
+
         }
-        else{
-          // Định dạng số thành chuỗi dưới dạng 1.000.000
-          setFormData({ ...formData, price: numericValue });
+        else {
+            // Định dạng số thành chuỗi dưới dạng 1.000.000
+            setFormData({ ...formData, price: numericValue });
         }
-      }
+    }
 
     const [selectedImage, setSelectedImage] = useState('');
     // Sizes
@@ -169,7 +171,7 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
     })
     const { brands } = useSelector(state => state.brand.brands)
 
-  
+
 
     //onChange
     const handleOnChange = (e) => {
@@ -179,29 +181,36 @@ export default function EditProduct({ isShowEditProductModal, setIsShowEditProdu
     //onSubmit
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateProductAction({
-            ...formData,
-            id: product._id,
-            // colors: product?.colors.length > 0 ? product?.colors : colorOption?.map((color) => color?.value),
-            // sizes: product?.sizes.length > 0 ? product?.sizes : sizeOption?.map((size) => size?.value),
-            colors: colorOption?.map((color) => color?.value),
-            sizes: sizeOption?.map((size) => size?.value),
-            files: fileArr
-        }))
-        // reset form data
-        setFormData({
-            name: "",
-            description: "",
-            category: "",
-            sizes: "",
-            brand: "",
-            colors: "",
-            images: "",
-            price: "",
-            totalQty: "",
-        });
-        setIsShowEditProductModal(false)
-        setFileErrs([]);
+        console.log(formData, files, colorOption, sizeOption)
+        if (!name.trim() || price <= 0 || totalQty <= 0 || !description.trim() || category === '' || brand === '' || formData.sizes.length === 0 || formData.colors.length === 0 || files.length === 0) {
+            SweetAlert({ icon: "error", title: "Error", message: "Vui lòng điền đầy đủ thông tin hoặc thông tin không hợp lệ" })
+        }
+        else {
+            dispatch(updateProductAction({
+                ...formData,
+                id: product._id,
+                // colors: product?.colors.length > 0 ? product?.colors : colorOption?.map((color) => color?.value),
+                // sizes: product?.sizes.length > 0 ? product?.sizes : sizeOption?.map((size) => size?.value),
+                colors: colorOption?.map((color) => color?.value),
+                sizes: sizeOption?.map((size) => size?.value),
+                files: fileArr
+            }))
+            // reset form data
+            setFormData({
+                name: "",
+                description: "",
+                category: "",
+                sizes: "",
+                brand: "",
+                colors: "",
+                images: "",
+                price: "",
+                totalQty: "",
+            });
+            setIsShowEditProductModal(false)
+            setFileErrs([]);
+        }
+
     };
 
     const removeImage = (e) => {

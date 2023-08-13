@@ -42,25 +42,18 @@ export const placeOrderAction = createAsyncThunk(
                 }, config)
 
             SweetAlert({ icon: "success", title: "Success", message: "Order created successfully" });
-            // if (data?.url !== '') {
-            //     dispatch(navigateToOrder(data?.url));
-            //     // dispatch(navigateToOrderSuccess());
-            //           localStorage.removeItem('cartItems');
-
-            //     // return window.open(data?.url);
-            // }
             if (data) {
-                if(data?.hasOwnProperty('url')){
+                if (data?.hasOwnProperty('url')) {
                     dispatch(navigateToOrder(data?.url));
 
                 }
-                else{
+                else {
                     dispatch(navigateToOrderSuccess());
                     return data;
                 }
 
             }
-           
+
             // dispatch(navigateToOrderSuccess());
 
         } catch (error) {
@@ -185,6 +178,9 @@ export const navigateToOrder = async (order) => {
 export const navigateToOrderSuccess = () => {
     // Thực hiện các hành động cần thiết để điều hướng đến '/dashboard'
     // Ví dụ: sử dụng window.location.href hoặc history.push()
+    setTimeout(() => {
+        localStorage.removeItem('cartItems');
+    }, 2000);
     window.location.href = "success"
     // localStorage.removeItem('cartItems');
 
