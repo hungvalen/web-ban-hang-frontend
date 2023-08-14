@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart
 import LoadingComponent from '../../LoadingComp/LoadingComponent';
 import { formatPrice } from '../../../utils/formatCurrency';
 import { useTranslation } from 'react-i18next';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 
 const OrdersStatistics = () => {
   const { t } = useTranslation();
@@ -66,23 +67,13 @@ const OrdersStatistics = () => {
   return (
     <>
       {loading ? <LoadingComponent /> : <div>
-        <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {/* stat 1 */}
-          <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
+          {/* <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
             <dt>
               <div className="absolute rounded-md bg-indigo-500 p-3">
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <BanknotesIcon className="h-6 w-6 text-white"/>
+
               </div>
               <p className="ml-16 truncate text-sm font-medium text-gray-900">
                 Đơn hàng tối thiểu
@@ -110,23 +101,13 @@ const OrdersStatistics = () => {
                 </div>
               </div>
             </dd>
-          </div>
+          </div> */}
           {/* stat 2 */}
           <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
             <dt>
               <div className="absolute rounded-md bg-indigo-500 p-3">
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+              <BanknotesIcon className="h-6 w-6 text-white"/>
+
               </div>
               <p className="ml-16 truncate text-sm font-medium text-gray-500">
                 Tổng doanh số
@@ -159,18 +140,9 @@ const OrdersStatistics = () => {
           <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
             <dt>
               <div className="absolute rounded-md bg-indigo-500 p-3">
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <BanknotesIcon className="h-6 w-6 text-white"/>
+                {/* <BanknotesIcon className="h-6 w-6 text-white"/>
+ */}
               </div>
               <p className="ml-16 truncate text-sm font-medium text-gray-500">
                 Đơn hàng cao nhất
@@ -202,18 +174,8 @@ const OrdersStatistics = () => {
           <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
             <dt>
               <div className="absolute rounded-md bg-indigo-500 p-3">
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <BanknotesIcon className="h-6 w-6 text-white"/>
+
               </div>
               <p className="ml-16 truncate text-sm font-medium text-gray-500">
                 Doanh số trung bình
@@ -246,18 +208,8 @@ const OrdersStatistics = () => {
           <div className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow sm:px-6 sm:pt-6">
             <dt>
               <div className="absolute rounded-md bg-indigo-500 p-3">
-                <svg
-                  className="h-6 w-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                </svg>
+                <BanknotesIcon className="h-6 w-6 text-white"/>
+
               </div>
               <p className="ml-16 truncate text-sm font-medium text-gray-500">
                 Doanh số hôm nay
@@ -265,7 +217,7 @@ const OrdersStatistics = () => {
             </dt>
             <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
               {
-                loading ? <Skeleton width={100} height={30} /> : <p className="text-2xl font-semibold text-gray-900">{stats?.saleToday?.length <= 0 ? `${0}` : stats?.saleToday?.map(e => formatPrice.format(e?.totalSales))}</p>
+                loading ? <Skeleton width={100} height={30} /> : <p className="text-2xl font-semibold text-gray-900">{stats?.saleToday?.length <= 0 ? `${formatPrice.format(0)}` : stats?.saleToday?.map(e => formatPrice.format(e?.totalSales))}</p>
               }
 
 
@@ -286,7 +238,7 @@ const OrdersStatistics = () => {
         <div className="flex gap-10">
           <div>
             <h1 className="font-semibold mt-2">Thống kê theo tháng</h1>
-            <LineChart width={800} height={300} data={revenueByMonth} className='mt-5'>
+            <LineChart width={500} height={300} data={revenueByMonth} className='mt-5'>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" tickFormatter={formatMonth} />
               <YAxis tickFormatter={formatCurrency} />

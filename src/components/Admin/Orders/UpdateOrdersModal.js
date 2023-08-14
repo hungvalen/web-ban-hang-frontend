@@ -76,14 +76,14 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                         <label
                           htmlFor="status"
                           className="block text-sm font-medium text-gray-700">
-                          Status:
+                          {t('status')}:
                         </label>
                         <select
                           id="status"
                           name="status"
                           onChange={onChange}
                           value={order.status}
-                          className="mt-1 block w-full rounded-md border-2 border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                          className="mt-1 block w-2/3 rounded-md border-2 border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           defaultValue="">
                           <option value="pending">{t('pending')}</option>
                           <option value="processing">{t('processing')}</option>

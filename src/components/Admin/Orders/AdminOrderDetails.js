@@ -84,19 +84,29 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                 </dd>
                                             </div>
                                             <div className="px-4 py-4 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
-                                                <dt className="text-sm font-medium leading-6 text-gray-900">{t('product')}</dt>
+                                                <dt className="text-sm font-medium leading-6 text-gray-900">{t('product_order')}</dt>
                                                 <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                                     <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
                                                         {
                                                             orderDetails?.orderItems?.map((e) => {
+                                                                console.log('check items',e);
                                                                 return (
-                                                                    <li className="flex flex-col  justify-start py-4 pl-4 pr-5 text-sm leading-6">
+                                                                    <li className="flex justify-start py-4 pl-4 pr-5 text-sm leading-6">
                                                                         <>
                                                                             {/* <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" /> */}
                                                                             <div className="ml-4 flex flex-col min-w-0 flex-1 gap-2">
-                                                                                <span className="truncate font-medium">{e?.name}</span>
-                                                                                <span className="flex-shrink-0 text-gray-400">{formatPrice.format(e?.price)}</span>
+                                                                                <span className="truncate font-medium">{t('product_name')}: {e?.name}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('price')}: {formatPrice.format(e?.price)}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('shipping_estimate')}: {formatPrice.format(e?.fee ?? 0)}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('quantity')}: {e?.qty}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('total_amount')}: {formatPrice.format(e?.totalPrice)} (
+                                                                                    {
+                                                                                        orderDetails?.paymentMethod === "cod" ? t('cod') : orderDetails?.paymentMethod === "zalopay" ? t('zalopay')
+                                                                                            : t('pay_by_visa')
+                                                                                    })
+                                                                                </span>
                                                                             </div>
+                                                                            <img className="h-12 w-12 object-cover" src={e?.image} alt="" />
                                                                         </>
 
                                                                     </li>

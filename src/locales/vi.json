@@ -211,5 +211,7 @@
   "order_time":"Thời gian đặt hàng",
   "wards/communes":"Phường/Xã",
   "districts":"Quận/Huyện",
-  "Province/City":"Tỉnh/Thành phố"
+  "Province/City":"Tỉnh/Thành phố",
+  "product_order":"Sản phẩm",
+  "pay_by_visa":"Thanh toán bằng visa"
 }

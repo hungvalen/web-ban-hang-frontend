@@ -1,113 +1,3 @@
-// import { useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// export default function AddReview() {
-//   //---form data---
-//   const [formData, setFormData] = useState({
-//     rating: "",
-//     message: "",
-//   });
-//   const { id } = useParams();
-//   //onChange
-//   const handleOnChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const dispatch = useDispatch();
-//   //onSubmit
-//   const handleOnSubmit = (e) => {
-//     e.preventDefault();
-//     dispatch(createReviewAction({
-//       id,
-//       message: formData.message,
-//       rating: formData.rating
-//     }))
-//   };
-
-//   return (
-//     <>
-//       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
-//         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-//           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-//             Add Your Review
-//           </h2>
-//           <p className="mt-2 text-center text-sm text-gray-600">
-//             <p className="font-medium text-indigo-600 hover:text-indigo-500">
-//               You are reviewing:{" "}
-//               <span className="text-gray-900">Product Name</span>
-//             </p>
-//           </p>
-//         </div>
-
-//         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-//           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-//             <form className="space-y-6" onSubmit={handleOnSubmit}>
-//               <div>
-//                 <label
-//                   htmlFor="location"
-//                   className="block text-sm font-medium text-gray-700">
-//                   Rating
-//                 </label>
-//                 <select
-//                   value={formData.rating}
-//                   onChange={handleOnChange}
-//                   name="rating"
-//                   className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 border-2 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-//                   defaultValue="Canada">
-//                   {/* review rating */}
-
-//                   <option value="1">1</option>
-//                   <option value="1.5">1.5</option>
-//                   <option value="2">2</option>
-//                   <option value="2.5">2.5</option>
-//                   <option value="3">3</option>
-//                   <option value="3.5">3.5</option>
-//                   <option value="4">4</option>
-//                   <option value="4.5">4.5</option>
-//                   <option value="5">5 </option>
-//                 </select>
-//               </div>
-
-//               {/* description */}
-//               <div>
-//                 <label
-//                   htmlFor="comment"
-//                   className="block text-sm font-medium text-gray-700">
-//                   Message
-//                 </label>
-//                 <div className="mt-1">
-//                   <textarea
-//                     rows={4}
-//                     name="message"
-//                     value={formData.message}
-//                     onChange={handleOnChange}
-//                     className="block w-full rounded-md p-2 border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-//                   />
-//                 </div>
-//               </div>
-//               <div>
-//                 <button
-//                   type="submit"
-//                   className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-//                   Add New Review
-//                 </button>
-//               </div>
-
-//               <div>
-//                 <button
-//                   type="submit"
-//                   className="flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-//                   I have Changed my mind
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       </div>
-
-//     </>
-//   );
-// }
 import { Fragment, useRef, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useDispatch, useSelector } from "react-redux";
@@ -118,6 +8,7 @@ import { createReviewAction } from "../../../redux/slices/reviews/reviewSlice";
 
 import DatePicker from "react-datepicker";
 import { useTranslation } from 'react-i18next';
+import SweetAlert from '../../Playground/SweetAlert';
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
@@ -159,12 +50,20 @@ export default function AddReviewModal({ showAddReviewModal, setShowAddReviewMod
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(createReviewAction({
-      id: productId,
-      message: formData.message,
-      rating: currentValue
-    }))
-    setShowAddReviewModal(!showAddReviewModal)
+    if(!formData?.message.trim()){
+        SweetAlert({ icon: "error", title: "Error", message: 'Nội dung không được để trống' });
+
+    }
+    else{
+      dispatch(createReviewAction({
+        id: productId,
+        message: formData.message,
+        rating: currentValue
+      }))
+      setShowAddReviewModal(!showAddReviewModal)
+
+    }
+   
   };
 
   return (

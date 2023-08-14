@@ -207,5 +207,7 @@
     "order_time": "Order time",
     "wards/communes": "Wards/Communes",
     "districts": "Districts",
-    "Province/City": "Province/City"
+    "Province/City": "Province/City",
+    "product_order":"Product",
+    "pay_by_visa":"Pay by visa"
 }
