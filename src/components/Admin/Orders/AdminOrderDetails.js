@@ -89,7 +89,6 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                     <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
                                                         {
                                                             orderDetails?.orderItems?.map((e) => {
-                                                                console.log('check items',e);
                                                                 return (
                                                                     <li className="flex justify-start py-4 pl-4 pr-5 text-sm leading-6">
                                                                         <>
@@ -97,9 +96,11 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                                             <div className="ml-4 flex flex-col min-w-0 flex-1 gap-2">
                                                                                 <span className="truncate font-medium">{t('product_name')}: {e?.name}</span>
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('price')}: {formatPrice.format(e?.price)}</span>
-                                                                                <span className="flex-shrink-0 text-gray-400">{t('shipping_estimate')}: {formatPrice.format(e?.fee ?? 0)}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('shipping_estimate')}: {formatPrice.format(orderDetails?.shipfee ?? 0)}</span>
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('quantity')}: {e?.qty}</span>
-                                                                                <span className="flex-shrink-0 text-gray-400">{t('total_amount')}: {formatPrice.format(e?.totalPrice)} (
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('color')}: {t(e?.color)}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('size')}: {e?.size}</span>
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('total_amount')}: {formatPrice.format(orderDetails?.totalPrice)} (
                                                                                     {
                                                                                         orderDetails?.paymentMethod === "cod" ? t('cod') : orderDetails?.paymentMethod === "zalopay" ? t('zalopay')
                                                                                             : t('pay_by_visa')

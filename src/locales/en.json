@@ -209,5 +209,11 @@
     "districts": "Districts",
     "Province/City": "Province/City",
     "product_order":"Product",
-    "pay_by_visa":"Pay by visa"
+    "pay_by_visa":"Pay by visa",
+    "color":"Color",
+    "black":"black",
+    "white":"white",
+    "blue":"blue",
+    "green":"green",
+    "orange":"cam"
 }
