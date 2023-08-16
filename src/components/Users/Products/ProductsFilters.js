@@ -38,33 +38,18 @@ import { fetchCategoriesAction } from "../../../redux/slices/categories/categori
 
 const allPrice = [
   {
-    amount: "0 - 50",
+    amount: "0 - 500000",
   },
   {
-    amount: "50 - 100",
+    amount: "500000 - 1000000",
   },
   {
-    amount: "100 - 150",
+    amount: "1000000 - 1500000",
   },
   {
-    amount: "150 - 200",
+    amount: "1500000 - 2000000",
   },
-  {
-    amount: "200 - 250",
-  },
-  {
-    amount: "250 - 300",
-  },
-  {
-    amount: "300 - 350",
-  },
-  {
-    amount: "350 - 400",
-  },
-  {
-    amount: `450 - 1000`,
-  },
-
+  
 ];
 
 function classNames(...classes) {
@@ -447,7 +432,7 @@ const ProductsFilters = () => {
                                     className="h-4 w-4 rounded border-gray-300 cursor-pointer text-indigo-600 focus:ring-indigo-500"
                                   />
                                   <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                    $ {price?.amount}
+                                    {price?.amount}đ
                                   </label>
                                 </div>
                               ))}
@@ -895,7 +880,7 @@ const ProductsFilters = () => {
                                 className="h-4 w-4 rounded border-gray-300 cursor-pointer text-indigo-600 focus:ring-indigo-500"
                               />
                               <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                $ {price?.amount}
+                                 {price?.amount}đ
                               </label>
                             </div>
                           ))}

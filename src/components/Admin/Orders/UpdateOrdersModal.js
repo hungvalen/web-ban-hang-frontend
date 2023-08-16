@@ -10,17 +10,18 @@ import { useTranslation } from 'react-i18next';
 //animated components for react-select
 const animatedComponents = makeAnimated();
 export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateModel, orderDetails }) {
-  // console.log(orderDetails)
+  console.log(orderDetails)
   const cancelButtonRef = useRef(null)
   const [order, setOrder] = useState({
-    status: orderDetails?.status
+    status: orderDetails?.status,
+    paymentStatus:orderDetails?.paymentStatus
   });
   const onChange = (e) => {
     setOrder({ ...order, [e.target.name]: e.target.value });
   }
   const dispatch = useDispatch();
   const updateOrderStatus = () => {
-    dispatch(updateOrderAction({ id: orderDetails?._id, status: order.status }));
+    dispatch(updateOrderAction({ id: orderDetails?._id, status: order.status ,paymentStatus:order?.paymentStatus}));
     setOpenUpdateModel(false);
   }
   const {t} = useTranslation()
@@ -89,6 +90,28 @@ export default function UpdateOrderModal({ openUpdateOrderModal, setOpenUpdateMo
                           <option value="processing">{t('processing')}</option>
                           <option value="shipped">{t('shipped')}</option>
                           <option value="intransit">{t('intransit')}</option>
+                        </select>
+                      </>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 px-4 text-sm font-medium sm:mt-0 sm:ml-4 sm:border-none sm:pt-0">
+                    <div className="flex flex-1 justify-center items-center gap-3">
+                      <>
+                        <label
+                          htmlFor="paymentStatus"
+                          className="block text-sm font-medium text-gray-700">
+                          {t('payment_status')}:
+                        </label>
+                        <select
+                          id="status"
+                          name="paymentStatus"
+                          onChange={onChange}
+                          value={order.paymentStatus}
+                          className="mt-1 block w-2/3 rounded-md border-2 border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                          defaultValue="">
+                          <option value="Not paid">{t('Not paid')}</option>
+                          <option value="Paid">{t('Paid')}</option>
+                         
                         </select>
                       </>
                     </div>

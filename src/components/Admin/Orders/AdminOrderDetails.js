@@ -83,6 +83,7 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                     {orderDetails?.shippingAddress?.province}
                                                 </dd>
                                             </div>
+
                                             <div className="px-4 py-4 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium leading-6 text-gray-900">{t('product_order')}</dt>
                                                 <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
@@ -96,15 +97,12 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                                             <div className="ml-4 flex flex-col min-w-0 flex-1 gap-2">
                                                                                 <span className="truncate font-medium">{t('product_name')}: {e?.name}</span>
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('price')}: {formatPrice.format(e?.price)}</span>
-                                                                                <span className="flex-shrink-0 text-gray-400">{t('shipping_estimate')}: {formatPrice.format(orderDetails?.shipfee ?? 0)}</span>
+                                                                                {/* <span className="flex-shrink-0 text-gray-400">{t('shipping_estimate')}: {formatPrice.format(orderDetails?.shipfee ?? 0)}</span> */}
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('quantity')}: {e?.qty}</span>
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('color')}: {t(e?.color)}</span>
                                                                                 <span className="flex-shrink-0 text-gray-400">{t('size')}: {e?.size}</span>
-                                                                                <span className="flex-shrink-0 text-gray-400">{t('total_amount')}: {formatPrice.format(orderDetails?.totalPrice)} (
-                                                                                    {
-                                                                                        orderDetails?.paymentMethod === "cod" ? t('cod') : orderDetails?.paymentMethod === "zalopay" ? t('zalopay')
-                                                                                            : t('pay_by_visa')
-                                                                                    })
+                                                                                <span className="flex-shrink-0 text-gray-400">{t('price')}: {formatPrice.format(e?.totalPrice)}
+
                                                                                 </span>
                                                                             </div>
                                                                             <img className="h-12 w-12 object-cover" src={e?.image} alt="" />
@@ -130,8 +128,31 @@ function AdminOrderDetails({ orderDetailsModal, setOrderDetailsModal, orderDetai
                                                             </div>
                                                         </li> */}
                                                     </ul>
+                                                    <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt className="text-sm font-medium text-gray-900">{t('Amount')}:</dt>
+                                                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                                            {orderDetails?.orderItems?.length} sản phẩm
+                                                        </dd>
+                                                    </div>
+                                                    <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt className="text-sm font-medium text-gray-900">{t('shipping_estimate')}:</dt>
+                                                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                                            {formatPrice.format(orderDetails?.shipfee ?? 0)}
+                                                        </dd>
+                                                    </div>
+                                                    <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt className="text-sm font-medium text-gray-900">{t('total_amount')}::</dt>
+                                                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                                            {formatPrice.format(orderDetails?.totalPrice)} (
+                                                            {
+                                                                orderDetails?.paymentMethod === "cod" ? t('cod') : orderDetails?.paymentMethod === "zalopay" ? t('zalopay')
+                                                                    : t('pay_by_visa')
+                                                            })
+                                                        </dd>
+                                                    </div>
                                                 </dd>
                                             </div>
+
                                         </dl>
                                     </div>
                                 </div>

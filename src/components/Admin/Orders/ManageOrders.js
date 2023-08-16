@@ -65,7 +65,7 @@ const ManageOrders = () => {
             <input
               type="search"
               name="search"
-              placeHolder="Search order"
+              placeHolder={t('search')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="block  appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -142,7 +142,7 @@ const ManageOrders = () => {
                       </td>
                       <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
                         {order?.paymentStatus === "Not paid" ? (
-                          <span className="px-3  inline-flex text-xs leading-5 font-semibold rounded-full bg-red-600 text-white">{order?.paymentStatus}</span>) : (order?.paymentStatus)
+                          <span className="px-3  inline-flex text-xs leading-5 font-semibold rounded-full bg-red-600 text-white">{t(order?.paymentStatus)}</span>) : (<span className="px-3  inline-flex text-xs leading-5 font-semibold rounded-full bg-green-600 text-white">{t(order?.paymentStatus)}</span>)
                         }
                       </td>
                       <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
@@ -171,10 +171,10 @@ const ManageOrders = () => {
                       </td>
                       <td className="px-3 py-4 text-sm font-medium sm:pr-6">
                         {
-                          order?.paymentStatus !== 'Not paid' ? <button disabled className="text-indigo-600 hover:text-indigo-900">
-                            Edit
+                          order?.paymentStatus !== 'Not paid' ? <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleUpdateOrderModal(order)}>
+                            {t('edit')}
                           </button> : <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleUpdateOrderModal(order)}>
-                            Edit
+                            {t('edit')}
                           </button>
                         }
 

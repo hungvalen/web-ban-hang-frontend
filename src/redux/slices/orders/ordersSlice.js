@@ -143,7 +143,7 @@ export const orderStaticsAction = createAsyncThunk("orders/statics", async (payl
 // update order action
 export const updateOrderAction = createAsyncThunk("orders/update-order", async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
-        const { status, id } = payload;
+        const { status, id ,paymentStatus} = payload;
         // make request
         const token = getState()?.users?.userAuth?.userInfo?.token;
         const config = {
@@ -152,9 +152,9 @@ export const updateOrderAction = createAsyncThunk("orders/update-order", async (
             }
         }
         const { data } = await axios.put(`${baseURL}/orders/update/${id}`, {
-            status
+            status,paymentStatus
         }, config);
-        SweetAlert({ icon: "success", title: "Success", message: "Order updated successfully" });
+        SweetAlert({ icon: "success", title: "Success", message: "Cập nhật trạng thái thành công" });
         return data;
     } catch (error) {
         console.log(error);

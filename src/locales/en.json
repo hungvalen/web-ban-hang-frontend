@@ -215,5 +215,17 @@
     "white":"white",
     "blue":"blue",
     "green":"green",
-    "orange":"cam"
+    "orange":"cam",
+    "not_registered_yet": "Not registered yet",
+    "Not paid":"Not paid",
+    "Paid":"Paid",
+    "payment_status":"Payment status",
+    "Amount":"Amount",
+    "home_title":"Shop with confidence",
+    "home_tilte_sub":"New products are added every week. Check back often to see",
+    "home_button":"Shop Productivity",
+    "home_people":"What are people saying?",
+    "home_coupon":"Gold hour shock price. Enter the discount code to receive our offer ",
+    "coupon_left":"Time remaining",
+    "day":"day"
 }

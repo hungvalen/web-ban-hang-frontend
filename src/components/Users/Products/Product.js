@@ -284,7 +284,7 @@ export default function Product() {
                         />
                       ))}
                     </div>
-                    <div
+                    {/* <div
                       aria-hidden="true"
                       className="ml-4 text-sm text-gray-300"></div>
                     <div className="ml-4 flex">
@@ -292,9 +292,9 @@ export default function Product() {
                         // href="#"
                         className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                         {/* {productDetails?.product?.totalReviews}  */}
-                        total reviews
-                      </span>
-                    </div>
+                    {/* total reviews
+                      </span> */}
+                    {/* </div> */}
                   </div>
                 }
 
@@ -565,8 +565,9 @@ export default function Product() {
                   <h3 className="sr-only">Review data</h3>
 
                   <dl className="space-y-3">
-                    {product?.counts.map((count) => (
-                      <div key={count.rating} className="flex items-center text-sm">
+                    {product?.counts.map((count) => {
+                      const reviewRating = Math.round((count.count / product?.totalCount) * 100);
+                      return <div key={count.rating} className="flex items-center text-sm">
                         <dt className="flex flex-1 items-center">
                           <p className="w-3 font-medium text-gray-900">
                             {count.rating}
@@ -593,10 +594,10 @@ export default function Product() {
                           </div>
                         </dt>
                         <dd className="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">
-                          {Math.round((count.count / product?.totalCount) * 100)}%
+                          {isNaN(reviewRating) ? 0 : reviewRating }%
                         </dd>
                       </div>
-                    ))}
+                    })}
                   </dl>
                 </div>
 

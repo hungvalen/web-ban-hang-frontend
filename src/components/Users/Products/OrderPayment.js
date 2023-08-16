@@ -24,7 +24,7 @@ const deliveryMethods = [
 
 const paymentMethods = [
   { id: 'cod', title: 'Thanh toán khi nhận hàng' },
-  { id: 'credit card', title: 'Credit card' },
+  { id: 'credit card', title: 'Thẻ tín dụng' },
   { id: 'zalopay', title: 'Zalopay' },
 ]
 const OrderPayment = () => {

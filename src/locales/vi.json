@@ -219,5 +219,16 @@
   "white": "trắng",
   "blue": "xanh dương",
   "green": "xanh lá cây",
-  "orange": "cam"
+  "orange": "cam",
+  "Not paid":"Chưa thanh toán",
+  "Paid":"Đã thanh toán",
+  "payment_status":"Trạng thái thanh toán",
+  "Amount":"Tổng số",
+  "home_title":"Mua sắm tiện lợi và dễ dàng",
+  "home_tilte_sub":"Sứ mệnh của concepta cùng các đối tác là mang đến nhiều ưu đãi hấp dẫn, cùng trải nghiệm mua sắm tiện lợi, dễ dàng.",
+  "home_button":"Trải nghiệm ngay",
+  "home_people":"Hãy để khách hàng thay lời chúng tôi",
+  "home_coupon":"Giờ vàng giá sốc. Nhập mã giảm giá để nhận được ưu đãi từ chúng tôi ",
+  "coupon_left":"Thời gian còn lại",
+  "day":"ngày"
 }

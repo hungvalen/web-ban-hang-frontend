@@ -162,7 +162,7 @@ export default function Example() {
       <main>
         {/* Hero */}
         <div className="flex flex-col border-b border-gray-200 lg:border-0">
-          <nav aria-label="Offers" className="order-last lg:order-first">
+          {/* <nav aria-label="Offers" className="order-last lg:order-first">
             <div className="mx-auto max-w-7xl lg:px-8">
               <ul
                 role="list"
@@ -181,7 +181,7 @@ export default function Example() {
                 ))}
               </ul>
             </div>
-          </nav>
+          </nav> */}
 
           <div className="relative">
             <div
@@ -193,16 +193,16 @@ export default function Example() {
                 <div className="mx-auto max-w-2xl py-24 lg:max-w-none lg:py-64">
                   <div className="lg:pr-16">
                     <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl xl:text-6xl">
-                      Shop with confidence
+                      {t('home_title')}
                     </h1>
                     <p className="mt-4 text-xl text-gray-600">
-                      New products are added every week. Check back often to see
+                    {t('home_tilte_sub')}
                     </p>
                     <div className="mt-6">
                       <button
                         type="button"
                         className="inline-block rounded-md border border-transparent bg-indigo-600 py-3 px-8 font-medium text-white hover:bg-indigo-700">
-                        Shop Productivity
+                        {t('home_button')}
                       </button>
                     </div>
                   </div>
@@ -401,7 +401,7 @@ export default function Example() {
           >
             <div className="mx-auto max-w-2xl lg:max-w-none">
               <h2 id="testimonial-heading" className="text-2xl font-bold tracking-tight text-gray-900">
-                What are people saying?
+                {t('home_people')}
               </h2>
 
               <div className="mt-16 space-y-16 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:space-y-0">

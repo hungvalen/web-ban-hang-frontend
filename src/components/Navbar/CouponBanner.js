@@ -2,8 +2,10 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react'
 import { fetchCouponsAction } from '../../redux/slices/coupons/couponSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next';
 
 export default function CouponBanner() {
+    const {t} = useTranslation();
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchCouponsAction())
@@ -21,7 +23,10 @@ export default function CouponBanner() {
                             <p className="text-sm leading-6 text-white">
                                 <a href="#">
                                     <strong className="font-semibold">{
-                                        currentCoupon ? `Limited time only best sale upto ${currentCoupon[0]?.discount}% off. Use coupon code ${currentCoupon[0]?.code} and get additional discount ${currentCoupon[0]?.daysLeft} day left` : "No flash sale at moment"
+                                        currentCoupon ? 
+                                         <>{t('home_coupon') } {currentCoupon[0]?.code} ({`${currentCoupon[0]?.discount}%.`}) {t('coupon_left')} {currentCoupon[0]?.daysLeft} {t('day')}</>
+                                        // `Limited time only best sale upto ${currentCoupon[0]?.discount}% off. Use coupon code ${currentCoupon[0]?.code} and get additional discount ${currentCoupon[0]?.daysLeft} day left` 
+                                        : "No flash sale at moment"
                                     }</strong>
                                     <svg viewBox="0 0 2 2" className="mx-2 inline h-0.5 w-0.5 fill-current" aria-hidden="true">
                                         <circle cx={1} cy={1} r={1} />
