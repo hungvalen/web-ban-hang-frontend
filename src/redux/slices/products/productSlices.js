@@ -165,7 +165,7 @@ export const deleteProductAction = createAsyncThunk("product/delete", async (id,
             }
         }
         const { data } = await axios.delete(`${baseURL}/products/${id}/delete`, config);
-        SweetAlert({ icon: "success", title: "Success", message: "Product deleted successfully" });
+        SweetAlert({ icon: "success", title: "Success", message: "Xoá sản phẩm thành công" });
         return data;
     } catch (error) {
         console.log(error);

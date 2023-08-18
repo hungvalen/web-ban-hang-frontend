@@ -219,9 +219,9 @@ export default function Example() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden">
+        {/* <div className="relative overflow-hidden">
           {/* Sale */}
-          <section
+          {/* <section
             aria-labelledby="sale-heading"
             className="relative mx-auto flex max-w-7xl flex-col items-center px-4 pt-32 text-center sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:max-w-none">
@@ -240,8 +240,8 @@ export default function Example() {
                 Get access to our one-time sale
               </a>
             </div>
-          </section>
-        </div>
+          </section> */}
+        {/* </div> */} 
       </main>
       <main>
         {/* Category section */}
@@ -263,7 +263,7 @@ export default function Example() {
           </div>
           <HomeCategories />
         </section> */}
-        <section aria-labelledby="category-heading" className="bg-gray-50">
+        {/* <section aria-labelledby="category-heading" className="bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
             <div className="sm:flex sm:items-baseline sm:justify-between">
               <h2 id="category-heading" className="text-2xl font-bold tracking-tight text-gray-900">
@@ -284,7 +284,7 @@ export default function Example() {
               </Link>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Home trending trending */}
         <HomeProductTrending />
@@ -373,7 +373,7 @@ export default function Example() {
           </div>
 
           {/* Sale */}
-          <section
+          {/* <section
             aria-labelledby="sale-heading"
             className="relative mx-auto flex max-w-7xl flex-col items-center px-4 pt-32 text-center sm:px-6 lg:px-8"
           >
@@ -392,7 +392,7 @@ export default function Example() {
                 Get access to our one-time sale
               </a>
             </div>
-          </section>
+          </section> */}
 
           {/* Testimonials */}
           <section
@@ -437,7 +437,7 @@ export default function Example() {
           Footer
         </h2>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-gray-200">
+          {/* <div className="border-t border-gray-200">
             <div className="pb-20 pt-16">
               <div className="md:flex md:justify-center">
                 <img
@@ -554,7 +554,7 @@ export default function Example() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="py-10 md:flex md:items-center md:justify-between">
             <div className="text-center md:text-left">

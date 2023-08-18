@@ -72,6 +72,7 @@ const ProductsFilters = () => {
   const [params, setParams] = useSearchParams();
   const category = params.get("category");
   const brandParams = params.get("brand")
+  const productNameParams = params.get("product-name")
 
   // filter 
   const [color, setColor] = useState("");
@@ -91,10 +92,11 @@ const ProductsFilters = () => {
   useEffect(() => {
     let productUrl = `${baseURL}/products`;
     const query = {};
-
+    let name = ''
     if (category && category !== "all") {
       query.category = category;
     }
+
     if(brandParams){
       query.brand = brandParams
     }
@@ -116,13 +118,16 @@ const ProductsFilters = () => {
     if (categoryValue) {
       query.category = categoryValue
     }
+    if(productNameParams){
+      name = productNameParams
+    }
     const queryParams = new URLSearchParams(query).toString();
     if (queryParams) {
       productUrl = `${productUrl}?${queryParams}`;
     }
 
-    dispatch(fetchAllProductAction({ url: productUrl, page, limit, name: '' }));
-  }, [dispatch, brand, size, category, price, color, params, page, limit, sortValue, categoryValue,brandParams]);
+    dispatch(fetchAllProductAction({ url: productUrl, page, limit, name: name }));
+  }, [dispatch, brand, size, category, price, color, params, page, limit, sortValue, categoryValue, brandParams, productNameParams]);
 
   // useEffect(() => {
   //   let categoryUrl = `${baseURL}/products?category=${category}`;

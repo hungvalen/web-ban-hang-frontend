@@ -136,11 +136,11 @@ export default function ManageStocks() {
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                         {t('total_qty')}
                       </th>
-                      <th
+                      {/* <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                         {t('total_sold')}
-                      </th>
+                      </th> */}
 
                       <th
                         scope="col"
@@ -211,9 +211,9 @@ export default function ManageStocks() {
                           {product?.totalQty}
                         </td>
 
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {product?.totalSold}
-                        </td>
+                        </td> */}
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {product?.qtyLeft <= 0 ? 0 : product?.qtyLeft}
                         </td>

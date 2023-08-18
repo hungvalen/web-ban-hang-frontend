@@ -12,6 +12,7 @@ import {MdRateReview} from "react-icons/md"
 import {
   Bars3CenterLeftIcon,
   BellIcon,
+  ChartBarIcon,
   ClockIcon,
   CogIcon,
   CreditCardIcon,
@@ -54,6 +55,16 @@ export default function AdminDashboard() {
       name: t('dashboard'),
       href: "/",
       icon: AiOutlineHome,
+      current: true,
+    },
+
+
+  ];
+  const statisticsLinks = [
+    {
+      name: t('statistics'),
+      href: "/admin",
+      icon: ChartBarIcon,
       current: true,
     },
 
@@ -208,6 +219,23 @@ export default function AdminDashboard() {
                         ))}
                       </div>
                     </div>
+                    {/* statistics link */}
+                    <div className="mt-6 pt-6">
+                      <div className="space-y-1 px-2">
+                        {statisticsLinks.map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                            <item.icon
+                              className="mr-4 h-6 w-6 text-cyan-200"
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                     {/* user link */}
                     <div className="mt-6 pt-6">
                       <div className="space-y-1 px-2">
@@ -348,7 +376,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     {/* shipping unit links mobile */}
-                    <div className="mt-3 pt-3">
+                    {/* <div className="mt-3 pt-3">
                       <div className="space-y-1 px-2">
                         {shippingUnitLinks.map((item) => (
                           <Link
@@ -363,9 +391,9 @@ export default function AdminDashboard() {
                           </Link>
                         ))}
                       </div>
-                    </div>
+                    </div> */}
                     {/* payment method links mobile */}
-                    <div className="mt-3 pt-3">
+                    {/* <div className="mt-3 pt-3">
                       <div className="space-y-1 px-2">
                         {paymentMethodLinks.map((item) => (
                           <Link
@@ -380,7 +408,7 @@ export default function AdminDashboard() {
                           </Link>
                         ))}
                       </div>
-                    </div>
+                    </div> */}
                   </nav>
                   {/* end of mobile nav */}
                 </Dialog.Panel>
@@ -403,6 +431,22 @@ export default function AdminDashboard() {
               <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {dashboardLinks.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                      <item.icon
+                        className="mr-4 h-6 w-6 text-cyan-200"
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-3 pt-3">
+                <div className="space-y-1 px-2">
+                  {statisticsLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
@@ -559,7 +603,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               {/* shipping unit links desktop */}
-              <div className="mt-3 pt-3">
+              {/* <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {shippingUnitLinks.map((item) => (
                     <Link
@@ -574,9 +618,9 @@ export default function AdminDashboard() {
                     </Link>
                   ))}
                 </div>
-              </div>
+              </div> */}
               {/* payment method links desktop */}
-              <div className="mt-3 pt-3">
+              {/* <div className="mt-3 pt-3">
                 <div className="space-y-1 px-2">
                   {paymentMethodLinks.map((item) => (
                     <Link
@@ -591,7 +635,7 @@ export default function AdminDashboard() {
                     </Link>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </nav>
           </div>
         </div>

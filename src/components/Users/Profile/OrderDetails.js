@@ -291,14 +291,14 @@ export default function OrderDetails() {
 
                     <div className="bg-gray-100 px-4 py-6 sm:rounded-lg sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-8">
                         <dl className="grid grid-cols-2 gap-6 text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">
-                            <div>
+                            {/* <div>
                                 <dt className="font-medium text-gray-900">Billing address</dt>
                                 <dd className="mt-3 text-gray-500">
                                     <span className="block">Floyd Miles</span>
                                     <span className="block">7363 Cynthia Pass</span>
                                     <span className="block">Toronto, ON N3Y 4H8</span>
                                 </dd>
-                            </div>
+                            </div> */}
                             <div>
                                 <dt className="font-medium text-gray-900">{t('payment_method')}</dt>
                                 <dd className="-ml-4 -mt-1 flex flex-wrap">
@@ -329,11 +329,12 @@ export default function OrderDetails() {
 
                         <dl className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-5 lg:mt-0">
                             <div className="flex items-center justify-between pb-4">
-                                <dt className="text-gray-600">Subtotal</dt>
+                                <dt className="text-gray-600">{t('subtotal')}</dt>
                                 <dd className="font-medium text-gray-900">{formatPrice.format(orderDetails?.totalPrice - orderDetails?.shipfee)}</dd>
                             </div>
                             <div className="flex items-center justify-between py-4">
-                                <dt className="text-gray-600">Shipping</dt>
+                                {/* <dt className="text-gray-600">Shipping</dt> */}
+                                <dt className="text-gray-600">{t('shipping_estimate')}</dt>
                                 <dd className="font-medium text-gray-900">{formatPrice.format(orderDetails?.shipfee)}</dd>
                             </div>
                             {/* <div className="flex items-center justify-between py-4">
@@ -341,7 +342,8 @@ export default function OrderDetails() {
                                 <dd className="font-medium text-gray-900">$6.16</dd>
                             </div> */}
                             <div className="flex items-center justify-between pt-4">
-                                <dt className="font-medium text-gray-900">Order total</dt>
+                                {/* <dt className="font-medium text-gray-900">Order total</dt> */}
+                                <dt className="font-medium text-gray-900">{t('order_total')}</dt>
                                 <dd className="font-medium text-indigo-600">{formatPrice.format(orderDetails?.totalPrice)}</dd>
                             </div>
                         </dl>

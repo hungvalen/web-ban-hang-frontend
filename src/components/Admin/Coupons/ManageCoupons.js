@@ -71,7 +71,7 @@ export default function ManageCoupons() {
           </h1>}
 
           <p className="mt-2 text-sm text-gray-700">
-            List of all coupons in the system
+            {/* List of all coupons in the system */}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">

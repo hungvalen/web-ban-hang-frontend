@@ -114,7 +114,7 @@ export default function ManageCategories() {
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        No. Products
+                        {t('no_products')}
                       </th>
                       <th
                         scope="col"
